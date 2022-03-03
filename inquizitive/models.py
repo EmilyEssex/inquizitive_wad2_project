@@ -1,4 +1,5 @@
 from django.db import models
+ 
 from django.db import models
 from django.contrib import admin
 from django.template.defaultfilters import slugify
@@ -15,9 +16,12 @@ def main():
 if __name__ == "__main__":
     main()
 
+ 
+ 
 
  
 # Create your models here.
+ 
 #RATING_OPTIONS= ("easy", "medium","hard")
 
     
@@ -71,4 +75,49 @@ class Comment(models.model):
      def __str__(self):
         return self.comment_text
     
+ 
+ 
+
+class Scores(models.Model):
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE)
+
+    # default score? If unattempted
+    score = models.IntegerField(default=0)
+
+    class Meta:
+        verbose_name_plural = "Scores"
+
+    def __str__(self):
+        return self.score
+
+class Ratings(models.Model): 
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE)
+    # default rating should just be unrated??
+    rating = models.IntegerField(default=0)
+
+    class Meta:
+        verbose_name_plural = "Ratings"
+
+    def __str__(self):
+        return self.rating
+
+class UserProfile(models.Model):
+    # links UserProfile to a user model instance.
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+
+    quiz = models.OneToManyField(Quiz)
+    scores = models.OneToManyField(Scores) #changed this from userscores to scores
+    ratings = models.OneToManyField(Ratings) #changed this from user ratings to ratings
+
+    profile = models.ImageField(upload_to = 'profile images', blank=True)
+
+    class Meta:
+        verbose_name_plural = "User"
+
+    def __str__(self):
+        return self.user.username
+
  

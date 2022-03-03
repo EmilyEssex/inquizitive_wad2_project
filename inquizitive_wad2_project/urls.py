@@ -19,8 +19,7 @@ from django.urls import include
 from inquizitive import views
 
 urlpatterns = [
-    path('', views.index, name='index'),
-    path('inquizitive/', include('inquizitive.urls')),
     path('admin/', admin.site.urls),
+    path('', include('inquizitive.urls')),
 
 ]
