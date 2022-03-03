@@ -7,8 +7,10 @@ from .forms import SignUpForm, EditProfileForm
 
 # Create your views here.
 
+
 def home(request): 
 	return render(request, 'inquizitive/home.html', {})
+
 
 def login_user (request):
 	if request.method == 'POST': #if someone fills out form , Post it 
@@ -25,10 +27,12 @@ def login_user (request):
 	else:
 		return render(request, 'inquizitive/login.html', {})
 
+
 def logout_user(request):
 	logout(request)
 	messages.success(request,('You are now logged out'))
 	return redirect('home')
+
 
 def register_user(request):
 	if request.method =='POST':
@@ -47,6 +51,7 @@ def register_user(request):
 	context = {'form': form}
 	return render(request, 'inquizitive/register.html', context)
 
+
 def edit_profile(request):
 	if request.method =='POST':
 		form = EditProfileForm(request.POST, instance= request.user)
@@ -60,8 +65,6 @@ def edit_profile(request):
 	context = {'form': form}
 	return render(request, 'inquizitive/edit_profile.html', context)
 	
-
-
 
 def change_password(request):
 	if request.method =='POST':
