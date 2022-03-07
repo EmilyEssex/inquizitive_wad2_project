@@ -1,8 +1,8 @@
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.contrib.auth.models import User
-from django import forms
+from django import forms 
 
-
+from inquizitive.models import Quiz, Question
 
 
 
@@ -44,3 +44,37 @@ class SignUpForm(UserCreationForm):
 	    self.fields['password2'].widget.attrs['placeholder'] = 'Confirm Password'
 	    self.fields['password2'].label = ''
 	    self.fields['password2'].help_text = '<span class="form-text text-muted"><small></small></span>'
+
+ 
+ 
+DIFFICULTY_CHOICES=[
+    ('easy', 'Easy'),
+    ('medium', 'Medium'),
+    ('hard', 'Hard'),
+    ]
+#form for quiz model
+class CreateAQuizForm(forms.ModelForm):
+    name = forms.CharField(max_length=500, help_text="Please enter the name of your quiz.")
+    subject = forms.CharField(max_length=500, help_text="Please enter the subject of your quiz")
+    difficulty=forms.CharField(label='What is the difficult level of the quiz', widget=forms.Select(choices=DIFFICULTY_CHOICES))
+    class Meta:
+        model = Quiz
+        fields = ('name', 'subject', 'difficulty')
+
+#form for question model
+class AddAQuestionForm(forms.ModelForm):
+    questionText = forms.CharField(widget=forms.TextInput(attrs={'class': 'validate'}), required=True)
+    questionMarks = forms.IntegerField(max_value=100, min_value=1)
+    class Meta:	
+        model = Question
+        fields = ('questionText',  'questionMarks')
+   # we should add the ansers as well
+ 
+ 
+          
+        
+        
+        
+        
+        
+        

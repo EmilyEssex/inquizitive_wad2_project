@@ -1,10 +1,10 @@
 from django.contrib import admin
-from inquizitive.models import Question, Answer, Quiz , Score, Comment
+from inquizitive.models import Question, Answer, Quiz ,  Comment
 
 admin.site.register(Quiz)
 admin.site.register(Question)
 admin.site.register(Answer)
-admin.site.register(Score)
+#admin.site.register(Score)
 admin.site.register(Comment)
 
 # Register your models here.

@@ -3,13 +3,7 @@
 import os
 import sys
 import os
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mysite.settings")
-
-import django
-django.setup()
-
-from django.core.management import call_command
-
+ 
 
 def main():
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'inquizitive_wad2_project.settings')
@@ -26,3 +20,6 @@ def main():
 
 if __name__ == '__main__':
     main()
+    
+    
+ 

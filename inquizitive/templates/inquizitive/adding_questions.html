@@ -3,8 +3,8 @@
 <head>
 <title>inQuisitive</title> </head>
 <body>
-<h1>Create a quiz</h1> <div>
-<form id="creating_quiz" method="post" action="/inquizitive/creating_quiz/">{% csrf_token %}
+<h1>Add quiz questions</h1> <div>
+<form id="adding_questions" method="post" action="/inquizitive/adding_questions/">{% csrf_token %}
 {% for hidden in form.hidden_fields %}
                     {{ hidden }}
                 {% endfor %}
@@ -12,9 +12,10 @@
                     {{ field.errors }}
                     {{ field.help_text }}
                     {{ field }}
+  
 {% endfor %}
-<input type="submit" name="submit" value="Create Quiz" /> </form>
-<a href="/inquizitive/adding_questions/">Add questions to the quiz </a><br/>
+<input type="submit" name="submit" value="Add question" /> </form>
+
 </div> </body>
 </html>
 
