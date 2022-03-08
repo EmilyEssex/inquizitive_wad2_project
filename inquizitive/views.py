@@ -96,7 +96,7 @@ def creating_quiz(request):
             form.save(commit=True)
             # Now that the category is saved, we could confirm this. 
             # For now, just redirect the user back to the index view. 
-            return redirect('add a question') ### not sure about this
+            return redirect('/inquizitive/adding_questions') ### not sure about this
         else:
             # The supplied form contained errors -
             # just print them to the terminal.
