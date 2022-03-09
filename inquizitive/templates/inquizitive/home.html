@@ -14,8 +14,11 @@
 {% endif %}
 <div>
 {% if quizzes %}
+<h2>Quizzes</h2>
 <ul>
+
 {% for quiz in quizzes %}
+ 
 <li>{{ quiz.quizName }}</li> {% endfor %}
 </ul> {% else %}
 <strong>There are no quizzes present.</strong> {% endif %}

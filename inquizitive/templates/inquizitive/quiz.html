@@ -1,0 +1,35 @@
+{% extends 'inquizitive/base.html' %}
+ 
+{% load staticfiles %}
+
+{% block title_block %} 
+{% if quiz %}
+{{ category.quizName }}
+{% else %}
+Unknown Quiz
+{% endif %}
+{% endblock %}
+
+
+
+
+
+{% block body_block %}
+{% if Quiz %}
+<h1>{{ category.quizName }}</h1> 
+{% if questions %}
+<ul>
+{% for page in pages %}
+<li><a href="{{ page.url }}">{{ page.title }}</a></li> 
+{% endfor %}
+</ul>
+{% else %}
+<strong>No pages currently in category.</strong> 
+{% endif %}
+{% if user.is_authenticated %}
+<a href="{% url 'rango:add_page' category.slug %}">Add Page</a><br/>
+{% endif %}
+{% else %}
+The specified category does not exist.
+{% endif %}
+{% endblock %}

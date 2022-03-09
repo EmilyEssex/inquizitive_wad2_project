@@ -6,18 +6,18 @@ from django.contrib import messages
 from .forms import SignUpForm, EditProfileForm 
 from inquizitive.forms import CreateAQuizForm,  AddAQuestionForm
 from django.shortcuts import redirect
-from .models import Quiz
+from .models import Quiz, Question
 
 # Create your views here.
 
 
 def home(request): 
     #everything before render is new -Hana
-    quizzes_list = Quiz.objects
+    quizzes_list = Quiz.objects.all()
     context_dict = {}
     context_dict['boldmessage'] = 'Crunchy, creamy, cookie, candy, cupcake!'
     context_dict['quizzes'] = quizzes_list
-    return render(request, 'inquizitive/home.html', {})
+    return render(request, 'inquizitive/home.html', context_dict)
 
 
 def login_user (request):
@@ -137,3 +137,85 @@ def adding_questions(request):
     context = {'form': form}
     return render(request, 'inquizitive/adding_questions.html', context)
  
+def show_quiz1(request, quizName):
+    context_dict = {}
+    try:
+# Can we find a category name slug with the given name?
+# If we can't, the .get() method raises a DoesNotExist exception.
+# The .get() method returns one model instance or raises an exception. 
+        quiz = Quiz.objects.get(quizName)
+         
+# Retrieve all of the associated pages.
+# The filter() will return a list of page objects or an empty list. 
+        questions = Question.objects.filter(quiz=quiz)
+        # Adds our results list to the template context under name pages.
+        context_dict['questions'] = questions
+# We also add the category object from
+# the database to the context dictionary.
+# We'll use this in the template to verify that the category exists. 
+        context_dict['quiz'] = quiz
+    except Quiz.DoesNotExist:
+# We get here if we didn't find the specified category.
+# Don't do anything -
+# the template will display the "no category" message for us. context_dict['category'] = None
+        context_dict['questions'] = None
+    # Go render the response and return it to the client.
+    return render(request, 'inquizitive/quiz.html', context=context_dict)
+
+ 
+
+def show_quiz(request, quizName):
+    context_dict = {}
+    if request.method == 'POST':
+        print(request.POST)
+        questions=Question.objects.all()
+        score=0
+        wrong=0
+        correct=0
+        total=0
+        for q in questions:
+            total+=1
+            print(request.POST.get(q.questionText))
+            print(q.correctAnswer)
+            print()
+            if q.correctAnswer ==  request.POST.get(q.question):
+                score+=10
+                correct+=1
+            else:
+                wrong+=1
+        percent = score/(total*10) *100
+        context = {
+            'score':score,
+            #'time': request.POST.get('timer'),
+            'correct':correct,
+            'wrong':wrong,
+            'percent':percent,
+            'total':total
+        }
+        return render(request,'inquizitive/home.html',context) #should take to results or coments page
+    else:
+        questions=Question.objects.all()
+        context = {
+            'questions':questions
+        }
+        return render(request,'inquizitive/home.html',context)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
