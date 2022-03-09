@@ -1,11 +1,11 @@
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.contrib.auth.models import User
 from django import forms 
-
+import json
 from inquizitive.models import Quiz, Question
 
-
-
+from django.contrib.postgres.fields.jsonb import JSONField
+#from splitjson.widgets import SplitJSONWidget
 class EditProfileForm(UserChangeForm):
 	
 	password = forms.CharField(label="", widget=forms.TextInput(attrs={'type':'hidden'}))
@@ -54,20 +54,28 @@ DIFFICULTY_CHOICES=[
     ]
 #form for quiz model
 class CreateAQuizForm(forms.ModelForm):
-    name = forms.CharField(max_length=500, help_text="Please enter the name of your quiz.")
-    subject = forms.CharField(max_length=500, help_text="Please enter the subject of your quiz")
-    difficulty=forms.CharField(label='What is the difficult level of the quiz', widget=forms.Select(choices=DIFFICULTY_CHOICES))
+    quizName = forms.CharField(max_length=500, help_text="Quiz Name: ")
+    quizSubject = forms.CharField(max_length=500, help_text="Quiz Subject: ")
+    quizDifficulty=forms.CharField(label='Quiz Difficulty: ', widget=forms.Select(choices=DIFFICULTY_CHOICES))
     class Meta:
         model = Quiz
-        fields = ('name', 'subject', 'difficulty')
+        fields = ('quizName', 'quizSubject', 'quizDifficulty')
 
 #form for question model
 class AddAQuestionForm(forms.ModelForm):
-    questionText = forms.CharField(widget=forms.TextInput(attrs={'class': 'validate'}), required=True)
+    questionText = forms.CharField(widget=forms.TextInput(attrs={'class': 'validate'}), max_length=500,required=True, help_text="Enter question")
     questionMarks = forms.IntegerField(max_value=100, min_value=1)
+    #answers = JSONField()
+    optiona = forms.CharField(max_length=500, help_text="Answer A")
+    optionb = forms.CharField(max_length=500, help_text="Answer B")
+    optionc = forms.CharField(max_length=500, help_text="Answer C")
+    optiond = forms.CharField(max_length=500, help_text="Answer D")
+    correctAnswer=forms.CharField(max_length=500, help_text="Enter answer (copy and paste please)")
+   # attrs = {'class': 'special', 'size': '40'}
+   # data = forms.CharField(widget=SplitJSONWidget(attrs=attrs, debug=True))
     class Meta:	
         model = Question
-        fields = ('questionText',  'questionMarks')
+        fields = ('questionText',  'questionMarks', 'optiona' , 'optionb', 'optionc', 'optiond', 'correctAnswer')
    # we should add the ansers as well
  
  

@@ -12,7 +12,7 @@ from django.contrib.postgres.fields.jsonb import JSONField
 class UserProfile(models.Model):
     # links UserProfile to a user model instance.
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    quiz = models.ManyToManyField('quizzes')
+    #quiz = models.ManyToManyField('quizzes')
    # scores = models.ManyToManyField(Scores) #changed this from userscores to scores
    # ratings = models.ManyToManyField(Ratings) #changed this from user ratings to ratings
 #
@@ -24,17 +24,17 @@ class UserProfile(models.Model):
     def __str__(self):
         return self.user.username
   
-class Answer(models.Model):
-    answerText= models.CharField(max_length=500, blank=True, null=True)
+#class Answer(models.Model):
+   # answerText= models.CharField(max_length=500, blank=True, null=True)
     #question=models.ForeignKey(Question , on_delete=models.CASCADE, related_name="answer")
-    correctAnswer=models.BooleanField(default=False)
+   #correctAnswer=models.BooleanField(default=False)
     #user=models.ForeignKey(User, on_delete=models.CASCADE)
  
-    class Meta:
-        verbose_name_plural = 'answers'
-    def __str__(self):
-        return self.answerText
-  
+    #class Meta:
+    #    verbose_name_plural = 'answers'
+   # def __str__(self):
+    #    return self.answerText
+  #
 
     
 DIFFICULTY_CHOICES=[
@@ -43,9 +43,9 @@ DIFFICULTY_CHOICES=[
     ('hard', 'Hard'),
     ]
 class Quiz(models.Model):
-    creator = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
-    quizName= models.CharField(max_length=128, default="default value")
-    quizSubject= models.CharField(max_length=128, default="default value")
+   # creator = models.ForeignKey(UserProfile, on_delete=models.CASCADE, default="default value")
+    quizName= models.CharField(max_length=128, null=True)
+    quizSubject= models.CharField(max_length=128,null=True)
     
     #privateStatus =models.BooleanField(default=False,help_text="Should this quiz only be accessible by a certain group of people?")
   
@@ -65,17 +65,27 @@ class Question(models.Model):
     questionText= models.CharField(max_length=500, unique=True )
     questionMarks=models.IntegerField(default=1)
     quiz=models.ForeignKey(Quiz, on_delete=models.CASCADE, related_name="question")
-    
     #{ "choices" : [option 1, option 2, option 3, option 4], "correct_index" : 2 }
-    answers = models.JSONField( )
- 
-    
- 
+    #answers = models.JSONField(default = dict)
+    optiona=models.CharField(max_length=500,null=True)
+    optionb=models.CharField(max_length=500,null=True)
+    optionc=models.CharField(max_length=500,null=True)
+    optionc=models.CharField(max_length=500,null=True)
+    correctAnswer=models.CharField(max_length=500)
     class Meta:
         verbose_name_plural = 'questions'
     def __str__(self):
         return self.questionText
  
+ 
+#Question(quesionText='John Doe', answers={
+#    'optiona': '123 Some House Number', 
+ #   'optionb': 'anything',
+  #  'optionc': 'Utah',
+#})
+#Question.objects.filter(questionText='John Doe', answers__optionb='Utah')
+ 
+  
   #  def get_question_answers(self):
       #  return self.answer_set.all()
      #  

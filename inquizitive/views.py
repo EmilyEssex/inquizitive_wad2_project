@@ -6,13 +6,18 @@ from django.contrib import messages
 from .forms import SignUpForm, EditProfileForm 
 from inquizitive.forms import CreateAQuizForm,  AddAQuestionForm
 from django.shortcuts import redirect
-
+from .models import Quiz
 
 # Create your views here.
 
 
 def home(request): 
-	return render(request, 'inquizitive/home.html', {})
+    #everything before render is new -Hana
+    quizzes_list = Quiz.objects
+    context_dict = {}
+    context_dict['boldmessage'] = 'Crunchy, creamy, cookie, candy, cupcake!'
+    context_dict['quizzes'] = quizzes_list
+    return render(request, 'inquizitive/home.html', {})
 
 
 def login_user (request):
@@ -108,10 +113,16 @@ def creating_quiz(request):
  
 def adding_questions(request): 
     user=request.user
-    form = AddAQuestionForm()
+    
+    json = {'a': 1,
+            'b': 2,
+            'c': 3,
+            'd': 4}
+    form = AddAQuestionForm( )
     if request.method == 'POST':
         form = AddAQuestionForm(request.POST)
         # Have we been provided with a valid form?
+        
         if form.is_valid():
             # Save the new category to the database. 
             form.save(commit=True)
@@ -125,5 +136,4 @@ def adding_questions(request):
     # Will handle the bad form, new form, or no form supplied cases. # Render the form with error messages (if any).
     context = {'form': form}
     return render(request, 'inquizitive/adding_questions.html', context)
- 
  

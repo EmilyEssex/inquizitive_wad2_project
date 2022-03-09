@@ -12,5 +12,14 @@
 <a href="/inquizitive/creating_quiz/">Create a new quiz </a><br/>
 
 {% endif %}
+<div>
+{% if quizzes %}
+<ul>
+{% for quiz in quizzes %}
+<li>{{ quiz.quizName }}</li> {% endfor %}
+</ul> {% else %}
+<strong>There are no quizzes present.</strong> {% endif %}
+</div>
+
 
 {% endblock %}
