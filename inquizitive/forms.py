@@ -64,7 +64,7 @@ class CreateAQuizForm(forms.ModelForm):
 
 #form for question model
 class AddAQuestionForm(forms.ModelForm):
-    questionText = forms.CharField(widget=forms.TextInput(attrs={'class': 'validate'}), max_length=500,required=True, help_text="Enter question")
+    questionText = forms.CharField(max_length=500, help_text="Question: ")
     questionMarks = forms.IntegerField(max_value=100, min_value=0)
     #answers = JSONField()
     optiona = forms.CharField(max_length=500, help_text="Answer A")

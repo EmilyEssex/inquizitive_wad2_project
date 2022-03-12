@@ -128,7 +128,9 @@ def adding_questions(request):
             form.save(commit=True)
             # Now that the category is saved, we could confirm this. 
             # For now, just redirect the user back to the index view. 
-            return redirect('add a question') ### not sure about this
+            #return redirect('add a question') ### not sure about this
+            context = {'form': form}
+            return render(request, 'inquizitive/adding_questions.html', context)
         else:
             # The supplied form contained errors -
             # just print them to the terminal.
@@ -138,13 +140,14 @@ def adding_questions(request):
     return render(request, 'inquizitive/adding_questions.html', context)
  
     #chnaged from quiz_name_slug
-def show_quiz1(request, quizName):
+def show_quiz1(request, quiz_name_slug,):
     context_dict = {}
     try:
 # Can we find a category name slug with the given name?
 # If we can't, the .get() method raises a DoesNotExist exception.
 # The .get() method returns one model instance or raises an exception. 
-        quiz = Quiz.objects.get(quizName=quizName)
+        quiz = Quiz.objects.get(slug=quiz_name_slug)
+        context_dict['quizName'] = quiz.quizName
        # quiz = Quiz.objects.get(slug=quiz_name_slug)
          
 # Retrieve all of the associated pages.

@@ -6,7 +6,7 @@ from django.template.defaultfilters import slugify
 from django.contrib.auth.models import User
 from django.contrib.postgres.fields.jsonb import JSONField
 #from inquizitive.models import Quiz
-from django.template.defaultfilters import slugify
+ 
  
 # Create your models here.
 class UserProfile(models.Model):
@@ -33,8 +33,9 @@ DIFFICULTY_CHOICES=[
     ]
 
 class Quiz(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
    # creator = models.ForeignKey(UserProfile, on_delete=models.CASCADE, default="default value")
-    quizName= models.CharField(max_length=128, null=True)
+    quizName= models.CharField(max_length=128, null=True, unique=True)
     quizSubject= models.CharField(max_length=128,null=True)
     
     #privateStatus =models.BooleanField(default=False,help_text="Should this quiz only be accessible by a certain group of people?")
@@ -45,11 +46,11 @@ class Quiz(models.Model):
     scoreToPass=models.IntegerField(default=0)
     numOfQue=models.IntegerField(default=1)
     #quizQuestions=models.ManyToManyField(Question)
-   # slug = models.SlugField(unique=True,blank=True,null=True)
- 
-    #def save(self, *args, **kwargs):
-        #self.slug = slugify(self.quizName) 
-       # super(Quiz, self).save(*args, **kwargs)
+    slug = models.SlugField()
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.quizName) 
+        super(Quiz, self).save(*args, **kwargs)
+
     class Meta:
         verbose_name_plural = 'quizzes'
     def __str__(self):
@@ -58,9 +59,9 @@ class Quiz(models.Model):
         return self.question_set.all()
     
 class Question(models.Model):
-    questionText= models.CharField(max_length=500, unique=True )
+    questionText= models.CharField(max_length=500, unique=True)
     questionMarks=models.IntegerField(default=1)
-    quiz=models.ForeignKey(Quiz, on_delete=models.CASCADE, related_name="question")
+    quiz=models.ForeignKey(Quiz, on_delete=models.CASCADE, related_name="question", null=True)
     #{ "choices" : [option 1, option 2, option 3, option 4], "correct_index" : 2 }
     #answers = models.JSONField(default = dict)
     optiona=models.CharField(max_length=500,null=True)
@@ -72,6 +73,7 @@ class Question(models.Model):
         verbose_name_plural = 'questions'
     def __str__(self):
         return self.questionText
+ 
  
  
 #Question(quesionText='John Doe', answers={
@@ -87,7 +89,7 @@ class Question(models.Model):
      #  
 class Comment(models.Model):
      commentText= models.CharField(max_length=500, null=True)
-     quiz=models.ForeignKey(Quiz, on_delete=models.CASCADE) 
+    # quiz=models.ForeignKey(Quiz, on_delete=models.CASCADE) 
      user=models.ForeignKey(User, on_delete=models.CASCADE) 
      #finalScore=models.FloatField(defualt=0)
      class Meta:

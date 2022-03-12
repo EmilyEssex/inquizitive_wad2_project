@@ -1,20 +1,25 @@
 {% extends 'inquizitive/base.html' %}
  
 {% load static %}
- 
- 
-{% block body_block %}
+ {% block content %}
+<!DOCTYPEhtml>
+<html>
+<head> <title>inquisitive</title>
+</head>
+<body> <div>
 {% if quiz %}
-<h1>{{ quiz.quizName }}</h1> 
-{% if question %}
+ 
+<h1>{{ quiz.quizName }}</h1> {% if questions %}
 <ul>
 {% for question in questions %}
-<li><a href="{{ question.questionText }}">{{ question.optiona }}</a></li>
-{% endfor %}
+<li><a href="{{ question.questionText }}">{{ question.optiona }}</a></li> {% endfor %}
 </ul>
 {% else %}
-<strong>No pages currently in category.</strong> 
- {% endif %}
- <strong>No quizzes</strong> 
+<strong>No question in quiz</strong> {% endif %}
+        {% else %}
+            The specified category does not exist.
 {% endif %}
+</div> </body>
+</html>
 {% endblock %}
+ 
