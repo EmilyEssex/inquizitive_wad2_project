@@ -144,7 +144,7 @@ def show_quiz1(request, quizName):
 # Can we find a category name slug with the given name?
 # If we can't, the .get() method raises a DoesNotExist exception.
 # The .get() method returns one model instance or raises an exception. 
-        quiz = Quiz.objects.all()
+        quiz = Quiz.objects.get(quizName=quizName)
        # quiz = Quiz.objects.get(slug=quiz_name_slug)
          
 # Retrieve all of the associated pages.
