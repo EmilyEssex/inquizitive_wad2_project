@@ -137,13 +137,15 @@ def adding_questions(request):
     context = {'form': form}
     return render(request, 'inquizitive/adding_questions.html', context)
  
+    #chnaged from quiz_name_slug
 def show_quiz1(request, quizName):
     context_dict = {}
     try:
 # Can we find a category name slug with the given name?
 # If we can't, the .get() method raises a DoesNotExist exception.
 # The .get() method returns one model instance or raises an exception. 
-        quiz = Quiz.objects.get(quizName)
+        quiz = Quiz.objects.all()
+       # quiz = Quiz.objects.get(slug=quiz_name_slug)
          
 # Retrieve all of the associated pages.
 # The filter() will return a list of page objects or an empty list. 
@@ -157,7 +159,8 @@ def show_quiz1(request, quizName):
     except Quiz.DoesNotExist:
 # We get here if we didn't find the specified category.
 # Don't do anything -
-# the template will display the "no category" message for us. context_dict['category'] = None
+# the template will display the "no category" message for us. 
+        context_dict['category'] = None
         context_dict['questions'] = None
     # Go render the response and return it to the client.
     return render(request, 'inquizitive/quiz.html', context=context_dict)
@@ -192,13 +195,13 @@ def show_quiz(request, quizName):
             'percent':percent,
             'total':total
         }
-        return render(request,'inquizitive/home.html',context) #should take to results or coments page
+        return render(request, 'inquizitive/quiz.html', context=context_dict) #should take to results or coments page
     else:
         questions=Question.objects.all()
         context = {
             'questions':questions
         }
-        return render(request,'inquizitive/home.html',context)
+        return render(request, 'inquizitive/quiz.html', context=context_dict)
 
 
 

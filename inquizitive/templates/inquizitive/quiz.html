@@ -1,35 +1,21 @@
 {% extends 'inquizitive/base.html' %}
  
-{% load staticfiles %}
-
-{% block title_block %} 
+{% load static %}
+ 
+<html>
+<head> <title>inquisitive</title>
+</head>
+<body> <div>
 {% if quiz %}
-{{ category.quizName }}
-{% else %}
-Unknown Quiz
-{% endif %}
-{% endblock %}
-
-
-
-
-
-{% block body_block %}
-{% if Quiz %}
-<h1>{{ category.quizName }}</h1> 
-{% if questions %}
+<h1>{{ quiz.quizName }}</h1> {% if questions %}
 <ul>
-{% for page in pages %}
-<li><a href="{{ page.url }}">{{ page.title }}</a></li> 
-{% endfor %}
+{% for question in questions %}
+<li><a href="{{ question.questionText }}">{{ question.optiona }}</a></li> {% endfor %}
 </ul>
 {% else %}
-<strong>No pages currently in category.</strong> 
+<strong>No question in quiz</strong> {% endif %}
+        {% else %}
+            The specified category does not exist.
 {% endif %}
-{% if user.is_authenticated %}
-<a href="{% url 'rango:add_page' category.slug %}">Add Page</a><br/>
-{% endif %}
-{% else %}
-The specified category does not exist.
-{% endif %}
-{% endblock %}
+</div> </body>
+</html>

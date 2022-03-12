@@ -6,13 +6,13 @@ from django.template.defaultfilters import slugify
 from django.contrib.auth.models import User
 from django.contrib.postgres.fields.jsonb import JSONField
 #from inquizitive.models import Quiz
- 
+from django.template.defaultfilters import slugify
  
 # Create your models here.
 class UserProfile(models.Model):
     # links UserProfile to a user model instance.
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    #quiz = models.ManyToManyField('quizzes')
+ 
    # scores = models.ManyToManyField(Scores) #changed this from userscores to scores
    # ratings = models.ManyToManyField(Ratings) #changed this from user ratings to ratings
 #
@@ -23,25 +23,15 @@ class UserProfile(models.Model):
 
     def __str__(self):
         return self.user.username
-  
-#class Answer(models.Model):
-   # answerText= models.CharField(max_length=500, blank=True, null=True)
-    #question=models.ForeignKey(Question , on_delete=models.CASCADE, related_name="answer")
-   #correctAnswer=models.BooleanField(default=False)
-    #user=models.ForeignKey(User, on_delete=models.CASCADE)
+     #quiz = models.ManyToManyField('quizzes')
  
-    #class Meta:
-    #    verbose_name_plural = 'answers'
-   # def __str__(self):
-    #    return self.answerText
-  #
-
     
 DIFFICULTY_CHOICES=[
     ('easy', 'Easy'),
     ('moderate', 'Moderate'),
     ('hard', 'Hard'),
     ]
+
 class Quiz(models.Model):
    # creator = models.ForeignKey(UserProfile, on_delete=models.CASCADE, default="default value")
     quizName= models.CharField(max_length=128, null=True)
@@ -53,7 +43,13 @@ class Quiz(models.Model):
    
     quizDifficulty = models.CharField(max_length=10, choices=(DIFFICULTY_CHOICES), default= DIFFICULTY_CHOICES[0])
     scoreToPass=models.IntegerField(default=0)
+    numOfQue=models.IntegerField(default=1)
     #quizQuestions=models.ManyToManyField(Question)
+   # slug = models.SlugField(unique=True,blank=True,null=True)
+ 
+    #def save(self, *args, **kwargs):
+        #self.slug = slugify(self.quizName) 
+       # super(Quiz, self).save(*args, **kwargs)
     class Meta:
         verbose_name_plural = 'quizzes'
     def __str__(self):

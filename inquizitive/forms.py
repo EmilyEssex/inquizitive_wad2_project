@@ -57,14 +57,15 @@ class CreateAQuizForm(forms.ModelForm):
     quizName = forms.CharField(max_length=500, help_text="Quiz Name: ")
     quizSubject = forms.CharField(max_length=500, help_text="Quiz Subject: ")
     quizDifficulty=forms.CharField(label='Quiz Difficulty: ', widget=forms.Select(choices=DIFFICULTY_CHOICES))
+    numOfQue=forms.IntegerField(max_value=100, min_value=0, help_text="Number of questions in quiz ")
     class Meta:
         model = Quiz
-        fields = ('quizName', 'quizSubject', 'quizDifficulty')
+        fields = ('quizName', 'quizSubject', 'quizDifficulty','numOfQue')
 
 #form for question model
 class AddAQuestionForm(forms.ModelForm):
     questionText = forms.CharField(widget=forms.TextInput(attrs={'class': 'validate'}), max_length=500,required=True, help_text="Enter question")
-    questionMarks = forms.IntegerField(max_value=100, min_value=1)
+    questionMarks = forms.IntegerField(max_value=100, min_value=0)
     #answers = JSONField()
     optiona = forms.CharField(max_length=500, help_text="Answer A")
     optionb = forms.CharField(max_length=500, help_text="Answer B")

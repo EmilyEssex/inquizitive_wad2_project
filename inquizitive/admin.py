@@ -7,4 +7,10 @@ admin.site.register(Question)
 #admin.site.register(Score)
 admin.site.register(Comment)
 
-# Register your models here.
+ 
+# Add in this class to customise the Admin Interface 
+#class QuizAdmin(admin.ModelAdmin):
+    #prepopulated_fields = {'slug':('quizName',)}
+# Update the registration to include this customised interface
+#admin.site.register(Quiz, QuizAdmin)
+ 
