@@ -7,6 +7,8 @@ from .forms import SignUpForm, EditProfileForm
 from inquizitive.forms import CreateAQuizForm,  AddAQuestionForm
 from django.shortcuts import redirect
 from .models import Quiz, Question
+from django.urls import reverse
+ 
 
 # Create your views here.
 
@@ -95,52 +97,41 @@ def creating_quiz(request):
     form = CreateAQuizForm()
     if request.method == 'POST':
         form = CreateAQuizForm(request.POST)
-        # Have we been provided with a valid form?
         if form.is_valid():
-            # Save the new category to the database. 
             form.save(commit=True)
-            # Now that the category is saved, we could confirm this. 
-            # For now, just redirect the user back to the index view. 
-            return redirect('/inquizitive/adding_questions') ### not sure about this
+            return redirect(reverse('home')) ### not sure about this
         else:
-            # The supplied form contained errors -
-            # just print them to the terminal.
             form=CreateAQuizForm()
-    # Will handle the bad form, new form, or no form supplied cases. # Render the form with error messages (if any).
     context = {'form': form}
     return render(request, 'inquizitive/creating_quiz.html', context)
 
  
-def adding_questions(request): 
-    user=request.user
-    
-    json = {'a': 1,
-            'b': 2,
-            'c': 3,
-            'd': 4}
-    form = AddAQuestionForm( )
+def adding_questions(request, quiz_name_slug): 
+    try:
+        quiz = Quiz.objects.get(slug=quiz_name_slug) 
+    except Quiz.DoesNotExist:
+        quiz=None
+    if quiz is None:
+        return redirect('/inquizitive/creating_quiz/')
+    form = AddAQuestionForm()
     if request.method == 'POST':
-        form = AddAQuestionForm(request.POST)
-        # Have we been provided with a valid form?
-        
-        if form.is_valid():
-            # Save the new category to the database. 
-            form.save(commit=True)
-            # Now that the category is saved, we could confirm this. 
-            # For now, just redirect the user back to the index view. 
-            #return redirect('add a question') ### not sure about this
-            context = {'form': form}
-            return render(request, 'inquizitive/adding_questions.html', context)
-        else:
-            # The supplied form contained errors -
-            # just print them to the terminal.
-            form=AddAQuestionForm()
-    # Will handle the bad form, new form, or no form supplied cases. # Render the form with error messages (if any).
-    context = {'form': form}
+        form =  AddAQuestionForm(request.POST)
+        if form.is_valid(): 
+            if quiz:
+                question = form.save(commit=False)
+                question.quiz = quiz
+                question.save()
+                redirect(reverse('show_quiz1', kwargs={'quiz_name_slug': quiz_name_slug}))
+        else: 
+            print(form.errors)
+
+    context = {'form': form, 'quiz':quiz}
+    
     return render(request, 'inquizitive/adding_questions.html', context)
+
  
     #chnaged from quiz_name_slug
-def show_quiz1(request, quiz_name_slug,):
+def show_quiz1(request, quiz_name_slug):
     context_dict = {}
     try:
 # Can we find a category name slug with the given name?
@@ -159,6 +150,8 @@ def show_quiz1(request, quiz_name_slug,):
 # the database to the context dictionary.
 # We'll use this in the template to verify that the category exists. 
         context_dict['quiz'] = quiz
+      #  listQue=["a"]*quiz.numOfQue
+        context_dict['numOfQue']= quiz.numOfQue
     except Quiz.DoesNotExist:
 # We get here if we didn't find the specified category.
 # Don't do anything -
@@ -169,47 +162,6 @@ def show_quiz1(request, quiz_name_slug,):
     return render(request, 'inquizitive/quiz.html', context=context_dict)
 
  
-
-def show_quiz(request, quizName):
-    context_dict = {}
-    if request.method == 'POST':
-        print(request.POST)
-        questions=Question.objects.all()
-        score=0
-        wrong=0
-        correct=0
-        total=0
-        for q in questions:
-            total+=1
-            print(request.POST.get(q.questionText))
-            print(q.correctAnswer)
-            print()
-            if q.correctAnswer ==  request.POST.get(q.question):
-                score+=10
-                correct+=1
-            else:
-                wrong+=1
-        percent = score/(total*10) *100
-        context = {
-            'score':score,
-            #'time': request.POST.get('timer'),
-            'correct':correct,
-            'wrong':wrong,
-            'percent':percent,
-            'total':total
-        }
-        return render(request, 'inquizitive/quiz.html', context=context_dict) #should take to results or coments page
-    else:
-        questions=Question.objects.all()
-        context = {
-            'questions':questions
-        }
-        return render(request, 'inquizitive/quiz.html', context=context_dict)
-
-
-
-
-
 
 
 

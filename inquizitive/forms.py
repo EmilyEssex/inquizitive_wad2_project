@@ -3,9 +3,14 @@ from django.contrib.auth.models import User
 from django import forms 
 import json
 from inquizitive.models import Quiz, Question
-
+from django.forms import formset_factory
 from django.contrib.postgres.fields.jsonb import JSONField
 #from splitjson.widgets import SplitJSONWidget
+ 
+
+# default maximum number of forms in a formset, to prevent memory exhaustion
+DEFAULT_MAX_NUM = 1000
+
 class EditProfileForm(UserChangeForm):
 	
 	password = forms.CharField(label="", widget=forms.TextInput(attrs={'type':'hidden'}))
@@ -64,6 +69,7 @@ class CreateAQuizForm(forms.ModelForm):
 
 #form for question model
 class AddAQuestionForm(forms.ModelForm):
+   
     questionText = forms.CharField(max_length=500, help_text="Question: ")
     questionMarks = forms.IntegerField(max_value=100, min_value=0)
     #answers = JSONField()

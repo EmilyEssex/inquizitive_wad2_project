@@ -12,13 +12,23 @@
 <h1>{{ quiz.quizName }}</h1> {% if questions %}
 <ul>
 {% for question in questions %}
-<li><a href="{{ question.questionText }}">{{ question.optiona }}</a></li> {% endfor %}
+<li><a href="{{ question.questionText }}">
+{{ question.questionText }} <br> 
+{{ question.optiona }} <br> 
+{{ question.optionb }} <br> 
+{{ question.optionc }} <br> 
+{{ question.optiond }} <br>
+</a></li> {% endfor %}
 </ul>
 {% else %}
-<strong>No question in quiz</strong> {% endif %}
+<strong>No question in quiz</strong> 
+
+{% endif %}
+<a href="/inquizitive/quiz/{{ quiz.slug }}/adding_questions/">Add Question</a> <br/>
         {% else %}
             The specified category does not exist.
 {% endif %}
+
 </div> </body>
 </html>
 {% endblock %}

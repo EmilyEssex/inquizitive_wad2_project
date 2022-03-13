@@ -46,7 +46,7 @@ class Quiz(models.Model):
     scoreToPass=models.IntegerField(default=0)
     numOfQue=models.IntegerField(default=1)
     #quizQuestions=models.ManyToManyField(Question)
-    slug = models.SlugField()
+    slug = models.SlugField(unique=True)
     def save(self, *args, **kwargs):
         self.slug = slugify(self.quizName) 
         super(Quiz, self).save(*args, **kwargs)
@@ -59,15 +59,16 @@ class Quiz(models.Model):
         return self.question_set.all()
     
 class Question(models.Model):
+    quiz=models.ForeignKey(Quiz, on_delete=models.CASCADE, related_name="question", null=True)
     questionText= models.CharField(max_length=500, unique=True)
     questionMarks=models.IntegerField(default=1)
-    quiz=models.ForeignKey(Quiz, on_delete=models.CASCADE, related_name="question", null=True)
+   
     #{ "choices" : [option 1, option 2, option 3, option 4], "correct_index" : 2 }
     #answers = models.JSONField(default = dict)
     optiona=models.CharField(max_length=500,null=True)
     optionb=models.CharField(max_length=500,null=True)
     optionc=models.CharField(max_length=500,null=True)
-    optionc=models.CharField(max_length=500,null=True)
+    optiond=models.CharField(max_length=500,null=True)
     correctAnswer=models.CharField(max_length=500)
     class Meta:
         verbose_name_plural = 'questions'
