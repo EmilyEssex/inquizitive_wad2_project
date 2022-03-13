@@ -4,27 +4,36 @@
  {% block content %}
 <!DOCTYPEhtml>
 <html>
-<head> <title>inquisitive</title>
-</head>
+
+
+
 <body> <div>
+
 {% if quiz %}
- 
-<h1>{{ quiz.quizName }}</h1> {% if questions %}
-<ul>
+<h2> <em>  {{ quiz.quizName }}  </em> </h2> {% if questions %}
+
+
 {% for question in questions %}
-<li><a href="{{ question.questionText }}">
-{{ question.questionText }} <br> 
-{{ question.optiona }} <br> 
-{{ question.optionb }} <br> 
-{{ question.optionc }} <br> 
-{{ question.optiond }} <br>
-</a></li> {% endfor %}
-</ul>
+<a href="{{ question.questionText }}">       <!-- heres where the link starts --> 
+    
+    <br> <h6 class = "question">{{ question.questionText }} </h6> </a>    <!-- heres where the link ends -->  
+    
+    <li>{{ question.optiona }} </li> 
+    <li>{{ question.optionb }} </li> 
+    <li>{{ question.optionc }} </li>
+    <li>{{ question.optiond }} <br>
+
+</li> {% endfor %}
+
 {% else %}
+
+<div>
 <strong>No question in quiz</strong> 
+</div>
 
 {% endif %}
-<a href="/inquizitive/quiz/{{ quiz.slug }}/adding_questions/">Add Question</a> <br/>
+<br> 
+<input type="button"  onclick = "location.href='/inquizitive/quiz/{{ quiz.slug }}/adding_questions/';" value="Add questions to quiz" /><br/>
         {% else %}
             The specified category does not exist.
 {% endif %}

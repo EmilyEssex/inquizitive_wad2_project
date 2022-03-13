@@ -5,6 +5,7 @@ import json
 from inquizitive.models import Quiz, Question
 from django.forms import formset_factory
 from django.contrib.postgres.fields.jsonb import JSONField
+
 #from splitjson.widgets import SplitJSONWidget
  
 
@@ -18,7 +19,7 @@ class EditProfileForm(UserChangeForm):
 		model = User
 		#excludes private information from User
 		fields = ('username', 'first_name', 'last_name', 'email','password',)
-		  
+
 
 
 
@@ -80,16 +81,7 @@ class AddAQuestionForm(forms.ModelForm):
     correctAnswer=forms.CharField(max_length=500, help_text="Enter answer (copy and paste please)")
    # attrs = {'class': 'special', 'size': '40'}
    # data = forms.CharField(widget=SplitJSONWidget(attrs=attrs, debug=True))
-    class Meta:	
+    class Meta:
         model = Question
         fields = ('questionText',  'questionMarks', 'optiona' , 'optionb', 'optionc', 'optiond', 'correctAnswer')
    # we should add the ansers as well
- 
- 
-          
-        
-        
-        
-        
-        
-        

@@ -2,10 +2,10 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash 
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm, PasswordChangeForm
-from django.contrib import messages 
-from .forms import SignUpForm, EditProfileForm 
+from django.contrib import messages
+from django.forms import formset_factory 
+from .forms import SignUpForm, EditProfileForm, AddAQuestionForm 
 from inquizitive.forms import CreateAQuizForm,  AddAQuestionForm
-from django.shortcuts import redirect
 from .models import Quiz, Question
 from django.urls import reverse
  
@@ -113,6 +113,7 @@ def adding_questions(request, quiz_name_slug):
         quiz=None
     if quiz is None:
         return redirect('/inquizitive/creating_quiz/')
+
     form = AddAQuestionForm()
     if request.method == 'POST':
         form =  AddAQuestionForm(request.POST)
@@ -126,7 +127,24 @@ def adding_questions(request, quiz_name_slug):
             print(form.errors)
 
     context = {'form': form, 'quiz':quiz}
+
+    QuestionFormSet = formset_factory(AddAQuestionForm, extra = 2)
+    formset = QuestionFormSet(request.POST or None)
     
+    if formset.is_valid():
+        for form in formset:
+            if form.is_valid(): 
+                if quiz:
+                    question = form.save(commit=False)
+                    question.quiz = quiz
+                    question.save()
+                    redirect(reverse('show_quiz1', kwargs={'quiz_name_slug': quiz_name_slug}))
+            else: 
+                print(form.errors)
+
+            
+    context['formset'] = formset
+
     return render(request, 'inquizitive/adding_questions.html', context)
 
  
