@@ -14,14 +14,17 @@
 
 
 {% for question in questions %}
-<a href="{{ question.questionText }}">       <!-- heres where the link starts --> 
+<a href="{{ question.questionText }}"> 
+  
+<br> <h6 class = "question">{{ question.questionText }} </h6> </a> 
+
     
-    <br> <h6 class = "question">{{ question.questionText }} </h6> </a>    <!-- heres where the link ends -->  
-    
-    <li>{{ question.optiona }} </li> 
-    <li>{{ question.optionb }} </li> 
-    <li>{{ question.optionc }} </li>
-    <li>{{ question.optiond }} <br>
+<input type="radio" name={{ question.optiona }}  <li>{{ question.optiona }} </li>  <br>
+<input type="radio" name={{ question.optiona }}  <li>{{ question.optionb }} </li>   <br>
+<input type="radio" name={{ question.optiona }}   <li>{{ question.optionc }} </li>   <br>
+<input type="radio" name={{ question.optiona }}   <li>{{ question.optiond }} </li>   <br>
+ 
+ 
 
 </li> {% endfor %}
 
@@ -35,7 +38,7 @@
 <br> 
 <input type="button"  onclick = "location.href='/inquizitive/quiz/{{ quiz.slug }}/adding_questions/';" value="Add questions to quiz" /><br/>
         {% else %}
-            The specified category does not exist.
+            The specified quiz does not exist.
 {% endif %}
 
 </div> </body>
