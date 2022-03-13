@@ -2,12 +2,14 @@
 {% block content %}
 <!DOCTYPEhtml>
 <html> 
+ 
 <head>
 <title>inQuisitive</title> </head>
 <h1>inQuizitive</h1> 
 
 
 <h2> ~ Producer of over {{ visits }} inQuizitives around the world!!! ~ </h2> <br> 
+
 <body>
 <h3>Create a quiz</h3> <div>
 <form id="creating_quiz" method="post" action="/inquizitive/creating_quiz/">{% csrf_token %}
@@ -21,6 +23,8 @@
 {% endfor %}
 <input type="submit" name="submit" value="Create Quiz" /> </form>
 <input type="button"  onclick = "location.href='/inquizitive/adding_questions/';" value="Add questions to quiz" />
+ 
+ 
  
 </div> </body>
 

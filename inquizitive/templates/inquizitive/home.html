@@ -2,20 +2,25 @@
 
 {% block content %}
 
+
+
 <h1></h1>
+
+
 
 {% if user.is_authenticated %}
 	<p>Name: {{user.first_name}} {{ user.last_name}}</p>
 	<p>Username: {{user.username}}</p>
 	
 	<p>Email: {{user.email}}</p>
-<a href="/inquizitive/creating_quiz/">Create a new quiz </a><br/>
+
+<br> <input type="button"  onclick = "location.href='/inquizitive/creating_quiz/';" value="Create a new quiz"/> <br>
  
 
 {% endif %}
 <div>
 {% if quizzes %}
-<h2>Quizzes</h2>
+<br> <h2>Quizzes</h2>
 <ul>
 
 {% for quiz in quizzes %}
