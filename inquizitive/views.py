@@ -8,6 +8,7 @@ from inquizitive.forms import CreateAQuizForm,  AddAQuestionForm
 from django.shortcuts import redirect
 from .models import Quiz, Question
 from django.urls import reverse
+from datetime import datetime
  
 
 # Create your views here.
@@ -19,7 +20,38 @@ def home(request):
     context_dict = {}
     context_dict['boldmessage'] = 'Crunchy, creamy, cookie, candy, cupcake!'
     context_dict['quizzes'] = quizzes_list
-    return render(request, 'inquizitive/home.html', context_dict)
+    request.session.set_test_cookie()
+      # Obtain our Response object early so we can add cookie information.
+    response = render(request, 'inquizitive/home.html', context_dict)
+      # Call the helper function to handle the cookies
+    visitor_cookie_handler(request)
+    context_dict['visits'] = request.session['visits']
+    # Return response back to the user, updating any cookies that need changed.
+    return response
+    #return render(request, 'inquizitive/home.html', context_dict)
+
+# A helper method
+def get_server_side_cookie(request, cookie, default_val=None): 
+    val = request.session.get(cookie)
+    if not val:
+        val = default_val 
+    return val
+# Updated the function definition
+def visitor_cookie_handler(request ):
+    visits = int(get_server_side_cookie(request, 'visits', '1')) 
+    last_visit_cookie = get_server_side_cookie(request, 'last_visit',  str(datetime.now()))
+    last_visit_time = datetime.strptime(last_visit_cookie[:-7],'%Y-%m-%d %H:%M:%S')
+    # If it's been more than a day since the last visit...
+     
+    if (datetime.now() - last_visit_time).seconds > 3600:
+        visits = visits + 1
+        # Update the last visit cookie now that we have updated the count 
+        request.session['last_visit'] = str(datetime.now())
+    else:
+        # Set the last visit cookie 
+        request.session['last_visit'] = last_visit_cookie
+    # Update/set the visits cookie
+    request.session['visits'] = visits
 
 
 def login_user (request):
@@ -102,7 +134,10 @@ def creating_quiz(request):
             return redirect(reverse('home')) ### not sure about this
         else:
             form=CreateAQuizForm()
-    context = {'form': form}
+    visitor_cookie_handler(request)
+   
+    context = {'form': form,'visits':request.session['visits']}
+   # context['visits'] = request.session['visits']
     return render(request, 'inquizitive/creating_quiz.html', context)
 
  
@@ -132,33 +167,29 @@ def adding_questions(request, quiz_name_slug):
  
     #chnaged from quiz_name_slug
 def show_quiz1(request, quiz_name_slug):
+    if request.session.test_cookie_worked(): 
+        print("TEST COOKIE WORKED!") 
+        request.session.delete_test_cookie()
     context_dict = {}
     try:
-# Can we find a category name slug with the given name?
-# If we can't, the .get() method raises a DoesNotExist exception.
-# The .get() method returns one model instance or raises an exception. 
+ 
         quiz = Quiz.objects.get(slug=quiz_name_slug)
         context_dict['quizName'] = quiz.quizName
-       # quiz = Quiz.objects.get(slug=quiz_name_slug)
-         
-# Retrieve all of the associated pages.
-# The filter() will return a list of page objects or an empty list. 
+  
+ 
         questions = Question.objects.filter(quiz=quiz)
-        # Adds our results list to the template context under name pages.
+ 
         context_dict['questions'] = questions
-# We also add the category object from
-# the database to the context dictionary.
-# We'll use this in the template to verify that the category exists. 
+ 
         context_dict['quiz'] = quiz
-      #  listQue=["a"]*quiz.numOfQue
+   
         context_dict['numOfQue']= quiz.numOfQue
     except Quiz.DoesNotExist:
-# We get here if we didn't find the specified category.
-# Don't do anything -
-# the template will display the "no category" message for us. 
+ 
         context_dict['category'] = None
         context_dict['questions'] = None
     # Go render the response and return it to the client.
+
     return render(request, 'inquizitive/quiz.html', context=context_dict)
 
  
