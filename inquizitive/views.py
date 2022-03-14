@@ -9,7 +9,7 @@ from django.shortcuts import redirect
 from .models import Quiz, Question
 from django.urls import reverse
 from datetime import datetime
- 
+from django.forms import formset_factory 
 
 # Create your views here.
 
@@ -151,18 +151,30 @@ def adding_questions(request, quiz_name_slug):
     form = AddAQuestionForm()
     if request.method == 'POST':
         form =  AddAQuestionForm(request.POST)
-        if form.is_valid(): 
-            if quiz:
-                question = form.save(commit=False)
-                question.quiz = quiz
-                question.save()
-                redirect(reverse('show_quiz1', kwargs={'quiz_name_slug': quiz_name_slug}))
-        else: 
-            print(form.errors)
-
+ 
     context = {'form': form, 'quiz':quiz}
-    
+
+    QuestionFormSet = formset_factory(AddAQuestionForm, extra = quiz.numOfQue )
+    formset = QuestionFormSet(request.POST or None)
+
+    if formset.is_valid():
+         for form in formset:
+             if form.is_valid(): 
+                 if quiz:
+                     question = form.save(commit=False)
+                     question.quiz = quiz
+                     question.save()
+                     redirect(reverse('show_quiz1', kwargs={'quiz_name_slug': quiz_name_slug}))
+             else: 
+                 print(form.errors)
+
+
+    context['formset'] = formset
+
     return render(request, 'inquizitive/adding_questions.html', context)
+
+    
+ 
 
  
  

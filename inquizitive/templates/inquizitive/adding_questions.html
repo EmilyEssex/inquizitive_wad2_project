@@ -1,14 +1,10 @@
-{{% extends 'inquizitive/base.html' %}
+{% extends 'inquizitive/base.html' %}
 {% block content %}
 
 {% block title_block %}
 	
 {% endblock %}
 {% block body_block %}
-
-
-
-
 
 {% if quiz %}
       <h1>Add a question to {{quiz.quizName}}</h1> <br>
@@ -24,25 +20,12 @@
     {{ formset.as_p }}
      
     
-{% for hidden in form.hidden_fields %}
-                    {{ hidden }}
-                {% endfor %}
-
-                {% for field in form.visible_fields %}
  
-                    {{ field.errors }}
-                    {{ field.help_text }}
-                    {{ field }}
-  
-{% endfor %}
 
 <input type="submit" name="submit" value="Add question" />
- 
-
 </form>
-
 {% else %}
-			The specified quiz does not exist!
-		{% endif %}
+The specified quiz does not exist!
+{% endif %}
 {% endblock %}
 {% endblock %}
