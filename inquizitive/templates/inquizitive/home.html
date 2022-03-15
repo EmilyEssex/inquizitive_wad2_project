@@ -1,8 +1,6 @@
 {% extends 'inquizitive/base.html' %}
-
+{% load static %}
 {% block content %}
-
-
 
 <h1></h1>
 
@@ -19,6 +17,7 @@
 
 {% endif %}
 <div>
+
 {% if quizzes %}
 <br> <h2>Quizzes</h2>
 <ul>
@@ -31,10 +30,13 @@
 {% endfor %}
 </li> 
 
-</ul> {% else %}
+</ul> 
+
+{% else %}
 <strong>There are no quizzes present.</strong> {% endif %}
 </div>
 
- 
+   
 
+ 
 {% endblock %}
