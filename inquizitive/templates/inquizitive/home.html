@@ -1,6 +1,15 @@
 {% extends 'inquizitive/base.html' %}
 {% load static %}
 {% block content %}
+<style>
+{
+   #third{
+ background: url('{{ STATIC_URL }}images/profile.jpg')
+     }
+
+
+
+</style>
 
 <h1></h1>
 
@@ -38,5 +47,6 @@
 
    
 
- 
+ <img src="{% static "images/profile.jpg" %}"
+             alt="Picture of Rango" />
 {% endblock %}

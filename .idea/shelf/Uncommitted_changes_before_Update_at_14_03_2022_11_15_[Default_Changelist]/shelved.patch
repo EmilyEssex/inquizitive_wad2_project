@@ -1,0 +1,472 @@
+Index: inquizitive/forms.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>from django.contrib.auth.forms import UserCreationForm, UserChangeForm\r\nfrom django.contrib.auth.models import User\r\nfrom django import forms \r\nimport json\r\nfrom inquizitive.models import Quiz, Question\r\n\r\nfrom django.contrib.postgres.fields.jsonb import JSONField\r\n#from splitjson.widgets import SplitJSONWidget\r\nclass EditProfileForm(UserChangeForm):\r\n\t\r\n\tpassword = forms.CharField(label=\"\", widget=forms.TextInput(attrs={'type':'hidden'}))\r\n\tclass Meta:\r\n\t\tmodel = User\r\n\t\t#excludes private information from User\r\n\t\tfields = ('username', 'first_name', 'last_name', 'email','password',)\r\n\t\t  \r\n\r\n\r\n\r\nclass SignUpForm(UserCreationForm):\r\n\temail = forms.EmailField(label=\"\", widget=forms.TextInput(attrs={'class':'form-control', 'placeholder':'Email Address'}), )\r\n\tfirst_name = forms.CharField(label=\"\", max_length=100, widget=forms.TextInput(attrs={'class':'form-control', 'placeholder':'First Name'}))\r\n\tlast_name = forms.CharField(label=\"\", max_length=100, widget=forms.TextInput(attrs={'class':'form-control', 'placeholder':'Last Name'}))\r\n\t\r\n\t\r\n\tclass Meta:\r\n\t\tmodel = User\r\n\t\tfields = ('username', 'first_name', 'last_name', 'email', 'password1', 'password2',)\r\n\r\n\tdef __init__(self, *args, **kwargs):\r\n\t    super(SignUpForm, self).__init__(*args, **kwargs)\r\n\r\n\t    self.fields['username'].widget.attrs['class'] = 'form-control'\r\n\t    self.fields['username'].widget.attrs['placeholder'] = 'User Name'\r\n\t    self.fields['username'].label = ''\r\n\t    self.fields['username'].help_text = '<span class=\"form-text text-muted\"><small>Required. 150 characters or fewer.</small></span>'\r\n\r\n\t    self.fields['password1'].widget.attrs['class'] = 'form-control'\r\n\t    self.fields['password1'].widget.attrs['placeholder'] = 'Password'\r\n\t    self.fields['password1'].label = ''\r\n\t    self.fields['password1'].help_text = '<ul class=\"form-text text-muted small\"><li>Your password must contain at least 8 characters.</li><li>Password can\\'t be completely numeric.</li></ul>'\r\n\r\n\t    self.fields['password2'].widget.attrs['class'] = 'form-control'\r\n\t    self.fields['password2'].widget.attrs['placeholder'] = 'Confirm Password'\r\n\t    self.fields['password2'].label = ''\r\n\t    self.fields['password2'].help_text = '<span class=\"form-text text-muted\"><small></small></span>'\r\n\r\n \r\n \r\nDIFFICULTY_CHOICES=[\r\n    ('easy', 'Easy'),\r\n    ('medium', 'Medium'),\r\n    ('hard', 'Hard'),\r\n    ]\r\n#form for quiz model\r\nclass CreateAQuizForm(forms.ModelForm):\r\n    quizName = forms.CharField(max_length=500, help_text=\"Quiz Name: \")\r\n    quizSubject = forms.CharField(max_length=500, help_text=\"Quiz Subject: \")\r\n    quizDifficulty=forms.CharField(label='Quiz Difficulty: ', widget=forms.Select(choices=DIFFICULTY_CHOICES))\r\n    class Meta:\r\n        model = Quiz\r\n        fields = ('quizName', 'quizSubject', 'quizDifficulty')\r\n\r\n#form for question model\r\nclass AddAQuestionForm(forms.ModelForm):\r\n    questionText = forms.CharField(widget=forms.TextInput(attrs={'class': 'validate'}), max_length=500,required=True, help_text=\"Enter question\")\r\n    questionMarks = forms.IntegerField(max_value=100, min_value=1)\r\n    #answers = JSONField()\r\n    optiona = forms.CharField(max_length=500, help_text=\"Answer A\")\r\n    optionb = forms.CharField(max_length=500, help_text=\"Answer B\")\r\n    optionc = forms.CharField(max_length=500, help_text=\"Answer C\")\r\n    optiond = forms.CharField(max_length=500, help_text=\"Answer D\")\r\n    correctAnswer=forms.CharField(max_length=500, help_text=\"Enter answer (copy and paste please)\")\r\n   # attrs = {'class': 'special', 'size': '40'}\r\n   # data = forms.CharField(widget=SplitJSONWidget(attrs=attrs, debug=True))\r\n    class Meta:\t\r\n        model = Question\r\n        fields = ('questionText',  'questionMarks', 'optiona' , 'optionb', 'optionc', 'optiond', 'correctAnswer')\r\n   # we should add the ansers as well\r\n \r\n \r\n          \r\n        \r\n        \r\n        \r\n        \r\n        \r\n        
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/inquizitive/forms.py b/inquizitive/forms.py
+--- a/inquizitive/forms.py	(revision 42d98afb6f2829f357c39a5f6142017a21c64226)
++++ b/inquizitive/forms.py	(date 1647002633088)
+@@ -1,10 +1,10 @@
+ from django.contrib.auth.forms import UserCreationForm, UserChangeForm
+ from django.contrib.auth.models import User
+ from django import forms 
+-import json
++#import json
+ from inquizitive.models import Quiz, Question
+ 
+-from django.contrib.postgres.fields.jsonb import JSONField
++#from django.contrib.postgres.fields.jsonb import JSONField
+ #from splitjson.widgets import SplitJSONWidget
+ class EditProfileForm(UserChangeForm):
+ 	
+Index: inquizitive/models.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>from django.db import models\r\n \r\nfrom django.db import models\r\nfrom django.contrib import admin\r\nfrom django.template.defaultfilters import slugify\r\nfrom django.contrib.auth.models import User\r\nfrom django.contrib.postgres.fields.jsonb import JSONField\r\n#from inquizitive.models import Quiz\r\n \r\n \r\n# Create your models here.\r\nclass UserProfile(models.Model):\r\n    # links UserProfile to a user model instance.\r\n    user = models.OneToOneField(User, on_delete=models.CASCADE)\r\n    #quiz = models.ManyToManyField('quizzes')\r\n   # scores = models.ManyToManyField(Scores) #changed this from userscores to scores\r\n   # ratings = models.ManyToManyField(Ratings) #changed this from user ratings to ratings\r\n#\r\n    profile = models.ImageField(upload_to = 'profile images', blank=True)\r\n\r\n    class Meta:\r\n        verbose_name_plural = \"User\"\r\n\r\n    def __str__(self):\r\n        return self.user.username\r\n  \r\n#class Answer(models.Model):\r\n   # answerText= models.CharField(max_length=500, blank=True, null=True)\r\n    #question=models.ForeignKey(Question , on_delete=models.CASCADE, related_name=\"answer\")\r\n   #correctAnswer=models.BooleanField(default=False)\r\n    #user=models.ForeignKey(User, on_delete=models.CASCADE)\r\n \r\n    #class Meta:\r\n    #    verbose_name_plural = 'answers'\r\n   # def __str__(self):\r\n    #    return self.answerText\r\n  #\r\n\r\n    \r\nDIFFICULTY_CHOICES=[\r\n    ('easy', 'Easy'),\r\n    ('moderate', 'Moderate'),\r\n    ('hard', 'Hard'),\r\n    ]\r\nclass Quiz(models.Model):\r\n   # creator = models.ForeignKey(UserProfile, on_delete=models.CASCADE, default=\"default value\")\r\n    quizName= models.CharField(max_length=128, null=True)\r\n    quizSubject= models.CharField(max_length=128,null=True)\r\n    \r\n    #privateStatus =models.BooleanField(default=False,help_text=\"Should this quiz only be accessible by a certain group of people?\")\r\n  \r\n    # uniquePasscode=models.CharField(max_length=128, unique=True,blank=True, null=True)\r\n   \r\n    quizDifficulty = models.CharField(max_length=10, choices=(DIFFICULTY_CHOICES), default= DIFFICULTY_CHOICES[0])\r\n    scoreToPass=models.IntegerField(default=0)\r\n    #quizQuestions=models.ManyToManyField(Question)\r\n    class Meta:\r\n        verbose_name_plural = 'quizzes'\r\n    def __str__(self):\r\n        return self.quizName\r\n    def get_quiz_questions(self):\r\n        return self.question_set.all()\r\n    \r\nclass Question(models.Model):\r\n    questionText= models.CharField(max_length=500, unique=True )\r\n    questionMarks=models.IntegerField(default=1)\r\n    quiz=models.ForeignKey(Quiz, on_delete=models.CASCADE, related_name=\"question\")\r\n    #{ \"choices\" : [option 1, option 2, option 3, option 4], \"correct_index\" : 2 }\r\n    #answers = models.JSONField(default = dict)\r\n    optiona=models.CharField(max_length=500,null=True)\r\n    optionb=models.CharField(max_length=500,null=True)\r\n    optionc=models.CharField(max_length=500,null=True)\r\n    optionc=models.CharField(max_length=500,null=True)\r\n    correctAnswer=models.CharField(max_length=500)\r\n    class Meta:\r\n        verbose_name_plural = 'questions'\r\n    def __str__(self):\r\n        return self.questionText\r\n \r\n \r\n#Question(quesionText='John Doe', answers={\r\n#    'optiona': '123 Some House Number', \r\n #   'optionb': 'anything',\r\n  #  'optionc': 'Utah',\r\n#})\r\n#Question.objects.filter(questionText='John Doe', answers__optionb='Utah')\r\n \r\n  \r\n  #  def get_question_answers(self):\r\n      #  return self.answer_set.all()\r\n     #  \r\nclass Comment(models.Model):\r\n     commentText= models.CharField(max_length=500, null=True)\r\n     quiz=models.ForeignKey(Quiz, on_delete=models.CASCADE) \r\n     user=models.ForeignKey(User, on_delete=models.CASCADE) \r\n     #finalScore=models.FloatField(defualt=0)\r\n     class Meta:\r\n        verbose_name_plural = 'comments'\r\n     def __str__(self):\r\n        return self.comment_text\r\n    \r\n \r\n \r\n\r\n#class Scores(models.Model):\r\n   # user = models.ForeignKey(User, on_delete=models.CASCADE)\r\n    #quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE)\r\n\r\n    # default score? If unattempted\r\n    #score = models.FloatField(default=0)\r\n\r\n   # class Meta:\r\n    #    verbose_name_plural = \"Scores\"\r\n\r\n   # def __str__(self):\r\n      #  return self.score\r\n    \r\n    \r\n# i think well remove this as we said the create will choose the difficulty level instead\r\n#class Ratings(models.Model): \r\n    #user = models.ForeignKey(User, on_delete=models.CASCADE)\r\n    #quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE)\r\n    # default rating should just be unrated??\r\n    #rating = models.IntegerField()\r\n\r\n    #class Meta:\r\n    #    verbose_name_plural = \"Ratings\"\r\n\r\n    #def __str__(self):\r\n    #    return self.rating\r\n\r\n\r\n 
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/inquizitive/models.py b/inquizitive/models.py
+--- a/inquizitive/models.py	(revision 42d98afb6f2829f357c39a5f6142017a21c64226)
++++ b/inquizitive/models.py	(date 1647002592917)
+@@ -1,133 +1,138 @@
+ from django.db import models
+- 
++
+ from django.db import models
+ from django.contrib import admin
+ from django.template.defaultfilters import slugify
+ from django.contrib.auth.models import User
+-from django.contrib.postgres.fields.jsonb import JSONField
+-#from inquizitive.models import Quiz
+- 
+- 
++
++# from inquizitive.models import Quiz
++
++
+ # Create your models here.
+ class UserProfile(models.Model):
+     # links UserProfile to a user model instance.
+     user = models.OneToOneField(User, on_delete=models.CASCADE)
+-    #quiz = models.ManyToManyField('quizzes')
+-   # scores = models.ManyToManyField(Scores) #changed this from userscores to scores
+-   # ratings = models.ManyToManyField(Ratings) #changed this from user ratings to ratings
+-#
+-    profile = models.ImageField(upload_to = 'profile images', blank=True)
++    # quiz = models.ManyToManyField('quizzes')
++    # scores = models.ManyToManyField(Scores) #changed this from userscores to scores
++    # ratings = models.ManyToManyField(Ratings) #changed this from user ratings to ratings
++    #
++    profile = models.ImageField(upload_to='profile images', blank=True)
+ 
+     class Meta:
+         verbose_name_plural = "User"
+ 
+     def __str__(self):
+         return self.user.username
+-  
+-#class Answer(models.Model):
+-   # answerText= models.CharField(max_length=500, blank=True, null=True)
+-    #question=models.ForeignKey(Question , on_delete=models.CASCADE, related_name="answer")
+-   #correctAnswer=models.BooleanField(default=False)
+-    #user=models.ForeignKey(User, on_delete=models.CASCADE)
+- 
+-    #class Meta:
+-    #    verbose_name_plural = 'answers'
+-   # def __str__(self):
+-    #    return self.answerText
+-  #
++
++
++# class Answer(models.Model):
++# answerText= models.CharField(max_length=500, blank=True, null=True)
++# question=models.ForeignKey(Question , on_delete=models.CASCADE, related_name="answer")
++# correctAnswer=models.BooleanField(default=False)
++# user=models.ForeignKey(User, on_delete=models.CASCADE)
++
++# class Meta:
++#    verbose_name_plural = 'answers'
++# def __str__(self):
++#    return self.answerText
++#
+ 
+-    
+-DIFFICULTY_CHOICES=[
++
++DIFFICULTY_CHOICES = [
+     ('easy', 'Easy'),
+     ('moderate', 'Moderate'),
+     ('hard', 'Hard'),
+-    ]
++]
++
++
+ class Quiz(models.Model):
+-   # creator = models.ForeignKey(UserProfile, on_delete=models.CASCADE, default="default value")
+-    quizName= models.CharField(max_length=128, null=True)
+-    quizSubject= models.CharField(max_length=128,null=True)
+-    
+-    #privateStatus =models.BooleanField(default=False,help_text="Should this quiz only be accessible by a certain group of people?")
+-  
++    # creator = models.ForeignKey(UserProfile, on_delete=models.CASCADE, default="default value")
++    quizName = models.CharField(max_length=128, null=True)
++    quizSubject = models.CharField(max_length=128, null=True)
++
++    # privateStatus =models.BooleanField(default=False,help_text="Should this quiz only be accessible by a certain group of people?")
++
+     # uniquePasscode=models.CharField(max_length=128, unique=True,blank=True, null=True)
+-   
+-    quizDifficulty = models.CharField(max_length=10, choices=(DIFFICULTY_CHOICES), default= DIFFICULTY_CHOICES[0])
+-    scoreToPass=models.IntegerField(default=0)
+-    #quizQuestions=models.ManyToManyField(Question)
++
++    quizDifficulty = models.CharField(max_length=10, choices=(DIFFICULTY_CHOICES), default=DIFFICULTY_CHOICES[0])
++    scoreToPass = models.IntegerField(default=0)
++
++    # quizQuestions=models.ManyToManyField(Question)
+     class Meta:
+         verbose_name_plural = 'quizzes'
++
+     def __str__(self):
+         return self.quizName
++
+     def get_quiz_questions(self):
+         return self.question_set.all()
+-    
++
++
+ class Question(models.Model):
+-    questionText= models.CharField(max_length=500, unique=True )
+-    questionMarks=models.IntegerField(default=1)
+-    quiz=models.ForeignKey(Quiz, on_delete=models.CASCADE, related_name="question")
+-    #{ "choices" : [option 1, option 2, option 3, option 4], "correct_index" : 2 }
+-    #answers = models.JSONField(default = dict)
+-    optiona=models.CharField(max_length=500,null=True)
+-    optionb=models.CharField(max_length=500,null=True)
+-    optionc=models.CharField(max_length=500,null=True)
+-    optionc=models.CharField(max_length=500,null=True)
+-    correctAnswer=models.CharField(max_length=500)
++    questionText = models.CharField(max_length=500, unique=True)
++    questionMarks = models.IntegerField(default=1)
++    quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, related_name="question")
++    # { "choices" : [option 1, option 2, option 3, option 4], "correct_index" : 2 }
++    # answers = models.JSONField(default = dict)
++    optiona = models.CharField(max_length=500, null=True)
++    optionb = models.CharField(max_length=500, null=True)
++    optionc = models.CharField(max_length=500, null=True)
++    optionc = models.CharField(max_length=500, null=True)
++    correctAnswer = models.CharField(max_length=500)
++
+     class Meta:
+         verbose_name_plural = 'questions'
++
+     def __str__(self):
+         return self.questionText
+- 
+- 
+-#Question(quesionText='John Doe', answers={
++
++
++# Question(quesionText='John Doe', answers={
+ #    'optiona': '123 Some House Number', 
+- #   'optionb': 'anything',
+-  #  'optionc': 'Utah',
+-#})
+-#Question.objects.filter(questionText='John Doe', answers__optionb='Utah')
+- 
+-  
+-  #  def get_question_answers(self):
+-      #  return self.answer_set.all()
+-     #  
++#   'optionb': 'anything',
++#  'optionc': 'Utah',
++# })
++# Question.objects.filter(questionText='John Doe', answers__optionb='Utah')
++
++
++#  def get_question_answers(self):
++#  return self.answer_set.all()
++#
+ class Comment(models.Model):
+-     commentText= models.CharField(max_length=500, null=True)
+-     quiz=models.ForeignKey(Quiz, on_delete=models.CASCADE) 
+-     user=models.ForeignKey(User, on_delete=models.CASCADE) 
+-     #finalScore=models.FloatField(defualt=0)
+-     class Meta:
++    commentText = models.CharField(max_length=500, null=True)
++    quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE)
++    user = models.ForeignKey(User, on_delete=models.CASCADE)
++
++    # finalScore=models.FloatField(defualt=0)
++    class Meta:
+         verbose_name_plural = 'comments'
+-     def __str__(self):
++
++    def __str__(self):
+         return self.comment_text
+-    
+- 
+- 
+ 
+-#class Scores(models.Model):
+-   # user = models.ForeignKey(User, on_delete=models.CASCADE)
+-    #quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE)
++# class Scores(models.Model):
++# user = models.ForeignKey(User, on_delete=models.CASCADE)
++# quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE)
+ 
+-    # default score? If unattempted
+-    #score = models.FloatField(default=0)
++# default score? If unattempted
++# score = models.FloatField(default=0)
+ 
+-   # class Meta:
+-    #    verbose_name_plural = "Scores"
++# class Meta:
++#    verbose_name_plural = "Scores"
+ 
+-   # def __str__(self):
+-      #  return self.score
+-    
+-    
++# def __str__(self):
++#  return self.score
++
++
+ # i think well remove this as we said the create will choose the difficulty level instead
+-#class Ratings(models.Model): 
+-    #user = models.ForeignKey(User, on_delete=models.CASCADE)
+-    #quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE)
+-    # default rating should just be unrated??
+-    #rating = models.IntegerField()
++# class Ratings(models.Model):
++# user = models.ForeignKey(User, on_delete=models.CASCADE)
++# quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE)
++# default rating should just be unrated??
++# rating = models.IntegerField()
+ 
+-    #class Meta:
+-    #    verbose_name_plural = "Ratings"
++# class Meta:
++#    verbose_name_plural = "Ratings"
+ 
+-    #def __str__(self):
+-    #    return self.rating
+-
+-
+- 
+\ No newline at end of file
++# def __str__(self):
++#    return self.rating
+Index: inquizitive_wad2_project/settings.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>\"\"\"\r\nDjango settings for inquizitive_wad2_project project.\r\n\r\nGenerated by 'django-admin startproject' using Django 2.2.26.\r\n\r\nFor more information on this file, see\r\nhttps://docs.djangoproject.com/en/2.2/topics/settings/\r\n\r\nFor the full list of settings and their values, see\r\nhttps://docs.djangoproject.com/en/2.2/ref/settings/\r\n\"\"\"\r\n\r\nimport os\r\n\r\n\r\n# Build paths inside the project like this: os.path.join(BASE_DIR, ...)\r\nBASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))\r\n\r\n\r\n# Quick-start development settings - unsuitable for production\r\n# See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/\r\n\r\n# SECURITY WARNING: keep the secret key used in production secret!\r\nSECRET_KEY = '#0hqjv&vop_&k(+ia0z+k@ep+c+7zq62pzb8ab%r_oj@9vfpt&'\r\n\r\n# SECURITY WARNING: don't run with debug turned on in production!\r\nDEBUG = True\r\n\r\nALLOWED_HOSTS = []\r\n\r\n\r\n# Application definition\r\n\r\nINSTALLED_APPS = [\r\n    'django.contrib.admin',\r\n    'django.contrib.auth',\r\n    'django.contrib.contenttypes',\r\n    'django.contrib.sessions',\r\n    'django.contrib.messages',\r\n    'django.contrib.staticfiles',\r\n    'inquizitive',\r\n]\r\n\r\nMIDDLEWARE = [\r\n    'django.middleware.security.SecurityMiddleware',\r\n    'django.contrib.sessions.middleware.SessionMiddleware',\r\n    'django.middleware.common.CommonMiddleware',\r\n    'django.middleware.csrf.CsrfViewMiddleware',\r\n    'django.contrib.auth.middleware.AuthenticationMiddleware',\r\n    'django.contrib.messages.middleware.MessageMiddleware',\r\n    'django.middleware.clickjacking.XFrameOptionsMiddleware',\r\n]\r\n\r\nROOT_URLCONF = 'inquizitive_wad2_project.urls'\r\n\r\nTEMPLATES = [\r\n    {\r\n        'BACKEND': 'django.template.backends.django.DjangoTemplates',\r\n        'DIRS': [],\r\n        'APP_DIRS': True,\r\n        'OPTIONS': {\r\n            'context_processors': [\r\n                'django.template.context_processors.debug',\r\n                'django.template.context_processors.request',\r\n                'django.contrib.auth.context_processors.auth',\r\n                'django.contrib.messages.context_processors.messages',\r\n            ],\r\n        },\r\n    },\r\n]\r\n\r\nWSGI_APPLICATION = 'inquizitive_wad2_project.wsgi.application'\r\n\r\n\r\n# Database\r\n# https://docs.djangoproject.com/en/2.2/ref/settings/#databases\r\n\r\nDATABASES = {\r\n    'default': {\r\n        'ENGINE': 'django.db.backends.sqlite3',\r\n        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),\r\n    }\r\n}\r\n\r\n\r\n# Password validation\r\n# https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators\r\n\r\nAUTH_PASSWORD_VALIDATORS = [\r\n    {\r\n        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',\r\n    },\r\n    {\r\n        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',\r\n    },\r\n    {\r\n        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',\r\n    },\r\n    {\r\n        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',\r\n    },\r\n]\r\n\r\n\r\n# Internationalization\r\n# https://docs.djangoproject.com/en/2.2/topics/i18n/\r\n\r\nLANGUAGE_CODE = 'en-us'\r\n\r\nTIME_ZONE = 'UTC'\r\n\r\nUSE_I18N = True\r\n\r\nUSE_L10N = True\r\n\r\nUSE_TZ = True\r\n\r\n\r\n# Static files (CSS, JavaScript, Images)\r\n# https://docs.djangoproject.com/en/2.2/howto/static-files/\r\n\r\nSTATIC_URL = '/static/'\r\n\r\n# new \r\n# Build paths inside the project like this: os.path.join(BASE_DIR, ...)\r\nBASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))\r\n \r\nTEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')\r\n \r\nSTATIC_DIR = os.path.join(BASE_DIR, 'static') \r\nMEDIA_DIR = os.path.join(BASE_DIR, 'media')\r\n\r\nMEDIA_ROOT = MEDIA_DIR\r\nMEDIA_URL = '/media/'\r\n\r\n\r\nSTATICFILES_DIRS = [STATIC_DIR, ] \r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/inquizitive_wad2_project/settings.py b/inquizitive_wad2_project/settings.py
+--- a/inquizitive_wad2_project/settings.py	(revision 42d98afb6f2829f357c39a5f6142017a21c64226)
++++ b/inquizitive_wad2_project/settings.py	(date 1647004540148)
+@@ -15,6 +15,9 @@
+ 
+ # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
++TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')
++STATIC_DIR = os.path.join(BASE_DIR, 'static')
++MEDIA_DIR = os.path.join(BASE_DIR, 'media')
+ 
+ 
+ # Quick-start development settings - unsuitable for production
+@@ -123,12 +126,12 @@
+ 
+ # new 
+ # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
++#BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+  
+-TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')
++#TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')
+  
+-STATIC_DIR = os.path.join(BASE_DIR, 'static') 
+-MEDIA_DIR = os.path.join(BASE_DIR, 'media')
++#STATIC_DIR = os.path.join(BASE_DIR, 'static')
++#MEDIA_DIR = os.path.join(BASE_DIR, 'media')
+ 
+ MEDIA_ROOT = MEDIA_DIR
+ MEDIA_URL = '/media/'
+Index: inquizitive/migrations/0002_remove_quiz_creator.py
+===================================================================
+diff --git a/inquizitive/migrations/0002_remove_quiz_creator.py b/inquizitive/migrations/0002_remove_quiz_creator.py
+deleted file mode 100644
+--- a/inquizitive/migrations/0002_remove_quiz_creator.py	(revision 42d98afb6f2829f357c39a5f6142017a21c64226)
++++ /dev/null	(revision 42d98afb6f2829f357c39a5f6142017a21c64226)
+@@ -1,17 +0,0 @@
+-# Generated by Django 2.2.26 on 2022-03-07 22:57
+-
+-from django.db import migrations
+-
+-
+-class Migration(migrations.Migration):
+-
+-    dependencies = [
+-        ('inquizitive', '0001_initial'),
+-    ]
+-
+-    operations = [
+-        migrations.RemoveField(
+-            model_name='quiz',
+-            name='creator',
+-        ),
+-    ]
+Index: inquizitive/migrations/0001_initial.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/inquizitive/migrations/0001_initial.py b/inquizitive/migrations/0001_initial.py
+deleted file mode 100644
+--- a/inquizitive/migrations/0001_initial.py	(revision 42d98afb6f2829f357c39a5f6142017a21c64226)
++++ /dev/null	(revision 42d98afb6f2829f357c39a5f6142017a21c64226)
+@@ -1,78 +0,0 @@
+-# Generated by Django 2.2.26 on 2022-03-07 22:56
+-
+-from django.conf import settings
+-from django.db import migrations, models
+-import django.db.models.deletion
+-
+-
+-class Migration(migrations.Migration):
+-
+-    initial = True
+-
+-    dependencies = [
+-        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
+-    ]
+-
+-    operations = [
+-        migrations.CreateModel(
+-            name='Answer',
+-            fields=[
+-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+-                ('answerText', models.CharField(blank=True, max_length=500, null=True)),
+-                ('correctAnswer', models.BooleanField(default=False)),
+-            ],
+-            options={
+-                'verbose_name_plural': 'answers',
+-            },
+-        ),
+-        migrations.CreateModel(
+-            name='Quiz',
+-            fields=[
+-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+-                ('quizName', models.CharField(default='default value', max_length=128, unique=True)),
+-                ('quizSubject', models.CharField(default='default value', max_length=128)),
+-                ('quizDifficulty', models.CharField(choices=[('easy', 'Easy'), ('moderate', 'Moderate'), ('hard', 'Hard')], default=('easy', 'Easy'), max_length=10)),
+-                ('scoreToPass', models.IntegerField(default=0)),
+-                ('creator', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+-            ],
+-            options={
+-                'verbose_name_plural': 'quizzes',
+-            },
+-        ),
+-        migrations.CreateModel(
+-            name='UserProfile',
+-            fields=[
+-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+-                ('profile', models.ImageField(blank=True, upload_to='profile images')),
+-                ('quiz', models.ManyToManyField(to='inquizitive.Quiz')),
+-                ('user', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+-            ],
+-            options={
+-                'verbose_name_plural': 'User',
+-            },
+-        ),
+-        migrations.CreateModel(
+-            name='Question',
+-            fields=[
+-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+-                ('questionText', models.CharField(max_length=500, unique=True)),
+-                ('questionMarks', models.IntegerField(default=1)),
+-                ('quiz', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='question', to='inquizitive.Quiz')),
+-            ],
+-            options={
+-                'verbose_name_plural': 'questions',
+-            },
+-        ),
+-        migrations.CreateModel(
+-            name='Comment',
+-            fields=[
+-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+-                ('commentText', models.CharField(max_length=500, null=True)),
+-                ('quiz', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='inquizitive.Quiz')),
+-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+-            ],
+-            options={
+-                'verbose_name_plural': 'comments',
+-            },
+-        ),
+-    ]
+Index: inquizitive/migrations/0004_remove_userprofile_quiz_question_answers_and_more.py
+===================================================================
+diff --git a/inquizitive/migrations/0004_remove_userprofile_quiz_question_answers_and_more.py b/inquizitive/migrations/0004_remove_userprofile_quiz_question_answers_and_more.py
+deleted file mode 100644
+--- a/inquizitive/migrations/0004_remove_userprofile_quiz_question_answers_and_more.py	(revision 42d98afb6f2829f357c39a5f6142017a21c64226)
++++ /dev/null	(revision 42d98afb6f2829f357c39a5f6142017a21c64226)
+@@ -1,28 +0,0 @@
+-# Generated by Django 4.0.3 on 2022-03-08 16:43
+-
+-from django.db import migrations, models
+-import django.db.models.deletion
+-
+-
+-class Migration(migrations.Migration):
+-
+-    dependencies = [
+-        ('inquizitive', '0003_auto_20220307_2302'),
+-    ]
+-
+-    operations = [
+-        migrations.RemoveField(
+-            model_name='userprofile',
+-            name='quiz',
+-        ),
+-        migrations.AddField(
+-            model_name='question',
+-            name='answers',
+-            field=models.JSONField(default='anythingg'),
+-        ),
+-        migrations.AddField(
+-            model_name='quiz',
+-            name='creator',
+-            field=models.ForeignKey(default='default value', on_delete=django.db.models.deletion.CASCADE, to='inquizitive.userprofile'),
+-        ),
+-    ]
+Index: inquizitive/migrations/0003_auto_20220307_2302.py
+===================================================================
+diff --git a/inquizitive/migrations/0003_auto_20220307_2302.py b/inquizitive/migrations/0003_auto_20220307_2302.py
+deleted file mode 100644
+--- a/inquizitive/migrations/0003_auto_20220307_2302.py	(revision 42d98afb6f2829f357c39a5f6142017a21c64226)
++++ /dev/null	(revision 42d98afb6f2829f357c39a5f6142017a21c64226)
+@@ -1,18 +0,0 @@
+-# Generated by Django 2.2.26 on 2022-03-07 23:02
+-
+-from django.db import migrations, models
+-
+-
+-class Migration(migrations.Migration):
+-
+-    dependencies = [
+-        ('inquizitive', '0002_remove_quiz_creator'),
+-    ]
+-
+-    operations = [
+-        migrations.AlterField(
+-            model_name='quiz',
+-            name='quizName',
+-            field=models.CharField(default='default value', max_length=128),
+-        ),
+-    ]
