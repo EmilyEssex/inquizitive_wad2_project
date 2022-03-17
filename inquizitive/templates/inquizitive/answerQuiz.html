@@ -1,0 +1,30 @@
+{% extends 'inquizitive/base.html' %}
+ <form action='inquizitive/<slug:quiz_name_slug>/answerQuiz/'>
+  <fieldset>
+ 
+{% csrf_token %}
+ 
+<legend><h1>{{ quiz.quizName }}</h1></legend>
+     
+{% if quiz %}
+<h2> <em>  {{ quiz.quizName }}  </em> </h2> 
+    {% for question in questions %}
+<a href="{{ question.questionText }}"> 
+           
+<input type="radio" name={{ choice }}  <li>{{ question.optiona }} </li>  <br>
+<input type="radio" name={{ choice }}  <li>{{ question.optionb }} </li>   <br>
+<input type="radio" name={{ choice }}   <li>{{ question.optionc }} </li>   <br>
+<input type="radio" name={{ choice }}   <li>{{ question.optiond }} </li>   <br>
+    {% endfor %}
+{% endif %}
+</fieldset>
+<input type="submit" value="Answer">
+</form>
+ 
+ 
+
+</div> </body>
+</html>
+<input type="button"  onclick = "location.href='/inquizitive/{{ quiz.slug }}/quizResults/';" value="Submit answers" />
+ 
+ 

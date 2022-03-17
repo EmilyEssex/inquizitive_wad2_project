@@ -186,19 +186,15 @@ def show_quiz1(request, quiz_name_slug):
         
     context_dict = {}
     try:
-        quiz = Quiz.objects.get(slug=quiz_name_slug)
-        context_dict['quizName'] = quiz.quizName
-        questions = Question.objects.filter(quiz=quiz)
-        context_dict['questions'] = questions
-        context_dict['quiz'] = quiz
-        context_dict['numOfQue']= quiz.numOfQue
-        context_dict['optionsList']=[Question.optiona,Question.optionb,Question.optionc,Question.optiond]
-        score =0
-        maxPossibleScore=0
-        for q in questions:
-            maxPossibleScore+=q.questionMarks
-            
-        
+        #if request.method == 'POST':
+            quiz = Quiz.objects.get(slug=quiz_name_slug)
+            context_dict['quizName'] = quiz.quizName
+            questions = Question.objects.filter(quiz=quiz)
+            context_dict['questions'] = questions
+            context_dict['quiz'] = quiz
+            context_dict['numOfQue']= quiz.numOfQue
+            context_dict['optionsList']=[Question.optiona,Question.optionb,Question.optionc,Question.optiond]
+     
         
     except Quiz.DoesNotExist:
  
@@ -208,17 +204,79 @@ def show_quiz1(request, quiz_name_slug):
 
     return render(request, 'inquizitive/quiz.html', context=context_dict)
 
+def quizResults(request,quiz_name_slug):
+     context_dict = {}
+     context2 = {}
+     try:
+        if request.method == 'POST':
+            quiz = Quiz.objects.get(slug=quiz_name_slug)
+            context_dict['quizName'] = quiz.quizName
+            questions = Question.objects.filter(quiz=quiz)
+            context_dict['questions'] = questions
+            context_dict['quiz'] = quiz
+            context_dict['numOfQue']= quiz.numOfQue
+            context_dict['optionsList']=[Question.optiona,Question.optionb,Question.optionc,Question.optiond]
+            score =0
+            maxPossibleScore=0
+            for q in questions:
+                maxPossibleScore+=q.questionMarks
+                print(request.POST.get(q.questionText))
+                print(q.correctAnswer)
+                print()
+                if q.correctAnswer ==  request.POST.get(q.questionText):
+                    score+=q.questionMarks
+                percent = score/(maxPossibleScore) *100
+                context2 = {
+                'score':score,
+                'percent':percent
+                }
+        return render(request,'inquizitive/quizResults.html',context2)
+      
+
+        
+     except Quiz.DoesNotExist:
  
+        context_dict['category'] = None
+        context_dict['questions'] = None
+    # Go render the response and return it to the client.
+
+     return render(request, 'inquizitive/quiz.html', context=context_dict)
+'''
+answer is associated with answerQuiz.html
+'''   
+
+ 
+def answerQuiz(request, quiz_name_slug):
+    if request.session.test_cookie_worked(): 
+        print("TEST COOKIE WORKED!") 
+        request.session.delete_test_cookie()
+        
+        
+    context_dict = {}
+    try:
+        #if request.method == 'POST':
+            quiz = Quiz.objects.get(slug=quiz_name_slug)
+            context_dict['quizName'] = quiz.quizName
+            questions = Question.objects.filter(quiz=quiz)
+            context_dict['questions'] = questions
+            context_dict['quiz'] = quiz
+            context_dict['numOfQue']= quiz.numOfQue
+            context_dict['optionsList']=[Question.optiona,Question.optionb,Question.optionc,Question.optiond]
+     
+        
+    except Quiz.DoesNotExist:
+ 
+        context_dict['category'] = None
+        context_dict['questions'] = None
+    # Go render the response and return it to the client.
+
+    return render(request, 'inquizitive/answerQuiz.html', context=context_dict)
 
 
 
 
 
-
-
-
-
-
+    
 
 
 
