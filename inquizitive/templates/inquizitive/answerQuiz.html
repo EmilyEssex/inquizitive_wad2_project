@@ -1,6 +1,10 @@
 {% extends 'inquizitive/base.html' %}
- <form action='inquizitive/<slug:quiz_name_slug>/answerQuiz/'>
-  <fieldset>
+{% load static %}
+{% block content %}
+<html>
+ <form action='inquizitive/<slug:quiz_name_slug>/quizResults/'>
+
+ <fieldset>
  
 {% csrf_token %}
  
@@ -9,22 +13,27 @@
 {% if quiz %}
 <h2> <em>  {{ quiz.quizName }}  </em> </h2> 
     {% for question in questions %}
+
 <a href="{{ question.questionText }}"> 
-           
-<input type="radio" name={{ choice }}  <li>{{ question.optiona }} </li>  <br>
-<input type="radio" name={{ choice }}  <li>{{ question.optionb }} </li>   <br>
-<input type="radio" name={{ choice }}   <li>{{ question.optionc }} </li>   <br>
-<input type="radio" name={{ choice }}   <li>{{ question.optiond }} </li>   <br>
+<br> <h6 class = "question">{{ question.questionText }} </h6> </a> 
+<input type="radio" id={{ question.optiona }}   name={{ question.questionText }}
+<label for={{ question.optiona }}>{{ question.optiona }}</label><br/>
+<input type="radio" id={{ question.optionb }}   name={{ question.questionText }}
+<label for={{ question.optionb }}>{{ question.optionb }}</label><br/>
+<input type="radio" id={{ question.optionc }}   name={{ question.questionText }}
+<label for={{ question.optionc }}>{{ question.optionc }}</label><br/>
+<input type="radio" id={{ question.optiond }}   name={{ question.questionText }}
+<label for={{ question.optiond }}>{{ question.optiond }}</label><br/>
+
+ 
     {% endfor %}
 {% endif %}
 </fieldset>
-<input type="submit" value="Answer">
+ 
 </form>
- 
- 
 
 </div> </body>
 </html>
 <input type="button"  onclick = "location.href='/inquizitive/{{ quiz.slug }}/quizResults/';" value="Submit answers" />
  
- 
+ {% endblock %}

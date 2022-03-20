@@ -1,15 +1,8 @@
 {% extends 'inquizitive/base.html' %}
 {% load static %}
 {% block content %}
-<style>
-{
-   #third{
- background: url('{{ STATIC_URL }}images/profile.jpg'
-     }
- 
-         
-    
-</style>
+   
+
 
 <h1></h1>
 
@@ -27,6 +20,16 @@
 {% endif %}
 <div>
 
+<p style="text-align:center;"><img src="{% static "images/profile.jpg" %}"
+             alt="Picture of inQuizitive" width="200" 
+     height=auto align="center" align="top" />
+ 
+    
+ <style>
+img {
+  border-radius: 50%;
+}
+</style>
 {% if quizzes %}
 <br> <h2>Quizzes</h2>
 <ul>
@@ -47,8 +50,5 @@
 <strong>There are no quizzes present.</strong> {% endif %}
 </div>
 
-   
 
-<img src="{% static "images/profile.jpg" %}"
-             alt="Picture of Rango" />
 {% endblock %}

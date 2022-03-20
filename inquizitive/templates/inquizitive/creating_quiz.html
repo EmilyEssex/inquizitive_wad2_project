@@ -1,4 +1,5 @@
 {% extends 'inquizitive/base.html' %}
+{% load static %}
 {% block content %}
 <!DOCTYPEhtml>
 <html> 
@@ -21,10 +22,9 @@
                     {{ field.help_text }}
                     {{ field }}
 {% endfor %}
-<input type="submit" name="submit" value="Create Quiz" /> </form>
-<input type="button"  onclick = "location.href='/inquizitive/adding_questions/';" value="Add questions to quiz" />
+<input type="submit" name="submit" value="Create Quiz" /> 
  
- 
+ </form>
  
 </div> </body>
 

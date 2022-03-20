@@ -85,3 +85,42 @@ class AddAQuestionForm(forms.ModelForm):
         model = Question
         fields = ('questionText',  'questionMarks', 'optiona' , 'optionb', 'optionc', 'optiond', 'correctAnswer')
    # we should add the ansers as well
+   
+   
+   
+   
+  #form for question model
+class TakeQuizForm(forms.ModelForm):
+   
+    questionText = forms.CharField(max_length=500, help_text="Question: ")
+    questionMarks = forms.IntegerField(max_value=100, min_value=0)
+    #answers = JSONField()
+    optionA  = forms.CharField(max_length=500, help_text="Answer A")
+    optionb = forms.CharField(max_length=500, help_text="Answer B")
+    optionc = forms.CharField(max_length=500, help_text="Answer C")
+    optiond = forms.CharField(max_length=500, help_text="Answer D")
+    correctAnswer=forms.CharField(max_length=500, help_text="Enter answer (copy and paste please)")
+   # attrs = {'class': 'special', 'size': '40'}
+   # data = forms.CharField(widget=SplitJSONWidget(attrs=attrs, debug=True))
+    class Meta:
+        model = Question
+        fields = ('questionText',  'questionMarks', 'optiona' , 'optionb', 'optionc', 'optiond', 'correctAnswer')
+   # we should add the ansers as well
+   
+    
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   

@@ -1,10 +1,13 @@
+
+   
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash 
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm, PasswordChangeForm
 from django.contrib import messages 
 from .forms import SignUpForm, EditProfileForm 
-from inquizitive.forms import CreateAQuizForm,  AddAQuestionForm
+from inquizitive.forms import CreateAQuizForm,  AddAQuestionForm , TakeQuizForm
 from django.shortcuts import redirect
 from .models import Quiz, Question
 from django.urls import reverse
@@ -93,6 +96,9 @@ def register_user(request):
 	context = {'form': form}
 	return render(request, 'inquizitive/register.html', context)
 
+@login_required
+def user_account(request):
+    return render(request, 'inquizitive/user_account.html')
 
 def edit_profile(request):
 	if request.method =='POST':
@@ -127,6 +133,7 @@ def change_password(request):
 def creating_quiz(request): 
     user=request.user
     form = CreateAQuizForm()
+    
     if request.method == 'POST':
         form = CreateAQuizForm(request.POST)
         if form.is_valid():
@@ -208,6 +215,37 @@ def quizResults(request,quiz_name_slug):
      context_dict = {}
      context2 = {}
      try:
+        quiz = Quiz.objects.get(slug=quiz_name_slug)
+        questions = Question.objects.filter(quiz=quiz)
+        choice_set= [Question.optiona,Question.optionb,Question.optionc,Question.optiond]
+        context_dict['quizName'] = quiz.quizName
+        context_dict['questions'] = questions
+        context_dict['quiz'] = quiz
+        context_dict['numOfQue']= quiz.numOfQue
+        score =0
+        maxPossibleScore=0
+        for question in questions:
+            
+            maxPossibleScore+=question.questionMarks
+            choice_set= [question.optiona,question.optionb,question.optionc,question.optiond]
+           # selected_choice = question.choice_set.get(request.POST['choice'])
+            if question.correctAnswer ==  request.POST.get(request.POST[question.questionText]):
+                score+=question.questionMarks
+            context2 = {
+                'score':score}
+        return render(request,'inquizitive/quizResults.html',context2)
+            
+     except (KeyError, Question.DoesNotExist):
+         return render(request, 'inquizitive/quiz.html', context=context_dict)
+     else:
+         return render(request, 'inquizitive/quiz.html', context=context_dict)
+     
+     
+            
+            
+            
+'''          
+            
         if request.method == 'POST':
             quiz = Quiz.objects.get(slug=quiz_name_slug)
             context_dict['quizName'] = quiz.quizName
@@ -236,21 +274,18 @@ def quizResults(request,quiz_name_slug):
         
      except Quiz.DoesNotExist:
  
-        context_dict['category'] = None
+        context_dict['quiz'] = None
         context_dict['questions'] = None
     # Go render the response and return it to the client.
 
      return render(request, 'inquizitive/quiz.html', context=context_dict)
-'''
-answer is associated with answerQuiz.html
-'''   
 
+answer is associated with answerQuiz.html
+  
+ ''' 
  
 def answerQuiz(request, quiz_name_slug):
-    if request.session.test_cookie_worked(): 
-        print("TEST COOKIE WORKED!") 
-        request.session.delete_test_cookie()
-        
+ 
         
     context_dict = {}
     try:
@@ -261,24 +296,59 @@ def answerQuiz(request, quiz_name_slug):
             context_dict['questions'] = questions
             context_dict['quiz'] = quiz
             context_dict['numOfQue']= quiz.numOfQue
-            context_dict['optionsList']=[Question.optiona,Question.optionb,Question.optionc,Question.optiond]
-     
+            context_dict['optionsList']=Question.optionsList
+            #[Question.optiona,Question.optionb,Question.optionc,Question.optiond]
+            context_dict['correctAnswer']=Question.correctAnswer
         
     except Quiz.DoesNotExist:
  
-        context_dict['category'] = None
+        context_dict['quiz'] = None
         context_dict['questions'] = None
     # Go render the response and return it to the client.
 
     return render(request, 'inquizitive/answerQuiz.html', context=context_dict)
 
 
+ 
 
+''' 
 
-
-    
-
-
-
+# User answering quiz as django forms not html forms 
+def answerQuiz(request, quiz_name_slug):   
+    context_dict = {}
+    try:
+        #if request.method == 'POST':
+        quiz = Quiz.objects.get(slug=quiz_name_slug)
+        questions = Question.objects.filter(quiz=quiz)
+    except Quiz.DoesNotExist:
+        quiz= None
+    if quiz is None:
+        return render(request, 'inquizitive/home.html', context=context_dict)
+    form =TakeQuizForm()
+    context = {'form': form, 'quiz':quiz}
+    if request.method=="POST":
+        
+        form =TakeQuizForm(request.POST)
+         
+        if form.is_valid():
+             score =0
+             maxPossibleScore=0
+             for question in questions:
+            
+                 maxPossibleScore+=question.questionMarks
+              
+                 if question.correctAnswer ==  request.POST.get(request.POST[question.questionText]):
+                     score+=question.questionMarks
+             context2 = {
+                'score':score}
+             return render(request,'inquizitive/quizResults.html',context2)
+       
+   '''       
+        
+        
+        
+        
+        
+   
 
 

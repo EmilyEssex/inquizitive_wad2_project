@@ -69,6 +69,7 @@ class Question(models.Model):
     optionb=models.CharField(max_length=500,null=True)
     optionc=models.CharField(max_length=500,null=True)
     optiond=models.CharField(max_length=500,null=True)
+    optionsList=[optiona,optionb,optionc,optiond]
     correctAnswer=models.CharField(max_length=500)
     class Meta:
         verbose_name_plural = 'questions'
