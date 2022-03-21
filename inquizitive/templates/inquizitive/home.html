@@ -2,7 +2,18 @@
 {% load static %}
 {% block content %}
    
-
+<head>
+<style>
+ 
+  
+body {
+  background-image: url("/static/images/profile.jpg");
+  background-repeat: no-repeat;
+  background-attachment: fixed;  
+  background-size: cover;
+}
+</style>
+</head>
 
 <h1></h1>
 
@@ -20,9 +31,6 @@
 {% endif %}
 <div>
 
-<p style="text-align:center;"><img src="{% static "images/profile.jpg" %}"
-             alt="Picture of inQuizitive" width="200" 
-     height=auto align="center" align="top" />
  
     
  <style>
