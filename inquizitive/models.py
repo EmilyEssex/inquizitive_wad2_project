@@ -7,24 +7,24 @@ from django.contrib.auth.models import User
 from django.contrib.postgres.fields.jsonb import JSONField
 #from inquizitive.models import Quiz
  
- 
+
 # Create your models here.
 class UserProfile(models.Model):
     # links UserProfile to a user model instance.
     user = models.OneToOneField(User, on_delete=models.CASCADE)
- 
-   # scores = models.ManyToManyField(Scores) #changed this from userscores to scores
-   # ratings = models.ManyToManyField(Ratings) #changed this from user ratings to ratings
-#
-    profile = models.ImageField(upload_to = 'profile images', blank=True)
+
+    # scores = models.ManyToManyField(Scores) #changed this from userscores to scores
+    # ratings = models.ManyToManyField(Ratings) #changed this from user ratings to ratings
+    
+    profile = models.ImageField(default='default.jpg', upload_to='profile_images')
 
     class Meta:
         verbose_name_plural = "User"
 
     def __str__(self):
         return self.user.username
-     #quiz = models.ManyToManyField('quizzes')
- 
+    # quiz = models.ManyToManyField('quizzes')
+
     
 DIFFICULTY_CHOICES=[
     ('easy', 'Easy'),
@@ -78,17 +78,7 @@ class Question(models.Model):
  
  
  
-#Question(quesionText='John Doe', answers={
-#    'optiona': '123 Some House Number', 
- #   'optionb': 'anything',
-  #  'optionc': 'Utah',
-#})
-#Question.objects.filter(questionText='John Doe', answers__optionb='Utah')
  
-  
-  #  def get_question_answers(self):
-      #  return self.answer_set.all()
-     #  
 class Comment(models.Model):
      commentText= models.CharField(max_length=500, null=True)
     # quiz=models.ForeignKey(Quiz, on_delete=models.CASCADE) 

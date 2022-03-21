@@ -88,8 +88,8 @@ class AddAQuestionForm(forms.ModelForm):
    
    
    
-   
-  #form for question model
+ #Removing this form doesnt affect the app   
+ 
 class TakeQuizForm(forms.ModelForm):
    
     questionText = forms.CharField(max_length=500, help_text="Question: ")
@@ -108,9 +108,8 @@ class TakeQuizForm(forms.ModelForm):
    # we should add the ansers as well
    
     
-   
-   
-   
+ 
+ 
    
    
    
