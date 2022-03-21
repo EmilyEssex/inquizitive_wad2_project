@@ -19,7 +19,12 @@ import json
 
 def home(request): 
     #everything before render is new -Hana
-    quizzes_list = Quiz.objects.all()
+    if 'search' in request.GET:
+        q=request.GET['search']
+        quizzes_list=Quiz.objects.filter(quizName__icontains=q)
+    else:
+        quizzes_list=Quiz.objects.all()
+    #quizzes_list = Quiz.objects.all()
     context_dict = {}
     context_dict['boldmessage'] = 'Crunchy, creamy, cookie, candy, cupcake!'
     context_dict['quizzes'] = quizzes_list
