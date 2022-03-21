@@ -34,6 +34,7 @@ DIFFICULTY_CHOICES=[
 
 class Quiz(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
+   # user =models.ForeignKey(User, on_delete=models.PROTECT, related_name='quizzes')
    # creator = models.ForeignKey(UserProfile, on_delete=models.CASCADE, default="default value")
     quizName= models.CharField(max_length=128, null=True, unique=True)
     quizSubject= models.CharField(max_length=128,null=True)
@@ -46,11 +47,14 @@ class Quiz(models.Model):
     scoreToPass=models.IntegerField(default=0)
     numOfQue=models.IntegerField(default=1)
     #quizQuestions=models.ManyToManyField(Question)
+    #likes = models.IntegerField(default=0)
     slug = models.SlugField(unique=True)
     def save(self, *args, **kwargs):
         self.slug = slugify(self.quizName) 
         super(Quiz, self).save(*args, **kwargs)
-
+    #def process_likes(self):
+       # print(self.likes)
+       # self.likes += 1
     class Meta:
         verbose_name_plural = 'quizzes'
     def __str__(self):

@@ -44,7 +44,7 @@ img {
 
 
 
-        <!-- Search Start -->
+        <!-- Search box -->
  
             <div class="row">
                 <div class="col-md-4 offset-0">
@@ -60,7 +60,7 @@ img {
                 </div>
             </div>
         </div>
-        <!-- End Search -->
+     
 
 
 
@@ -76,12 +76,18 @@ img {
 
 <ul>
 
-{% for quiz in quizzes %}
- 
+{% for quiz in quizzes %}  
+ <br> 
 <li> 
-<a href="/inquizitive/quiz/{{ quiz.slug }}/">{{ quiz.quizName }}</a> </li>
+
+<h1 style="font-size:20px;">{{ quiz.quizName }}</h1>
+  </li>
 <input type="button"  onclick = "location.href='/inquizitive/{{ quiz.slug }}/answerQuiz/';" value="Solve quiz" />
+ 
+
+
 <input type="button"  onclick = "location.href='/inquizitive/quiz/{{ quiz.slug }}/';" value="Edit quiz" />
+
 
 {% endfor %}
 </li> 

@@ -14,6 +14,7 @@ from django.urls import reverse
 from datetime import datetime
 from django.forms import formset_factory 
 import json 
+from django.views import View
 # Create your views here.
 
 
@@ -29,6 +30,8 @@ def home(request):
     context_dict['boldmessage'] = 'Crunchy, creamy, cookie, candy, cupcake!'
     context_dict['quizzes'] = quizzes_list
     request.session.set_test_cookie()
+    request_user = request.user
+    context_dict["request_user"]= request_user
       # Obtain our Response object early so we can add cookie information.
     response = render(request, 'inquizitive/home.html', context_dict)
       # Call the helper function to handle the cookies
@@ -37,6 +40,11 @@ def home(request):
     # Return response back to the user, updating any cookies that need changed.
     return response
     #return render(request, 'inquizitive/home.html', context_dict)
+
+ 
+
+
+
 
 # A helper method
 def get_server_side_cookie(request, cookie, default_val=None): 
@@ -302,11 +310,14 @@ answer is associated with answerQuiz.html
 # The above results view could be removed 
 def answerQuiz(request, quiz_name_slug):
     quiz = Quiz.objects.get(slug=quiz_name_slug)
+    #quiz.process_likes()
+    #quiz.save()
     if request.method == 'POST':
         print(request.POST)
         questions = Question.objects.filter(quiz=quiz)
         score=0
         total=0
+        
         for question in questions:
             total+=question.questionMarks
             print(request.POST.get(str(question.questionText)))
