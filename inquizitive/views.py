@@ -292,7 +292,9 @@ def quizResults(request,quiz_name_slug):
 answer is associated with answerQuiz.html
   
  ''' 
- 
+
+# This view handles both allowing the user to answer and displaying the results
+# The above results view could be removed 
 def answerQuiz(request, quiz_name_slug):
     quiz = Quiz.objects.get(slug=quiz_name_slug)
     if request.method == 'POST':
@@ -302,7 +304,7 @@ def answerQuiz(request, quiz_name_slug):
         total=0
         for question in questions:
             total+=question.questionMarks
-            print(request.POST.get(question.questionText))
+            print(request.POST.get(str(question.questionText)))
             print(question.correctAnswer)
             print()
             if question.correctAnswer ==  request.POST.get(question.questionText):
