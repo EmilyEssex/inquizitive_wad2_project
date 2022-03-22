@@ -31,6 +31,20 @@ def home(request):
     context_dict['quizzes'] = quizzes_list
     request.session.set_test_cookie()
     request_user = request.user
+    
+    
+  
+    
+    
+    print("Request")
+    print(request_user)
+    print("creator")
+    quiz = Quiz.objects.all()
+    for quiz1 in quiz:
+        print(quiz)
+    
+   # quiz = Quiz.objects.all()
+   # context_dict["user"]=quiz.user
     context_dict["request_user"]= request_user
       # Obtain our Response object early so we can add cookie information.
     response = render(request, 'inquizitive/home.html', context_dict)

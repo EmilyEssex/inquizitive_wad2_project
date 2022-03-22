@@ -77,17 +77,20 @@ img {
 <ul>
 
 {% for quiz in quizzes %}  
+ 
  <br> 
 <li> 
 
-<h1 style="font-size:20px;">{{ quiz.quizName }}</h1>
+<h1 style="font-size:20px;">{{ quiz.quizName }} </h1>
   </li>
 <input type="button"  onclick = "location.href='/inquizitive/{{ quiz.slug }}/answerQuiz/';" value="Solve quiz" />
- 
+<td> {{ quiz.user }} </td>
+
+{% if quiz.user == request_user %}
 
 
 <input type="button"  onclick = "location.href='/inquizitive/quiz/{{ quiz.slug }}/';" value="Edit quiz" />
-
+{% endif %}
 
 {% endfor %}
 </li> 
