@@ -66,7 +66,7 @@ class CreateAQuizForm(forms.ModelForm):
     numOfQue=forms.IntegerField(max_value=100, min_value=0, help_text="Number of questions in quiz ")
     class Meta:
         model = Quiz
-        fields = ('quizName', 'quizSubject', 'quizDifficulty','numOfQue',"user")
+        fields = ('quizName', 'quizSubject', 'quizDifficulty','numOfQue', "user" )
 
 #form for question model
 class AddAQuestionForm(forms.ModelForm):

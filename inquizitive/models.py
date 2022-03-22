@@ -34,7 +34,8 @@ DIFFICULTY_CHOICES=[
 
 class Quiz(models.Model):
     #user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
-    user =models.ForeignKey(User, on_delete=models.PROTECT, related_name='quizzes', null=False, default="")
+    user=models.ForeignKey(User, on_delete=models.PROTECT, related_name='quizzes', null=True, default="")
+    
    # creator = models.ForeignKey(UserProfile, on_delete=models.CASCADE, default="default value")
     quizName= models.CharField(max_length=128, null=True, unique=True)
     quizSubject= models.CharField(max_length=128,null=True)

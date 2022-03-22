@@ -25,7 +25,7 @@ def home(request):
         quizzes_list=Quiz.objects.filter(quizName__icontains=q)
     else:
         quizzes_list=Quiz.objects.all()
-    #quizzes_list = Quiz.objects.all()
+    quizzes_list = Quiz.objects.all()
     context_dict = {}
     context_dict['boldmessage'] = 'Crunchy, creamy, cookie, candy, cupcake!'
     context_dict['quizzes'] = quizzes_list
@@ -39,9 +39,9 @@ def home(request):
     print("Request")
     print(request_user)
     print("creator")
-    quiz = Quiz.objects.all()
-    for quiz1 in quiz:
-        print(quiz)
+   # quiz = Quiz.objects.all()
+   # for quiz1 in quiz:
+       # print(quiz)
     
    # quiz = Quiz.objects.all()
    # context_dict["user"]=quiz.user
@@ -56,7 +56,6 @@ def home(request):
     #return render(request, 'inquizitive/home.html', context_dict)
 
  
-
 
 
 
@@ -305,7 +304,7 @@ def answerQuiz(request, quiz_name_slug):
         else:
             percent=0
         context = {
-            'time': request.POST.get('timer'),
+           # 'time': request.POST.get('timer'),
             'percent':percent
         }
         return render(request,'inquizitive/quizResults.html',context)
