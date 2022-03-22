@@ -2,7 +2,7 @@
  
 {% block content %}
  
-        
+         <p>Date/Time: <span id="datetime"></span></p>
  
                 <p  >Percentage: {{percent}}%</p>
  
@@ -12,5 +12,13 @@
     </div>
  
 </div>
+
+<script>
+var dt = new Date();
+document.getElementById("datetime").innerHTML = dt.toLocaleString();
+</script>
+
+
+
  
 {% endblock %}

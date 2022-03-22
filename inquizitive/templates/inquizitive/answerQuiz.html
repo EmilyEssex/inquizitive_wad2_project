@@ -5,7 +5,7 @@
 <div class="container ">
 <h1>{{ quiz.quizName }}</h1>
  
- 
+ <p>Date/Time: <span id="datetime"></span></p>
  
  <form method='post' action='' >
     {% csrf_token %}
@@ -48,11 +48,26 @@
     {% endfor %}
     <input id='timer' type='hidden' name="timer" value="">
     <br>
-    <button type="submit" class="btn btn-primary">Submit</button>
+   <button type="submit" class="btn btn-primary">Submit</button>
   </form>
  
  
 </div>
+ 
+ 
+ 
+
+
+
+<script>
+var dt = new Date();
+document.getElementById("datetime").innerHTML = dt.toLocaleString();
+</script>
+
+
+
+
+
 {% endblock %}
 
 
