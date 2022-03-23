@@ -238,47 +238,7 @@ def show_quiz1(request, quiz_name_slug):
 
     return render(request, 'inquizitive/quiz.html', context=context_dict)
 
-def quizResults(request,quiz_name_slug):
-    
-     context_dict = {}
-     context2 = {}
-     try:
-        quiz = Quiz.objects.get(slug=quiz_name_slug)
-       # print(quiz.slug)
-        questions = Question.objects.filter(quiz=quiz)
-        #choice_set= [Question.optiona,Question.optionb,Question.optionc,Question.optiond]
-        #context_dict['quizName'] = quiz.quizName
-        #context_dict['questions'] = questions
-        #context_dict['quiz'] = quiz
-        #context_dict['numOfQue']= quiz.numOfQue
-        score =0
-        maxPossibleScore=0
-        #print(questions)
-        for question in questions:
-            #print("in questions loop")
-            #print(question.questionMarks)
-            maxPossibleScore+=question.questionMarks
-           # choice_set= [question.optiona,question.optionb,question.optionc,question.optiond]
-           # selected_choice = question.choice_set.get(request.POST['choice'])
-            #print("correct answer" , question.correctAnswer )
-
-           # print(request.POST)
-            if question.correctAnswer ==  request.POST.get(request.POST[question.questionText]):
-                #print("in if statement")
-                score+=question.questionMarks
-            context2 = {
-                'score':score}
-        return render(request,'inquizitive/quizResults.html',context2)
-            
-     except Exception as e:
-         print(e)
-         return render(request, 'inquizitive/quiz.html', context=context_dict)
-     else:
-         return render(request, 'inquizitive/quiz.html', context=context_dict)
-     
-     
-            
-            
+        
  
 # This view handles both allowing the user to answer and displaying the results
 # The above results view could be removed 

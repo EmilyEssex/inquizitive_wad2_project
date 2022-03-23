@@ -19,8 +19,8 @@ urlpatterns = [
  #   path('inquizitive/quiz/<slug:quiz_name_slug>/', views.show_quiz1,name='show_quiz1'),
     path('inquizitive/quiz/<slug:quiz_name_slug>/', views.show_quiz1, name='show_quiz1'),
     path('inquizitive/quiz/<slug:quiz_name_slug>/adding_questions/',views.adding_questions, name='adding_questions'),
-    path('inquizitive/<slug:quiz_name_slug>/quizResults/', views.quizResults, name='quizResults'),
+   # path('inquizitive/<slug:quiz_name_slug>/quizResults/', views.quizResults, name='quizResults'),
     path('inquizitive/<slug:quiz_name_slug>/answerQuiz/', views.answerQuiz, name='answerQuiz'),
-    path("like/<int:pk>", views.likeQuiz, name="likeQuiz"),
+    
  
 ]
