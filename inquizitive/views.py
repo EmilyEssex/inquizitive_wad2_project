@@ -1,8 +1,8 @@
 
    
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
-from django.shortcuts import render, redirect
+from django.http import HttpResponse , HttpResponseRedirect
+from django.shortcuts import render, redirect , get_object_or_404
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash 
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm, PasswordChangeForm
 from django.contrib import messages 
@@ -15,6 +15,7 @@ from datetime import datetime
 from django.forms import formset_factory 
 import json 
 from django.views import View
+ 
 # Create your views here.
 
 
@@ -25,7 +26,7 @@ def home(request):
         quizzes_list=Quiz.objects.filter(quizName__icontains=q)
     else:
         quizzes_list=Quiz.objects.all()
-    quizzes_list = Quiz.objects.all()
+    #quizzes_list = Quiz.objects.all()
     context_dict = {}
     context_dict['boldmessage'] = 'Crunchy, creamy, cookie, candy, cupcake!'
     context_dict['quizzes'] = quizzes_list
@@ -284,7 +285,9 @@ def quizResults(request,quiz_name_slug):
 def answerQuiz(request, quiz_name_slug):
     quiz = Quiz.objects.get(slug=quiz_name_slug)
     #quiz.process_likes()
-    #quiz.save()
+   # quiz.save()
+    #likes=quiz.likes
+   # print(likes)
     if request.method == 'POST':
         print(request.POST)
         questions = Question.objects.filter(quiz=quiz)
@@ -309,21 +312,31 @@ def answerQuiz(request, quiz_name_slug):
         }
         return render(request,'inquizitive/quizResults.html',context)
     else:
+            
             context_dict = {}
             quiz = Quiz.objects.get(slug=quiz_name_slug)
             context_dict['quizName'] = quiz.quizName
+            #context_dict['likes'] = likes
             questions = Question.objects.filter(quiz=quiz)
             context_dict['questions'] = questions
             context_dict['quiz'] = quiz
             context_dict['numOfQue']= quiz.numOfQue
             context_dict['optionsList']=Question.optionsList
             #[Question.optiona,Question.optionb,Question.optionc,Question.optiond]
+            if request.POST.get("quiz_id"):
+                quiz.like.add(request.user)
+                context_dict['liked']="We're happy you enjoyed this quiz!"
+            else: context_dict['liked']="jjj"
+                
             context_dict['correctAnswer']=Question.correctAnswer
  
             return render(request, 'inquizitive/answerQuiz.html', context_dict) 
 
 
 
-
+def likeQuiz(request, pk):
+    quiz= get_object_or_404(Quiz, id=request.POST.get("quiz_id"))
+    quiz.like.add(request.user)
+    return HttpResponseRedirect(reverse("answerQuiz", args=[str(pk)]))
 
 

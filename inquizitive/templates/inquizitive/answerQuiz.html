@@ -6,7 +6,10 @@
 <h1>{{ quiz.quizName }}</h1>
  
  <p>Date/Time: <span id="datetime"></span></p>
+
  
+
+
  <form method='post' action='' >
     {% csrf_token %}
 
@@ -49,6 +52,7 @@
     <input id='timer' type='hidden' name="timer" value="">
     <br>
    <button type="submit" class="btn btn-primary">Submit</button>
+
   </form>
  
  

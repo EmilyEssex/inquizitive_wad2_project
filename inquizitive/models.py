@@ -48,20 +48,30 @@ class Quiz(models.Model):
     scoreToPass=models.IntegerField(default=0)
     numOfQue=models.IntegerField(default=1)
     #quizQuestions=models.ManyToManyField(Question)
-    #likes = models.IntegerField(default=0)
+    likes = models.ManyToManyField(User, related_name=("quiz_likes"))
     slug = models.SlugField(unique=True)
     def save(self, *args, **kwargs):
         self.slug = slugify(self.quizName) 
         super(Quiz, self).save(*args, **kwargs)
-    #def process_likes(self):
-       # print(self.likes)
-       # self.likes += 1
+        
+    def process_likes(self):
+        print(self.likes)
+        self.likes += 1
+        
+ 
     class Meta:
         verbose_name_plural = 'quizzes'
     def __str__(self):
         return self.quizName
     def get_quiz_questions(self):
         return self.question_set.all()
+    
+ #New for likes    
+#class Like(models.Model): 
+   # user = models.ForeignKey(User, on_delete=models.CASCADE)
+   # quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE)   
+    
+    
     
 class Question(models.Model):
     quiz=models.ForeignKey(Quiz, on_delete=models.CASCADE, related_name="question", null=True)
