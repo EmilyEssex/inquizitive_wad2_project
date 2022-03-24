@@ -45,6 +45,8 @@ class Quiz(models.Model):
     #quizQuestions=models.ManyToManyField(Question)
     likes = models.ManyToManyField(User, related_name=("quiz_likes"))
     slug = models.SlugField(unique=True)
+    passcodeBool=models.BooleanField
+    passcode=models.CharField(max_length=128, blank=True)
     def save(self, *args, **kwargs):
         self.slug = slugify(self.quizName) 
         super(Quiz, self).save(*args, **kwargs)
@@ -70,14 +72,14 @@ class Quiz(models.Model):
     
 class Question(models.Model):
     quiz=models.ForeignKey(Quiz, on_delete=models.CASCADE, related_name="question", null=True)
-    questionText= models.CharField(max_length=500, unique=True,verbose_name="")
-    questionMarks=models.IntegerField(default=1,verbose_name="")
-    optiona=models.CharField(max_length=500,null=True,verbose_name="")
-    optionb=models.CharField(max_length=500,null=True,verbose_name="")
-    optionc=models.CharField(max_length=500,null=True,verbose_name="")
-    optiond=models.CharField(max_length=500,null=True,verbose_name="")
+    questionText= models.CharField(max_length=500, unique=True)
+    questionMarks=models.IntegerField(default=1)
+    optiona=models.CharField(max_length=500,null=True)
+    optionb=models.CharField(max_length=500,null=True)
+    optionc=models.CharField(max_length=500,null=True)
+    optiond=models.CharField(max_length=500,null=True)
     optionsList=[optiona,optionb,optionc,optiond]
-    correctAnswer=models.CharField(max_length=500,verbose_name="")
+    correctAnswer=models.CharField(max_length=500)
     class Meta:
         verbose_name_plural = 'questions'
     def __str__(self):

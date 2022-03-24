@@ -64,9 +64,10 @@ class CreateAQuizForm(forms.ModelForm):
     quizSubject = forms.CharField(max_length=500, help_text="Quiz Subject: ")
     quizDifficulty=forms.CharField(label='Quiz Difficulty: ', widget=forms.Select(choices=DIFFICULTY_CHOICES))
     numOfQue=forms.IntegerField(max_value=100, min_value=0, help_text="Number of questions in quiz ")
+    passcode = forms.CharField(max_length=500, help_text="Passcode",label='', required=False)
     class Meta:
         model = Quiz
-        fields = ('quizName', 'quizSubject', 'quizDifficulty','numOfQue', "user" )
+        fields = ('quizName', 'quizSubject', 'quizDifficulty','numOfQue', "user", 'passcode' )
 
 #form for question model
 class AddAQuestionForm(forms.ModelForm):
@@ -79,6 +80,7 @@ class AddAQuestionForm(forms.ModelForm):
     optionc = forms.CharField(max_length=500, help_text="Answer C",label='')
     optiond = forms.CharField(max_length=500, help_text="Answer D",label='')
     correctAnswer=forms.CharField(max_length=500, help_text="Enter answer (copy and paste please)",label='')
+    
    # attrs = {'class': 'special', 'size': '40'}
    # data = forms.CharField(widget=SplitJSONWidget(attrs=attrs, debug=True))
     class Meta:

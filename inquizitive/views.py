@@ -125,6 +125,7 @@ def register_user(request):
 
 @login_required
 def user_account(request):
+    print("user account")
     return render(request, 'inquizitive/user_account.html')
 
 def edit_profile(request):
@@ -174,7 +175,15 @@ def creating_quiz(request):
    # context['visits'] = request.session['visits']
     return render(request, 'inquizitive/creating_quiz.html', context)
 
- 
+def meet_the_team(request): 
+    
+   # context['visits'] = request.session['visits']
+    return render(request, 'inquizitive/meet_the_team.html')
+
+
+
+
+
 def adding_questions(request, quiz_name_slug): 
     try:
         quiz = Quiz.objects.get(slug=quiz_name_slug) 
@@ -211,7 +220,7 @@ def adding_questions(request, quiz_name_slug):
  
 
  
- 
+# View for editing the quiz - only creators could do that
 def show_quiz1(request, quiz_name_slug):
     if request.session.test_cookie_worked(): 
         print("TEST COOKIE WORKED!") 
@@ -244,6 +253,7 @@ def show_quiz1(request, quiz_name_slug):
 # The above results view could be removed 
 def answerQuiz(request, quiz_name_slug):
     quiz = Quiz.objects.get(slug=quiz_name_slug)
+    #print("mmmm",quiz.quizSubject)
     #quiz.process_likes()
    # quiz.save()
     #likes=quiz.likes
@@ -266,21 +276,26 @@ def answerQuiz(request, quiz_name_slug):
             percent = score/(total) *100
         else:
             percent=0
+        
         context = {
            # 'time': request.POST.get('timer'),
-            'percent':percent
+            'percent':percent, 'subject':quiz.quizSubject, 'difficulty':quiz.quizDifficulty
         }
         return render(request,'inquizitive/quizResults.html',context)
     else:
             
             context_dict = {}
             quiz = Quiz.objects.get(slug=quiz_name_slug)
+            print("passcode" )
+            print( quiz.passcode)
+            print(request.POST.get('password'))
             context_dict['quizName'] = quiz.quizName
             #context_dict['likes'] = likes
             questions = Question.objects.filter(quiz=quiz)
             context_dict['questions'] = questions
             context_dict['quiz'] = quiz
             context_dict['numOfQue']= quiz.numOfQue
+           
             context_dict['optionsList']=Question.optionsList
             #[Question.optiona,Question.optionb,Question.optionc,Question.optiond]
             if request.POST.get("quiz_id"):

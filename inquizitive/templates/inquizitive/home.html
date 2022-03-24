@@ -96,24 +96,19 @@ img {
 
 
 
-
-
-
-
-
-
-
-
+ 
 
 <ul>
 
 {% for quiz in quizzes %}  
- 
+
  <br> 
 <li> 
 
 <h1 style="font-size:20px;">{{ quiz.quizName }} </h1>
   </li>
+
+
 <input type="button"  onclick = "location.href='/inquizitive/{{ quiz.slug }}/answerQuiz/';" value="Solve quiz" />
  
 
@@ -123,6 +118,26 @@ img {
 <input type="button"  onclick = "location.href='/inquizitive/quiz/{{ quiz.slug }}/';" value="Edit quiz" />
 {% endif %}
 
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 {% endfor %}
 </li> 
 
@@ -131,6 +146,6 @@ img {
 {% else %}
 <strong>There are no quizzes present.</strong> {% endif %}
 </div>
-
+<input type="button"  onclick = "location.href='/inquizitive/meet_the_team/';" value="Meet the team!" />
 <button onclick="myFunction()">WHO ARE WE!?</button>
 {% endblock %}
