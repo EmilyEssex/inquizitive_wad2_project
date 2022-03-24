@@ -5,6 +5,12 @@
 <!DOCTYPEhtml>
 <html>
 
+<head>
+    <style>
+        .question{color: rgb(224, 224, 200); font-size: large;}
+    </style>
+</head>
+
 
 
 <body> <div>
@@ -16,13 +22,13 @@
 {% for question in questions %}
 <a href="{{ question.questionText }}"> 
   
-<br> <h6 class = "question">{{ question.questionText }} </h6> </a> 
+<br> <div class = "question">{{ question.questionText }} </div> </a> 
 
     
-<input type="radio" name={{ question.optiona }}  <li>{{ question.optiona }} </li>  <br>
-<input type="radio" name={{ question.optiona }}  <li>{{ question.optionb }} </li>   <br>
-<input type="radio" name={{ question.optiona }}   <li>{{ question.optionc }} </li>   <br>
-<input type="radio" name={{ question.optiona }}   <li>{{ question.optiond }} </li>   <br>
+<input type="radio" name={{ question.optiona }}  <li> {{ question.optiona }} </li>  <br>
+<input type="radio" name={{ question.optiona }}  <li> {{ question.optionb }} </li>   <br>
+<input type="radio" name={{ question.optiona }}   <li> {{ question.optionc }} </li>   <br>
+<input type="radio" name={{ question.optiona }}   <li> {{ question.optiond }} </li>   <br>
  
  
 

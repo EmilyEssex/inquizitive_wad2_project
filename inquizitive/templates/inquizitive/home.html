@@ -4,7 +4,6 @@
    
 <head>
 <style>
- 
   
 body {
   background-image: url("/static/images/profile.jpg");
@@ -12,7 +11,68 @@ body {
   background-attachment: fixed;  
   background-size: cover;
 }
+
+.search{
+  height: 50px;
+  width: 30px;
+  padding-left: 10px; 
+  padding-right: 10px;
+  position: relative;
+}
+
+.reset{
+  height: 50px;
+  width: 30px;
+  padding-left: 85px; 
+  padding-right: 10px;
+  position: relative;
+  color: burlywood
+}
+
+.input-group input{
+  height: 50px;
+}
+
+.resetbtn {
+  width: 80px;
+  height: 50px;
+  background-color:rgb(111, 227, 227);
+  color: black;
+  font-size: 18px;
+}
+
+.searchbtn {
+  width: 90px;
+  height: 50px;
+  background-color:rgb(111, 227, 227);
+  color: black;
+  font-size: 18px;
+}
+
+.resetbtn:hover {
+  background-color:#bf9e1a;
+  transition: 0.4s;
+}
+
+.searchbtn:hover {
+  background-color:#30bf1a;
+  transition: 0.4s;
+}
+
 </style>
+
+
+<script>
+  $(document).ready(function(){
+
+    $(".resetbtn").click(function(){
+      href="{% url 'home'  %}";
+    });
+
+  })
+
+  
+</script>
 
 
 
@@ -75,6 +135,7 @@ img {
 
 
 
+
         <!-- Search box -->
  
             <div class="row">
@@ -83,8 +144,11 @@ img {
                     <form>
                         <div class="input-group">
                             <input name="search" type="text" placeholder="Search" class="form-control form-control-lg" />
-                            <div class="input-group-append">
-                                <button class="btn btn-dark btn-lg">Search</button>
+                            <div class="search">
+                                <button class="searchbtn btn-dark btn-lg">Search</button>
+                            </div>
+                            <div class="reset">
+                              <button class="resetbtn">Reset</button>
                             </div>
                         </div>
                     </form>

@@ -8,13 +8,14 @@
 
 {% if quiz %}
       <h1>Add a question to {{quiz.quizName}}</h1> <br>
-
+</br>
 
 
 
 <form id="adding_questions" method="POST" enctype = "multipart/form-data" action = "/inquizitive/quiz/{{ quiz.slug }}/adding_questions/">
 
     {% csrf_token %}
+    
     {{ formset.management_data }}
     {% csrf_token %}
     {{ formset.as_p }}
