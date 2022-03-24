@@ -6,10 +6,6 @@ from django.template.defaultfilters import slugify
 from django.contrib.auth.models import User
 
 
-# from django.contrib.postgres.fields.jsonb import JSONField
-# from inquizitive.models import Quiz
-
-
 # Create your models here.
 class UserProfile(models.Model):
     # links UserProfile to a user model instance.

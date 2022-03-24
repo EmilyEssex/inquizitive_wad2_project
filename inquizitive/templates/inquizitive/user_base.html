@@ -21,6 +21,7 @@
     }
 
     div.header {
+        font-family: Times;
         margin-left: 200px;
         }
 
@@ -32,15 +33,16 @@
 
 
     <nav class="sidebar">
-<!--    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>-->
       <img class="profile-pic" src="{{ user.userprofile.profile_pic.url }}"><br>
         <style>
             .profile-pic {
+            border: solid 4px #FEDE00;
             vertical-align: middle;
             width: 150px;
             height: 150px;
             border-radius: 50%;
             }
+
         </style>
         <a class="nav-link" href="#">My Quizzes</a>
         <a class="nav-link" href="{% url 'creating_quiz' %}">Create A Quiz</a>

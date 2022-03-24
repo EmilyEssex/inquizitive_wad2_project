@@ -1,5 +1,3 @@
-
-   
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse , HttpResponseRedirect
 from django.shortcuts import render, redirect , get_object_or_404
@@ -115,6 +113,7 @@ def edit_profile(request):
 	context = {'form': form}
 	return render(request, 'inquizitive/edit_profile.html', context)
 	
+
 
 def change_password(request):
 	if request.method =='POST':

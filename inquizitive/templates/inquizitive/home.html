@@ -38,13 +38,13 @@ function processData(c1) {
 
 
  
-
-
 <script>
 function myFunction() {
   alert("We are the inQuiztive developers! We created this app to promote learning and knowledge!");
 }
 </script>
+
+
 
 
 
@@ -126,16 +126,6 @@ function myFunction() {
 
 
 
-
-
-
-
-
-
-
-
-
-
 {% endfor %}
 </li> 
 
@@ -144,6 +134,32 @@ function myFunction() {
 {% else %}
 <strong>There are no quizzes present.</strong> {% endif %}
 </div>
-<input type="button"  onclick = "location.href='/inquizitive/meet_the_team/';" value="Meet the team!" />
-<button onclick="myFunction()">WHO ARE WE!?</button>
+
+<div class="footer">
+    <input class="btn1" type="button"  onclick = "location.href='/inquizitive/meet_the_team/';" value="Meet the team!" />
+
+    <button class="btn2" onclick="myFunction()">WHO ARE WE!?</button>
+
+    <style>
+        .footer {
+          position: fixed;
+          left: 0;
+          bottom: 0;
+          width: 100%;
+          background-color: brown;
+          color: white;
+          text-align: center;
+        }
+
+        .btn1 {
+            margin-right: 30px;
+            }
+
+        .btn2 {
+            margin-left: 30px;
+            }
+
+    </style>
+</div>
 {% endblock %}
+

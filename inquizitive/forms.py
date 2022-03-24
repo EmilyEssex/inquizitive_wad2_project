@@ -5,7 +5,6 @@ import json
 from inquizitive.models import Quiz, Question
 from django.forms import formset_factory
 from .models import UserProfile
-#from django.contrib.postgres.fields.jsonb import JSONField
 
 
 
@@ -19,14 +18,6 @@ class EditProfileForm(UserChangeForm):
 		model = User
 		#excludes private information from User
 		fields = ('username', 'first_name', 'last_name', 'email','password',)
-
-
-
-# class ProfilePicUpdateForm(forms.ModelForm):
-#     class Meta:
-#         model = UserProfile
-#         fields = ['profile_pic']
-
 
 
 class SignUpForm(UserCreationForm):
