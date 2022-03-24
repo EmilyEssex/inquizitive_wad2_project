@@ -36,7 +36,7 @@ DEBUG = True
 
 
 
-ALLOWED_HOSTS = ['hanaelsherbeny02.pythonanywhere.com']
+ALLOWED_HOSTS = ['hanaelsherbeny02.pythonanywhere.com', '127.0.0.1' ]
 # Application definition
 
 INSTALLED_APPS = [

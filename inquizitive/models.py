@@ -33,20 +33,17 @@ DIFFICULTY_CHOICES=[
     ]
 
 class Quiz(models.Model):
-    #user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
     user=models.ForeignKey(User, on_delete=models.PROTECT, related_name='quizzes', null=True, default="")
-    
-   # creator = models.ForeignKey(UserProfile, on_delete=models.CASCADE, default="default value")
     quizName= models.CharField(max_length=128, null=True, unique=True)
     quizSubject= models.CharField(max_length=128,null=True)
     quizDifficulty = models.CharField(max_length=10, choices=(DIFFICULTY_CHOICES), default= DIFFICULTY_CHOICES[0])
     scoreToPass=models.IntegerField(default=0)
     numOfQue=models.IntegerField(default=1)
-    #quizQuestions=models.ManyToManyField(Question)
     likes = models.ManyToManyField(User, related_name=("quiz_likes"))
     slug = models.SlugField(unique=True)
     passcodeBool=models.BooleanField
     passcode=models.CharField(max_length=128, blank=True)
+    
     def save(self, *args, **kwargs):
         self.slug = slugify(self.quizName) 
         super(Quiz, self).save(*args, **kwargs)
@@ -55,20 +52,13 @@ class Quiz(models.Model):
         print(self.likes)
         self.likes += 1
         
- 
     class Meta:
         verbose_name_plural = 'quizzes'
     def __str__(self):
         return self.quizName
     def get_quiz_questions(self):
         return self.question_set.all()
-    
- #New for likes    
-#class Like(models.Model): 
-   # user = models.ForeignKey(User, on_delete=models.CASCADE)
-   # quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE)   
-    
-    
+
     
 class Question(models.Model):
     quiz=models.ForeignKey(Quiz, on_delete=models.CASCADE, related_name="question", null=True)
@@ -88,16 +78,6 @@ class Question(models.Model):
  
  
  
-class Comment(models.Model):
-     commentText= models.CharField(max_length=500, null=True)
-    # quiz=models.ForeignKey(Quiz, on_delete=models.CASCADE) 
-     user=models.ForeignKey(User, on_delete=models.CASCADE) 
-     #finalScore=models.FloatField(defualt=0)
-     class Meta:
-        verbose_name_plural = 'comments'
-     def __str__(self):
-        return self.comment_text
-    
  
  
 
