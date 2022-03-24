@@ -12,6 +12,15 @@ body {
   background-size: cover;
 }
 
+.create {
+  background-color: bisque;
+  height: 50px;
+  width: 300px;
+  font: bolder;
+  font-size: 18px;
+  
+}
+
 .search{
   height: 50px;
   width: 30px;
@@ -23,7 +32,7 @@ body {
 .reset{
   height: 50px;
   width: 30px;
-  padding-left: 85px; 
+  
   padding-right: 10px;
   position: relative;
   color: burlywood
@@ -61,23 +70,19 @@ body {
 
 </style>
 
-<script type="text/javascript" src="{% static 'jquery-3.6.0.js' %}"></script>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
 <script type = "text/javascript">
 
   $(document).ready(function(){
 
-    $(".resetbtn").click(function(){
-      href="{% url 'home'  %}";
-    });
-
     $(".create").hover(function(){
-      $(this).animate({paddingLeft: '+=30px'}, 200);
+      $(this).css({color: "blue"}, 200);
     }, function() {
-      $(this).animate({paddingLeft: '-=30px'}, 200);
+      $(this).css({color: "green"}, 200);
     });
   
-})
+});
 
 
 </script>
@@ -154,15 +159,20 @@ img {
                             <input name="search" type="text" placeholder="Search" class="form-control form-control-lg" />
                             <div class="search">
                                 <button class="searchbtn btn-dark btn-lg">Search</button>
-                            </div>
-                            <div class="reset">
-                              <button class="resetbtn">Reset</button>
-                            </div>
+                            </div> 
+                            
                         </div>
                     </form>
                 </div>
             </div>
+            
         </div>
+        
+        
+          <form action = "{% url 'home'  %}" >
+            <input type = "submit"  class="resetbtn"; value = "Reset"></button>
+          </form>
+        
      
 
 
