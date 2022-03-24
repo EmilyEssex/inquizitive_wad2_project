@@ -61,17 +61,25 @@ body {
 
 </style>
 
+<script type="text/javascript" src="{% static 'jquery-3.6.0.js' %}"></script>
 
-<script>
+<script type = "text/javascript">
+
   $(document).ready(function(){
 
     $(".resetbtn").click(function(){
       href="{% url 'home'  %}";
     });
 
-  })
-
+    $(".create").hover(function(){
+      $(this).animate({paddingLeft: '+=30px'}, 200);
+    }, function() {
+      $(this).animate({paddingLeft: '-=30px'}, 200);
+    });
   
+})
+
+
 </script>
 
 
@@ -114,7 +122,7 @@ function myFunction() {
 	
 	<p>Email: {{user.email}}</p>
 
-<br> <input type="button"  onclick = "location.href='/inquizitive/creating_quiz/';" value="Create a new quiz"/> <br>
+<br> <input type="button" class = "create" onclick = "location.href='/inquizitive/creating_quiz/';" value="Create a new quiz"/> <br>
  
 
 {% endif %}
@@ -184,7 +192,7 @@ img {
 {% if quiz.user == request_user %}
 
 
-<input type="button"  onclick = "location.href='/inquizitive/quiz/{{ quiz.slug }}/';" value="Edit quiz" />
+<input type="button" class ="Editquiz" onclick = "location.href='/inquizitive/quiz/{{ quiz.slug }}/';" value="Edit quiz" />
 {% endif %}
 
 {% endfor %}
