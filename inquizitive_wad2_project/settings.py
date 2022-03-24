@@ -34,9 +34,9 @@ SECRET_KEY = '#0hqjv&vop_&k(+ia0z+k@ep+c+7zq62pzb8ab%r_oj@9vfpt&'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
 
 
+ALLOWED_HOSTS = ['hanaelsherbeny02.pythonanywhere.com']
 # Application definition
 
 INSTALLED_APPS = [
