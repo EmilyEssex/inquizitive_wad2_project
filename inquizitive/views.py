@@ -20,82 +20,53 @@ from django.views import View
 
 
 def home(request): 
-    #everything before render is new -Hana
     if 'search' in request.GET:
         q=request.GET['search']
         quizzes_list=Quiz.objects.filter(quizName__icontains=q)
     else:
         quizzes_list=Quiz.objects.all()
-    #quizzes_list = Quiz.objects.all()
     context_dict = {}
     context_dict['boldmessage'] = 'Crunchy, creamy, cookie, candy, cupcake!'
     context_dict['quizzes'] = quizzes_list
     request.session.set_test_cookie()
     request_user = request.user
-    
-    
-  
-    
-    
-    print("Request")
-    print(request_user)
-    print("creator")
-   # quiz = Quiz.objects.all()
-   # for quiz1 in quiz:
-       # print(quiz)
-    
-   # quiz = Quiz.objects.all()
-   # context_dict["user"]=quiz.user
     context_dict["request_user"]= request_user
-      # Obtain our Response object early so we can add cookie information.
     response = render(request, 'inquizitive/home.html', context_dict)
-      # Call the helper function to handle the cookies
     visitor_cookie_handler(request)
     context_dict['visits'] = request.session['visits']
-    # Return response back to the user, updating any cookies that need changed.
     return response
-    #return render(request, 'inquizitive/home.html', context_dict)
 
- 
-
-
-
-# A helper method
 def get_server_side_cookie(request, cookie, default_val=None): 
     val = request.session.get(cookie)
     if not val:
         val = default_val 
     return val
-# Updated the function definition
+
+
 def visitor_cookie_handler(request ):
     visits = int(get_server_side_cookie(request, 'visits', '1')) 
     last_visit_cookie = get_server_side_cookie(request, 'last_visit',  str(datetime.now()))
     last_visit_time = datetime.strptime(last_visit_cookie[:-7],'%Y-%m-%d %H:%M:%S')
-    # If it's been more than a day since the last visit...
-     
     if (datetime.now() - last_visit_time).seconds > 3600:
         visits = visits + 1
-        # Update the last visit cookie now that we have updated the count 
         request.session['last_visit'] = str(datetime.now())
     else:
-        # Set the last visit cookie 
         request.session['last_visit'] = last_visit_cookie
-    # Update/set the visits cookie
     request.session['visits'] = visits
 
 
 def login_user (request):
-	if request.method == 'POST': #if someone fills out form , Post it 
+	if request.method == 'POST':  
 		username = request.POST['username']
 		password = request.POST['password']
 		user = authenticate(request, username=username, password=password)
-		if user is not None:# if user exist
+		if user is not None: 
 			login(request, user)
 			messages.success(request,('Login Successful'))
-			return redirect('home') #routes to 'home' on successful login  
+			return redirect('home') 
 		else:
 			messages.success(request,('Error logging in'))
-			return redirect('login') #re routes to login page upon unsucessful login
+			return redirect('login')  
 	else:
 		return render(request, 'inquizitive/login.html', {})
 
@@ -126,7 +97,10 @@ def register_user(request):
 @login_required
 def user_account(request):
     print("user account")
-    return render(request, 'inquizitive/user_account.html')
+    quizzes_list=Quiz.objects.all()
+    context_dict={}
+    context_dict['quizzes'] = quizzes_list
+    return render(request, 'inquizitive/user_account.html',context_dict)
 
 def edit_profile(request):
 	if request.method =='POST':
@@ -135,7 +109,7 @@ def edit_profile(request):
 			form.save()
 			messages.success(request, ('You have edited your profile'))
 			return redirect('home')
-	else: 		#passes in user information 
+	else: 		 
 		form = EditProfileForm(instance= request.user) 
 
 	context = {'form': form}
@@ -150,7 +124,7 @@ def change_password(request):
 			update_session_auth_hash(request, form.user)
 			messages.success(request, ('You have edited your password'))
 			return redirect('home')
-	else: 		#passes in user information 
+	else: 		 
 		form = PasswordChangeForm(user= request.user) 
 
 	context = {'form': form}
@@ -172,17 +146,11 @@ def creating_quiz(request):
     visitor_cookie_handler(request)
    
     context = {'form': form,'visits':request.session['visits']}
-   # context['visits'] = request.session['visits']
+   
     return render(request, 'inquizitive/creating_quiz.html', context)
 
 def meet_the_team(request): 
-    
-   # context['visits'] = request.session['visits']
     return render(request, 'inquizitive/meet_the_team.html')
-
-
-
-
 
 def adding_questions(request, quiz_name_slug): 
     try:

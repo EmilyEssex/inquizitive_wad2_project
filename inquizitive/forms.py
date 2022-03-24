@@ -72,7 +72,7 @@ class CreateAQuizForm(forms.ModelForm):
 #form for question model
 class AddAQuestionForm(forms.ModelForm):
    
-    questionText = forms.CharField(max_length=500, help_text="Question: ",label='')
+    questionText = forms.CharField(max_length=500, help_text="Question: ",label='',required=True)
     questionMarks = forms.IntegerField(max_value=100, min_value=0,label='')
     #answers = JSONField()
     optiona = forms.CharField(max_length=500, help_text="Answer A",label='')
