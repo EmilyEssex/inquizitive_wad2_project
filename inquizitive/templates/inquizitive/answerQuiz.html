@@ -7,6 +7,21 @@
     <style>
         .form-group{color: rgb(224, 224, 200); font-size: large;}
     </style>
+
+<script type = "text/javascript">
+
+    $(document).ready(function(){
+        $(".form-check-label").hover(function(){
+            $(this).css({color: "orange"});
+            $(this).css({paddingLeft: '+=15px'});
+        }, function() {
+            $(this).css({color: "white"});
+            $(this).css({paddingLeft: '-=15px'});
+    });
+    });
+
+
+</script>
 </head>
 
 
