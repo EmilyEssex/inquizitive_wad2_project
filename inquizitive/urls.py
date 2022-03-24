@@ -3,6 +3,8 @@ from inquizitive import views
 from . import views
 #from .views import user_account
 from .views import user_account
+from django.conf import settings
+from django.conf.urls.static import static
 
 #app_name = 'inquizitive'
 
@@ -23,4 +25,4 @@ urlpatterns = [
     path('inquizitive/<slug:quiz_name_slug>/answerQuiz/', views.answerQuiz, name='answerQuiz'),
     path("like/<int:pk>", views.likeQuiz, name="likeQuiz"),
  
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

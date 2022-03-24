@@ -4,10 +4,10 @@ from django import forms
 import json
 from inquizitive.models import Quiz, Question
 from django.forms import formset_factory
-from django.contrib.postgres.fields.jsonb import JSONField
+from .models import UserProfile
+#from django.contrib.postgres.fields.jsonb import JSONField
 
-#from splitjson.widgets import SplitJSONWidget
- 
+
 
 # default maximum number of forms in a formset, to prevent memory exhaustion
 DEFAULT_MAX_NUM = 1000
@@ -20,6 +20,12 @@ class EditProfileForm(UserChangeForm):
 		#excludes private information from User
 		fields = ('username', 'first_name', 'last_name', 'email','password',)
 
+
+
+# class ProfilePicUpdateForm(forms.ModelForm):
+#     class Meta:
+#         model = UserProfile
+#         fields = ['profile_pic']
 
 
 

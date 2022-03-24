@@ -1,34 +1,33 @@
-{% extends 'inquizitive/base.html' %}
+{% extends 'inquizitive/user_base.html' %}
 
 {% block content %}
-    <div class="row my-3 p-3">
-        <h1>{{ user.username }}'s Account</h1>
-    </div>
+{{block.super}}
 
-    <style>
+<style>
+    div.body {
+        margin-left: 260px;
 
-    </style>
+        }
+</style>
 
+    <div class=body id="main">
 
-    <div id="mySidenav" class="sidenav">
-<!--      <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>-->
-      <img src="default.jpg" alt="Avatar" class="avatar"><br>
-        <style>
-            .avatar {
-            vertical-align: middle;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            }
-        </style>
-      <a href="#">My Quizzes</a><br>
-      <a href="#">Create A Quiz</a><br>
-      <a href="#">My Completed Quizzes</a><br>
-      <a href="#">Manage Account</a><br>
-    </div>
+        <br> <h2>Quizzes</h2>
+        {% if quizzes %}
+        <ul>
+        {% for quiz in quizzes %}
+        <li>
+            <a href="/inquizitive/quiz/{{ quiz.slug }}/">{{ quiz.quizName }}</a> </li>
 
-    <div id="main">
-      ...
+        {% endfor %}
+        </li>
+        </ul>
+        {% else %}
+        <strong>You haven't created any quizzes yet!</strong> <br>
+        <p> Click 'Create A Quiz' to create your first quiz.</p>
+
+        {% endif %}
+
     </div>
 
 {% endblock %}
