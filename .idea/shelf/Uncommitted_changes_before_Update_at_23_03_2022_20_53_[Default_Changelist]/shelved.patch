@@ -1,0 +1,760 @@
+Index: inquizitive/forms.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>from django.contrib.auth.forms import UserCreationForm, UserChangeForm\r\nfrom django.contrib.auth.models import User\r\nfrom django import forms \r\nimport json\r\nfrom inquizitive.models import Quiz, Question\r\nfrom django.forms import formset_factory\r\nfrom django.contrib.postgres.fields.jsonb import JSONField\r\n\r\n#from splitjson.widgets import SplitJSONWidget\r\n \r\n\r\n# default maximum number of forms in a formset, to prevent memory exhaustion\r\nDEFAULT_MAX_NUM = 1000\r\n\r\nclass EditProfileForm(UserChangeForm):\r\n\t\r\n\tpassword = forms.CharField(label=\"\", widget=forms.TextInput(attrs={'type':'hidden'}))\r\n\tclass Meta:\r\n\t\tmodel = User\r\n\t\t#excludes private information from User\r\n\t\tfields = ('username', 'first_name', 'last_name', 'email','password',)\r\n\r\n\r\n\r\n\r\nclass SignUpForm(UserCreationForm):\r\n\temail = forms.EmailField(label=\"\", widget=forms.TextInput(attrs={'class':'form-control', 'placeholder':'Email Address'}), )\r\n\tfirst_name = forms.CharField(label=\"\", max_length=100, widget=forms.TextInput(attrs={'class':'form-control', 'placeholder':'First Name'}))\r\n\tlast_name = forms.CharField(label=\"\", max_length=100, widget=forms.TextInput(attrs={'class':'form-control', 'placeholder':'Last Name'}))\r\n\t\r\n\t\r\n\tclass Meta:\r\n\t\tmodel = User\r\n\t\tfields = ('username', 'first_name', 'last_name', 'email', 'password1', 'password2',)\r\n\r\n\tdef __init__(self, *args, **kwargs):\r\n\t    super(SignUpForm, self).__init__(*args, **kwargs)\r\n\r\n\t    self.fields['username'].widget.attrs['class'] = 'form-control'\r\n\t    self.fields['username'].widget.attrs['placeholder'] = 'User Name'\r\n\t    self.fields['username'].label = ''\r\n\t    self.fields['username'].help_text = '<span class=\"form-text text-muted\"><small>Required. 150 characters or fewer.</small></span>'\r\n\r\n\t    self.fields['password1'].widget.attrs['class'] = 'form-control'\r\n\t    self.fields['password1'].widget.attrs['placeholder'] = 'Password'\r\n\t    self.fields['password1'].label = ''\r\n\t    self.fields['password1'].help_text = '<ul class=\"form-text text-muted small\"><li>Your password must contain at least 8 characters.</li><li>Password can\\'t be completely numeric.</li></ul>'\r\n\r\n\t    self.fields['password2'].widget.attrs['class'] = 'form-control'\r\n\t    self.fields['password2'].widget.attrs['placeholder'] = 'Confirm Password'\r\n\t    self.fields['password2'].label = ''\r\n\t    self.fields['password2'].help_text = '<span class=\"form-text text-muted\"><small></small></span>'\r\n\r\n \r\n \r\nDIFFICULTY_CHOICES=[\r\n    ('easy', 'Easy'),\r\n    ('medium', 'Medium'),\r\n    ('hard', 'Hard'),\r\n    ]\r\n#form for quiz model\r\nclass CreateAQuizForm(forms.ModelForm):\r\n    quizName = forms.CharField(max_length=500, help_text=\"Quiz Name: \")\r\n    quizSubject = forms.CharField(max_length=500, help_text=\"Quiz Subject: \")\r\n    quizDifficulty=forms.CharField(label='Quiz Difficulty: ', widget=forms.Select(choices=DIFFICULTY_CHOICES))\r\n    numOfQue=forms.IntegerField(max_value=100, min_value=0, help_text=\"Number of questions in quiz \")\r\n    class Meta:\r\n        model = Quiz\r\n        fields = ('quizName', 'quizSubject', 'quizDifficulty','numOfQue', \"user\" )\r\n\r\n#form for question model\r\nclass AddAQuestionForm(forms.ModelForm):\r\n   \r\n    questionText = forms.CharField(max_length=500, help_text=\"Question: \")\r\n    questionMarks = forms.IntegerField(max_value=100, min_value=0)\r\n    #answers = JSONField()\r\n    optiona = forms.CharField(max_length=500, help_text=\"Answer A\")\r\n    optionb = forms.CharField(max_length=500, help_text=\"Answer B\")\r\n    optionc = forms.CharField(max_length=500, help_text=\"Answer C\")\r\n    optiond = forms.CharField(max_length=500, help_text=\"Answer D\")\r\n    correctAnswer=forms.CharField(max_length=500, help_text=\"Enter answer (copy and paste please)\")\r\n   # attrs = {'class': 'special', 'size': '40'}\r\n   # data = forms.CharField(widget=SplitJSONWidget(attrs=attrs, debug=True))\r\n    class Meta:\r\n        model = Question\r\n        fields = ('questionText',  'questionMarks', 'optiona' , 'optionb', 'optionc', 'optiond', 'correctAnswer')\r\n   # we should add the ansers as well\r\n   \r\n   \r\n   \r\n #Removing this form doesnt affect the app   \r\n \r\nclass TakeQuizForm(forms.ModelForm):\r\n   \r\n    questionText = forms.CharField(max_length=500, help_text=\"Question: \")\r\n    questionMarks = forms.IntegerField(max_value=100, min_value=0)\r\n    #answers = JSONField()\r\n    optionA  = forms.CharField(max_length=500, help_text=\"Answer A\")\r\n    optionb = forms.CharField(max_length=500, help_text=\"Answer B\")\r\n    optionc = forms.CharField(max_length=500, help_text=\"Answer C\")\r\n    optiond = forms.CharField(max_length=500, help_text=\"Answer D\")\r\n    correctAnswer=forms.CharField(max_length=500, help_text=\"Enter answer (copy and paste please)\")\r\n   # attrs = {'class': 'special', 'size': '40'}\r\n   # data = forms.CharField(widget=SplitJSONWidget(attrs=attrs, debug=True))\r\n    class Meta:\r\n        model = Question\r\n        fields = ('questionText',  'questionMarks', 'optiona' , 'optionb', 'optionc', 'optiond', 'correctAnswer')\r\n   # we should add the ansers as well\r\n   \r\n    \r\n \r\n \r\n   \r\n   \r\n   \r\n   \r\n   \r\n   \r\n   \r\n   \r\n   \r\n   \r\n   \r\n   \r\n   
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/inquizitive/forms.py b/inquizitive/forms.py
+--- a/inquizitive/forms.py	(revision 1856352aefd1290d38c4a30706fa1302372d9ebd)
++++ b/inquizitive/forms.py	(date 1648067592042)
+@@ -4,10 +4,10 @@
+ import json
+ from inquizitive.models import Quiz, Question
+ from django.forms import formset_factory
+-from django.contrib.postgres.fields.jsonb import JSONField
++from .models import UserProfile
++#from django.contrib.postgres.fields.jsonb import JSONField
+ 
+-#from splitjson.widgets import SplitJSONWidget
+- 
++
+ 
+ # default maximum number of forms in a formset, to prevent memory exhaustion
+ DEFAULT_MAX_NUM = 1000
+@@ -22,6 +22,12 @@
+ 
+ 
+ 
++class ProfilePicUpdateForm(forms.ModelForm):
++    class Meta:
++        model = UserProfile
++        fields = ['image']
++
++
+ 
+ class SignUpForm(UserCreationForm):
+ 	email = forms.EmailField(label="", widget=forms.TextInput(attrs={'class':'form-control', 'placeholder':'Email Address'}), )
+Index: inquizitive/models.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>from django.db import models\r\n \r\nfrom django.db import models\r\nfrom django.contrib import admin\r\nfrom django.template.defaultfilters import slugify\r\nfrom django.contrib.auth.models import User\r\nfrom django.contrib.postgres.fields.jsonb import JSONField\r\n#from inquizitive.models import Quiz\r\n \r\n\r\n# Create your models here.\r\nclass UserProfile(models.Model):\r\n    # links UserProfile to a user model instance.\r\n    user = models.OneToOneField(User, on_delete=models.CASCADE)\r\n\r\n    # scores = models.ManyToManyField(Scores) #changed this from userscores to scores\r\n    # ratings = models.ManyToManyField(Ratings) #changed this from user ratings to ratings\r\n    \r\n    profile = models.ImageField(default='default.jpg', upload_to='profile_images')\r\n\r\n    class Meta:\r\n        verbose_name_plural = \"User\"\r\n\r\n    def __str__(self):\r\n        return self.user.username\r\n    # quiz = models.ManyToManyField('quizzes')\r\n\r\n    \r\nDIFFICULTY_CHOICES=[\r\n    ('easy', 'Easy'),\r\n    ('moderate', 'Moderate'),\r\n    ('hard', 'Hard'),\r\n    ]\r\n\r\nclass Quiz(models.Model):\r\n    #user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)\r\n    user=models.ForeignKey(User, on_delete=models.PROTECT, related_name='quizzes', null=True, default=\"\")\r\n    \r\n   # creator = models.ForeignKey(UserProfile, on_delete=models.CASCADE, default=\"default value\")\r\n    quizName= models.CharField(max_length=128, null=True, unique=True)\r\n    quizSubject= models.CharField(max_length=128,null=True)\r\n    \r\n    #privateStatus =models.BooleanField(default=False,help_text=\"Should this quiz only be accessible by a certain group of people?\")\r\n  \r\n    # uniquePasscode=models.CharField(max_length=128, unique=True,blank=True, null=True)\r\n   \r\n    quizDifficulty = models.CharField(max_length=10, choices=(DIFFICULTY_CHOICES), default= DIFFICULTY_CHOICES[0])\r\n    scoreToPass=models.IntegerField(default=0)\r\n    numOfQue=models.IntegerField(default=1)\r\n    #quizQuestions=models.ManyToManyField(Question)\r\n    #likes = models.IntegerField(default=0)\r\n    slug = models.SlugField(unique=True)\r\n    def save(self, *args, **kwargs):\r\n        self.slug = slugify(self.quizName) \r\n        super(Quiz, self).save(*args, **kwargs)\r\n    #def process_likes(self):\r\n       # print(self.likes)\r\n       # self.likes += 1\r\n    class Meta:\r\n        verbose_name_plural = 'quizzes'\r\n    def __str__(self):\r\n        return self.quizName\r\n    def get_quiz_questions(self):\r\n        return self.question_set.all()\r\n    \r\nclass Question(models.Model):\r\n    quiz=models.ForeignKey(Quiz, on_delete=models.CASCADE, related_name=\"question\", null=True)\r\n    questionText= models.CharField(max_length=500, unique=True)\r\n    questionMarks=models.IntegerField(default=1)\r\n   \r\n    #{ \"choices\" : [option 1, option 2, option 3, option 4], \"correct_index\" : 2 }\r\n    #answers = models.JSONField(default = dict)\r\n    optiona=models.CharField(max_length=500,null=True)\r\n    optionb=models.CharField(max_length=500,null=True)\r\n    optionc=models.CharField(max_length=500,null=True)\r\n    optiond=models.CharField(max_length=500,null=True)\r\n    optionsList=[optiona,optionb,optionc,optiond]\r\n    correctAnswer=models.CharField(max_length=500)\r\n    class Meta:\r\n        verbose_name_plural = 'questions'\r\n    def __str__(self):\r\n        return self.questionText\r\n \r\n \r\n \r\n \r\nclass Comment(models.Model):\r\n     commentText= models.CharField(max_length=500, null=True)\r\n    # quiz=models.ForeignKey(Quiz, on_delete=models.CASCADE) \r\n     user=models.ForeignKey(User, on_delete=models.CASCADE) \r\n     #finalScore=models.FloatField(defualt=0)\r\n     class Meta:\r\n        verbose_name_plural = 'comments'\r\n     def __str__(self):\r\n        return self.comment_text\r\n    \r\n \r\n \r\n\r\n#class Scores(models.Model):\r\n   # user = models.ForeignKey(User, on_delete=models.CASCADE)\r\n    #quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE)\r\n\r\n    # default score? If unattempted\r\n    #score = models.FloatField(default=0)\r\n\r\n   # class Meta:\r\n    #    verbose_name_plural = \"Scores\"\r\n\r\n   # def __str__(self):\r\n      #  return self.score\r\n    \r\n    \r\n# i think well remove this as we said the create will choose the difficulty level instead\r\n#class Ratings(models.Model): \r\n    #user = models.ForeignKey(User, on_delete=models.CASCADE)\r\n    #quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE)\r\n    # default rating should just be unrated??\r\n    #rating = models.IntegerField()\r\n\r\n    #class Meta:\r\n    #    verbose_name_plural = \"Ratings\"\r\n\r\n    #def __str__(self):\r\n    #    return self.rating\r\n\r\n\r\n 
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/inquizitive/models.py b/inquizitive/models.py
+--- a/inquizitive/models.py	(revision 1856352aefd1290d38c4a30706fa1302372d9ebd)
++++ b/inquizitive/models.py	(date 1648066231446)
+@@ -1,12 +1,14 @@
+ from django.db import models
+- 
++import json
+ from django.db import models
+ from django.contrib import admin
+ from django.template.defaultfilters import slugify
+ from django.contrib.auth.models import User
+-from django.contrib.postgres.fields.jsonb import JSONField
+-#from inquizitive.models import Quiz
+- 
++
++
++# from django.contrib.postgres.fields.jsonb import JSONField
++# from inquizitive.models import Quiz
++
+ 
+ # Create your models here.
+ class UserProfile(models.Model):
+@@ -15,9 +17,10 @@
+ 
+     # scores = models.ManyToManyField(Scores) #changed this from userscores to scores
+     # ratings = models.ManyToManyField(Ratings) #changed this from user ratings to ratings
+-    
+-    profile = models.ImageField(default='default.jpg', upload_to='profile_images')
++
++    profile_pic = models.ImageField(default='default.jpg', upload_to='profile_images/')
+ 
++
+     class Meta:
+         verbose_name_plural = "User"
+ 
+@@ -25,104 +28,106 @@
+         return self.user.username
+     # quiz = models.ManyToManyField('quizzes')
+ 
+-    
+-DIFFICULTY_CHOICES=[
++
++DIFFICULTY_CHOICES = [
+     ('easy', 'Easy'),
+     ('moderate', 'Moderate'),
+     ('hard', 'Hard'),
+-    ]
++]
+ 
++
+ class Quiz(models.Model):
+-    #user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
+-    user=models.ForeignKey(User, on_delete=models.PROTECT, related_name='quizzes', null=True, default="")
+-    
+-   # creator = models.ForeignKey(UserProfile, on_delete=models.CASCADE, default="default value")
+-    quizName= models.CharField(max_length=128, null=True, unique=True)
+-    quizSubject= models.CharField(max_length=128,null=True)
+-    
+-    #privateStatus =models.BooleanField(default=False,help_text="Should this quiz only be accessible by a certain group of people?")
+-  
++    # user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
++    user = models.ForeignKey(User, on_delete=models.PROTECT, related_name='quizzes', null=True, default="")
++
++    # creator = models.ForeignKey(UserProfile, on_delete=models.CASCADE, default="default value")
++    quizName = models.CharField(max_length=128, null=True, unique=True)
++    quizSubject = models.CharField(max_length=128, null=True)
++
++    # privateStatus =models.BooleanField(default=False,help_text="Should this quiz only be accessible by a certain group of people?")
++
+     # uniquePasscode=models.CharField(max_length=128, unique=True,blank=True, null=True)
+-   
+-    quizDifficulty = models.CharField(max_length=10, choices=(DIFFICULTY_CHOICES), default= DIFFICULTY_CHOICES[0])
+-    scoreToPass=models.IntegerField(default=0)
+-    numOfQue=models.IntegerField(default=1)
+-    #quizQuestions=models.ManyToManyField(Question)
+-    #likes = models.IntegerField(default=0)
++
++    quizDifficulty = models.CharField(max_length=10, choices=(DIFFICULTY_CHOICES), default=DIFFICULTY_CHOICES[0])
++    scoreToPass = models.IntegerField(default=0)
++    numOfQue = models.IntegerField(default=1)
++    # quizQuestions=models.ManyToManyField(Question)
++    # likes = models.IntegerField(default=0)
+     slug = models.SlugField(unique=True)
++
+     def save(self, *args, **kwargs):
+-        self.slug = slugify(self.quizName) 
++        self.slug = slugify(self.quizName)
+         super(Quiz, self).save(*args, **kwargs)
+-    #def process_likes(self):
+-       # print(self.likes)
+-       # self.likes += 1
++
++    # def process_likes(self):
++    # print(self.likes)
++    # self.likes += 1
+     class Meta:
+         verbose_name_plural = 'quizzes'
++
+     def __str__(self):
+         return self.quizName
++
+     def get_quiz_questions(self):
+         return self.question_set.all()
+-    
++
++
+ class Question(models.Model):
+-    quiz=models.ForeignKey(Quiz, on_delete=models.CASCADE, related_name="question", null=True)
+-    questionText= models.CharField(max_length=500, unique=True)
+-    questionMarks=models.IntegerField(default=1)
+-   
+-    #{ "choices" : [option 1, option 2, option 3, option 4], "correct_index" : 2 }
+-    #answers = models.JSONField(default = dict)
+-    optiona=models.CharField(max_length=500,null=True)
+-    optionb=models.CharField(max_length=500,null=True)
+-    optionc=models.CharField(max_length=500,null=True)
+-    optiond=models.CharField(max_length=500,null=True)
+-    optionsList=[optiona,optionb,optionc,optiond]
+-    correctAnswer=models.CharField(max_length=500)
++    quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, related_name="question", null=True)
++    questionText = models.CharField(max_length=500, unique=True)
++    questionMarks = models.IntegerField(default=1)
++
++    # { "choices" : [option 1, option 2, option 3, option 4], "correct_index" : 2 }
++    # answers = models.JSONField(default = dict)
++    optiona = models.CharField(max_length=500, null=True)
++    optionb = models.CharField(max_length=500, null=True)
++    optionc = models.CharField(max_length=500, null=True)
++    optiond = models.CharField(max_length=500, null=True)
++    optionsList = [optiona, optionb, optionc, optiond]
++    correctAnswer = models.CharField(max_length=500)
++
+     class Meta:
+         verbose_name_plural = 'questions'
++
+     def __str__(self):
+         return self.questionText
+- 
+- 
+- 
+- 
++
++
+ class Comment(models.Model):
+-     commentText= models.CharField(max_length=500, null=True)
++    commentText = models.CharField(max_length=500, null=True)
+     # quiz=models.ForeignKey(Quiz, on_delete=models.CASCADE) 
+-     user=models.ForeignKey(User, on_delete=models.CASCADE) 
+-     #finalScore=models.FloatField(defualt=0)
+-     class Meta:
++    user = models.ForeignKey(User, on_delete=models.CASCADE)
++
++    # finalScore=models.FloatField(defualt=0)
++    class Meta:
+         verbose_name_plural = 'comments'
+-     def __str__(self):
++
++    def __str__(self):
+         return self.comment_text
+-    
+- 
+- 
+ 
+-#class Scores(models.Model):
+-   # user = models.ForeignKey(User, on_delete=models.CASCADE)
+-    #quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE)
++# class Scores(models.Model):
++# user = models.ForeignKey(User, on_delete=models.CASCADE)
++# quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE)
+ 
+-    # default score? If unattempted
+-    #score = models.FloatField(default=0)
++# default score? If unattempted
++# score = models.FloatField(default=0)
+ 
+-   # class Meta:
+-    #    verbose_name_plural = "Scores"
++# class Meta:
++#    verbose_name_plural = "Scores"
+ 
+-   # def __str__(self):
+-      #  return self.score
+-    
+-    
++# def __str__(self):
++#  return self.score
++
++
+ # i think well remove this as we said the create will choose the difficulty level instead
+-#class Ratings(models.Model): 
+-    #user = models.ForeignKey(User, on_delete=models.CASCADE)
+-    #quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE)
+-    # default rating should just be unrated??
+-    #rating = models.IntegerField()
++# class Ratings(models.Model):
++# user = models.ForeignKey(User, on_delete=models.CASCADE)
++# quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE)
++# default rating should just be unrated??
++# rating = models.IntegerField()
+ 
+-    #class Meta:
+-    #    verbose_name_plural = "Ratings"
++# class Meta:
++#    verbose_name_plural = "Ratings"
+ 
+-    #def __str__(self):
+-    #    return self.rating
+-
+-
+- 
+\ No newline at end of file
++# def __str__(self):
++#    return self.rating
+Index: inquizitive/apps.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>from django.apps import AppConfig\r\n\r\n\r\nclass InquizitiveConfig(AppConfig):\r\n    name = 'inquizitive'\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/inquizitive/apps.py b/inquizitive/apps.py
+--- a/inquizitive/apps.py	(revision 1856352aefd1290d38c4a30706fa1302372d9ebd)
++++ b/inquizitive/apps.py	(date 1648067642763)
+@@ -3,3 +3,6 @@
+ 
+ class InquizitiveConfig(AppConfig):
+     name = 'inquizitive'
++
++    def ready(self):
++        import inquizitive.signals
+Index: inquizitive/views.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>\r\n   \r\nfrom django.contrib.auth.decorators import login_required\r\nfrom django.http import HttpResponse\r\nfrom django.shortcuts import render, redirect\r\nfrom django.contrib.auth import authenticate, login, logout, update_session_auth_hash \r\nfrom django.contrib.auth.forms import UserCreationForm, UserChangeForm, PasswordChangeForm\r\nfrom django.contrib import messages \r\nfrom .forms import SignUpForm, EditProfileForm \r\nfrom inquizitive.forms import CreateAQuizForm,  AddAQuestionForm , TakeQuizForm\r\nfrom django.shortcuts import redirect\r\nfrom .models import Quiz, Question\r\nfrom django.urls import reverse\r\nfrom datetime import datetime\r\nfrom django.forms import formset_factory \r\nimport json \r\nfrom django.views import View\r\n# Create your views here.\r\n\r\n\r\ndef home(request): \r\n    #everything before render is new -Hana\r\n    if 'search' in request.GET:\r\n        q=request.GET['search']\r\n        quizzes_list=Quiz.objects.filter(quizName__icontains=q)\r\n    else:\r\n        quizzes_list=Quiz.objects.all()\r\n    quizzes_list = Quiz.objects.all()\r\n    context_dict = {}\r\n    context_dict['boldmessage'] = 'Crunchy, creamy, cookie, candy, cupcake!'\r\n    context_dict['quizzes'] = quizzes_list\r\n    request.session.set_test_cookie()\r\n    request_user = request.user\r\n    \r\n    \r\n  \r\n    \r\n    \r\n    print(\"Request\")\r\n    print(request_user)\r\n    print(\"creator\")\r\n   # quiz = Quiz.objects.all()\r\n   # for quiz1 in quiz:\r\n       # print(quiz)\r\n    \r\n   # quiz = Quiz.objects.all()\r\n   # context_dict[\"user\"]=quiz.user\r\n    context_dict[\"request_user\"]= request_user\r\n      # Obtain our Response object early so we can add cookie information.\r\n    response = render(request, 'inquizitive/home.html', context_dict)\r\n      # Call the helper function to handle the cookies\r\n    visitor_cookie_handler(request)\r\n    context_dict['visits'] = request.session['visits']\r\n    # Return response back to the user, updating any cookies that need changed.\r\n    return response\r\n    #return render(request, 'inquizitive/home.html', context_dict)\r\n\r\n \r\n\r\n\r\n\r\n# A helper method\r\ndef get_server_side_cookie(request, cookie, default_val=None): \r\n    val = request.session.get(cookie)\r\n    if not val:\r\n        val = default_val \r\n    return val\r\n# Updated the function definition\r\ndef visitor_cookie_handler(request ):\r\n    visits = int(get_server_side_cookie(request, 'visits', '1')) \r\n    last_visit_cookie = get_server_side_cookie(request, 'last_visit',  str(datetime.now()))\r\n    last_visit_time = datetime.strptime(last_visit_cookie[:-7],'%Y-%m-%d %H:%M:%S')\r\n    # If it's been more than a day since the last visit...\r\n     \r\n    if (datetime.now() - last_visit_time).seconds > 3600:\r\n        visits = visits + 1\r\n        # Update the last visit cookie now that we have updated the count \r\n        request.session['last_visit'] = str(datetime.now())\r\n    else:\r\n        # Set the last visit cookie \r\n        request.session['last_visit'] = last_visit_cookie\r\n    # Update/set the visits cookie\r\n    request.session['visits'] = visits\r\n\r\n\r\ndef login_user (request):\r\n\tif request.method == 'POST': #if someone fills out form , Post it \r\n\t\tusername = request.POST['username']\r\n\t\tpassword = request.POST['password']\r\n\t\tuser = authenticate(request, username=username, password=password)\r\n\t\tif user is not None:# if user exist\r\n\t\t\tlogin(request, user)\r\n\t\t\tmessages.success(request,('Login Successful'))\r\n\t\t\treturn redirect('home') #routes to 'home' on successful login  \r\n\t\telse:\r\n\t\t\tmessages.success(request,('Error logging in'))\r\n\t\t\treturn redirect('login') #re routes to login page upon unsucessful login\r\n\telse:\r\n\t\treturn render(request, 'inquizitive/login.html', {})\r\n\r\n\r\ndef logout_user(request):\r\n\tlogout(request)\r\n\tmessages.success(request,('You are now logged out'))\r\n\treturn redirect('home')\r\n\r\n\r\ndef register_user(request):\r\n\tif request.method =='POST':\r\n\t\tform = SignUpForm(request.POST)\r\n\t\tif form.is_valid():\r\n\t\t\tform.save()\r\n\t\t\tusername = form.cleaned_data['username']\r\n\t\t\tpassword = form.cleaned_data['password1']\r\n\t\t\tuser = authenticate(username=username, password=password)\r\n\t\t\tlogin(request,user)\r\n\t\t\tmessages.success(request, ('Youre now registered'))\r\n\t\t\treturn redirect('home')\r\n\telse: \r\n\t\tform = SignUpForm() \r\n\r\n\tcontext = {'form': form}\r\n\treturn render(request, 'inquizitive/register.html', context)\r\n\r\n@login_required\r\ndef user_account(request):\r\n    return render(request, 'inquizitive/user_account.html')\r\n\r\ndef edit_profile(request):\r\n\tif request.method =='POST':\r\n\t\tform = EditProfileForm(request.POST, instance= request.user)\r\n\t\tif form.is_valid():\r\n\t\t\tform.save()\r\n\t\t\tmessages.success(request, ('You have edited your profile'))\r\n\t\t\treturn redirect('home')\r\n\telse: \t\t#passes in user information \r\n\t\tform = EditProfileForm(instance= request.user) \r\n\r\n\tcontext = {'form': form}\r\n\treturn render(request, 'inquizitive/edit_profile.html', context)\r\n\t\r\n\r\ndef change_password(request):\r\n\tif request.method =='POST':\r\n\t\tform = PasswordChangeForm(data=request.POST, user= request.user)\r\n\t\tif form.is_valid():\r\n\t\t\tform.save()\r\n\t\t\tupdate_session_auth_hash(request, form.user)\r\n\t\t\tmessages.success(request, ('You have edited your password'))\r\n\t\t\treturn redirect('home')\r\n\telse: \t\t#passes in user information \r\n\t\tform = PasswordChangeForm(user= request.user) \r\n\r\n\tcontext = {'form': form}\r\n\treturn render(request, 'inquizitive/change_password.html', context)\r\n\r\n\r\n \r\ndef creating_quiz(request): \r\n    user=request.user\r\n    form = CreateAQuizForm()\r\n    \r\n    if request.method == 'POST':\r\n        form = CreateAQuizForm(request.POST)\r\n        if form.is_valid():\r\n            form.save(commit=True)\r\n            return redirect(reverse('home')) ### not sure about this\r\n        else:\r\n            form=CreateAQuizForm()\r\n    visitor_cookie_handler(request)\r\n   \r\n    context = {'form': form,'visits':request.session['visits']}\r\n   # context['visits'] = request.session['visits']\r\n    return render(request, 'inquizitive/creating_quiz.html', context)\r\n\r\n \r\ndef adding_questions(request, quiz_name_slug): \r\n    try:\r\n        quiz = Quiz.objects.get(slug=quiz_name_slug) \r\n    except Quiz.DoesNotExist:\r\n        quiz=None\r\n    if quiz is None:\r\n        return redirect('/inquizitive/creating_quiz/')\r\n    form = AddAQuestionForm()\r\n    if request.method == 'POST':\r\n        form =  AddAQuestionForm(request.POST)\r\n \r\n    context = {'form': form, 'quiz':quiz}\r\n\r\n    QuestionFormSet = formset_factory(AddAQuestionForm, extra = quiz.numOfQue )\r\n    formset = QuestionFormSet(request.POST or None)\r\n\r\n    if formset.is_valid():\r\n         for form in formset:\r\n             if form.is_valid(): \r\n                 if quiz:\r\n                     question = form.save(commit=False)\r\n                     question.quiz = quiz\r\n                     question.save()\r\n                     redirect(reverse('show_quiz1', kwargs={'quiz_name_slug': quiz_name_slug}))\r\n             else: \r\n                 print(form.errors)\r\n\r\n\r\n    context['formset'] = formset\r\n\r\n    return render(request, 'inquizitive/adding_questions.html', context)\r\n\r\n    \r\n \r\n\r\n \r\n \r\ndef show_quiz1(request, quiz_name_slug):\r\n    if request.session.test_cookie_worked(): \r\n        print(\"TEST COOKIE WORKED!\") \r\n        request.session.delete_test_cookie()\r\n        \r\n        \r\n    context_dict = {}\r\n    try:\r\n        #if request.method == 'POST':\r\n            quiz = Quiz.objects.get(slug=quiz_name_slug)\r\n            context_dict['quizName'] = quiz.quizName\r\n            questions = Question.objects.filter(quiz=quiz)\r\n            context_dict['questions'] = questions\r\n            context_dict['quiz'] = quiz\r\n            context_dict['numOfQue']= quiz.numOfQue\r\n            context_dict['optionsList']=[Question.optiona,Question.optionb,Question.optionc,Question.optiond]\r\n     \r\n        \r\n    except Quiz.DoesNotExist:\r\n \r\n        context_dict['category'] = None\r\n        context_dict['questions'] = None\r\n    # Go render the response and return it to the client.\r\n\r\n    return render(request, 'inquizitive/quiz.html', context=context_dict)\r\n\r\ndef quizResults(request,quiz_name_slug):\r\n    \r\n     context_dict = {}\r\n     context2 = {}\r\n     try:\r\n        quiz = Quiz.objects.get(slug=quiz_name_slug)\r\n       # print(quiz.slug)\r\n        questions = Question.objects.filter(quiz=quiz)\r\n        #choice_set= [Question.optiona,Question.optionb,Question.optionc,Question.optiond]\r\n        #context_dict['quizName'] = quiz.quizName\r\n        #context_dict['questions'] = questions\r\n        #context_dict['quiz'] = quiz\r\n        #context_dict['numOfQue']= quiz.numOfQue\r\n        score =0\r\n        maxPossibleScore=0\r\n        #print(questions)\r\n        for question in questions:\r\n            #print(\"in questions loop\")\r\n            #print(question.questionMarks)\r\n            maxPossibleScore+=question.questionMarks\r\n           # choice_set= [question.optiona,question.optionb,question.optionc,question.optiond]\r\n           # selected_choice = question.choice_set.get(request.POST['choice'])\r\n            #print(\"correct answer\" , question.correctAnswer )\r\n\r\n           # print(request.POST)\r\n            if question.correctAnswer ==  request.POST.get(request.POST[question.questionText]):\r\n                #print(\"in if statement\")\r\n                score+=question.questionMarks\r\n            context2 = {\r\n                'score':score}\r\n        return render(request,'inquizitive/quizResults.html',context2)\r\n            \r\n     except Exception as e:\r\n         print(e)\r\n         return render(request, 'inquizitive/quiz.html', context=context_dict)\r\n     else:\r\n         return render(request, 'inquizitive/quiz.html', context=context_dict)\r\n     \r\n     \r\n            \r\n            \r\n \r\n# This view handles both allowing the user to answer and displaying the results\r\n# The above results view could be removed \r\ndef answerQuiz(request, quiz_name_slug):\r\n    quiz = Quiz.objects.get(slug=quiz_name_slug)\r\n    #quiz.process_likes()\r\n    #quiz.save()\r\n    if request.method == 'POST':\r\n        print(request.POST)\r\n        questions = Question.objects.filter(quiz=quiz)\r\n        score=0\r\n        total=0\r\n        \r\n        for question in questions:\r\n            total+=question.questionMarks\r\n            print(request.POST.get(str(question.questionText)))\r\n            print(question.correctAnswer)\r\n            print()\r\n            if question.correctAnswer ==  request.POST.get(question.questionText):\r\n                score+=question.questionMarks\r\n                \r\n        if total!=0:    \r\n            percent = score/(total) *100\r\n        else:\r\n            percent=0\r\n        context = {\r\n           # 'time': request.POST.get('timer'),\r\n            'percent':percent\r\n        }\r\n        return render(request,'inquizitive/quizResults.html',context)\r\n    else:\r\n            context_dict = {}\r\n            quiz = Quiz.objects.get(slug=quiz_name_slug)\r\n            context_dict['quizName'] = quiz.quizName\r\n            questions = Question.objects.filter(quiz=quiz)\r\n            context_dict['questions'] = questions\r\n            context_dict['quiz'] = quiz\r\n            context_dict['numOfQue']= quiz.numOfQue\r\n            context_dict['optionsList']=Question.optionsList\r\n            #[Question.optiona,Question.optionb,Question.optionc,Question.optiond]\r\n            context_dict['correctAnswer']=Question.correctAnswer\r\n \r\n            return render(request, 'inquizitive/answerQuiz.html', context_dict) \r\n\r\n\r\n\r\n\r\n\r\n\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/inquizitive/views.py b/inquizitive/views.py
+--- a/inquizitive/views.py	(revision 1856352aefd1290d38c4a30706fa1302372d9ebd)
++++ b/inquizitive/views.py	(date 1648068793643)
+@@ -1,5 +1,5 @@
+ 
+-   
++
+ from django.contrib.auth.decorators import login_required
+ from django.http import HttpResponse
+ from django.shortcuts import render, redirect
+@@ -32,10 +32,6 @@
+     request.session.set_test_cookie()
+     request_user = request.user
+     
+-    
+-  
+-    
+-    
+     print("Request")
+     print(request_user)
+     print("creator")
+@@ -60,14 +56,14 @@
+ 
+ 
+ # A helper method
+-def get_server_side_cookie(request, cookie, default_val=None): 
++def get_server_side_cookie(request, cookie, default_val=None):
+     val = request.session.get(cookie)
+     if not val:
+-        val = default_val 
++        val = default_val
+     return val
+ # Updated the function definition
+ def visitor_cookie_handler(request ):
+-    visits = int(get_server_side_cookie(request, 'visits', '1')) 
++    visits = int(get_server_side_cookie(request, 'visits', '1'))
+     last_visit_cookie = get_server_side_cookie(request, 'last_visit',  str(datetime.now()))
+     last_visit_time = datetime.strptime(last_visit_cookie[:-7],'%Y-%m-%d %H:%M:%S')
+     # If it's been more than a day since the last visit...
+@@ -84,14 +80,14 @@
+ 
+ 
+ def login_user (request):
+-	if request.method == 'POST': #if someone fills out form , Post it 
++	if request.method == 'POST': #if someone fills out form , Post it
+ 		username = request.POST['username']
+ 		password = request.POST['password']
+ 		user = authenticate(request, username=username, password=password)
+ 		if user is not None:# if user exist
+ 			login(request, user)
+ 			messages.success(request,('Login Successful'))
+-			return redirect('home') #routes to 'home' on successful login  
++			return redirect('home') #routes to 'home' on successful login
+ 		else:
+ 			messages.success(request,('Error logging in'))
+ 			return redirect('login') #re routes to login page upon unsucessful login
+@@ -116,29 +112,37 @@
+ 			login(request,user)
+ 			messages.success(request, ('Youre now registered'))
+ 			return redirect('home')
+-	else: 
+-		form = SignUpForm() 
++	else:
++		form = SignUpForm()
+ 
+ 	context = {'form': form}
+ 	return render(request, 'inquizitive/register.html', context)
+ 
++
+ @login_required
+ def user_account(request):
+     return render(request, 'inquizitive/user_account.html')
+ 
++
+ def edit_profile(request):
+ 	if request.method =='POST':
+ 		form = EditProfileForm(request.POST, instance= request.user)
++        p_form = ProfilePicUpdateForm(request.POST,
++                                      request.FILES,
++                                      instance=request.user.profile)
+ 		if form.is_valid():
+ 			form.save()
++            p_form.save()
+ 			messages.success(request, ('You have edited your profile'))
+-			return redirect('home')
+-	else: 		#passes in user information 
+-		form = EditProfileForm(instance= request.user) 
++			return redirect('user_account')
++	else: 		#passes in user information
++		form = EditProfileForm(instance= request.user)
++        p_form = ProfilePicUpdateForm(instance=request.user.profile)
+ 
+-	context = {'form': form}
++	context = {'form': form,
++               }
+ 	return render(request, 'inquizitive/edit_profile.html', context)
+-	
++
+ 
+ def change_password(request):
+ 	if request.method =='POST':
+@@ -148,8 +152,8 @@
+ 			update_session_auth_hash(request, form.user)
+ 			messages.success(request, ('You have edited your password'))
+ 			return redirect('home')
+-	else: 		#passes in user information 
+-		form = PasswordChangeForm(user= request.user) 
++	else: 		#passes in user information
++		form = PasswordChangeForm(user= request.user)
+ 
+ 	context = {'form': form}
+ 	return render(request, 'inquizitive/change_password.html', context)
+@@ -174,7 +178,7 @@
+     return render(request, 'inquizitive/creating_quiz.html', context)
+ 
+  
+-def adding_questions(request, quiz_name_slug): 
++def adding_questions(request, quiz_name_slug):
+     try:
+         quiz = Quiz.objects.get(slug=quiz_name_slug) 
+     except Quiz.DoesNotExist:
+@@ -184,7 +188,7 @@
+     form = AddAQuestionForm()
+     if request.method == 'POST':
+         form =  AddAQuestionForm(request.POST)
+- 
++
+     context = {'form': form, 'quiz':quiz}
+ 
+     QuestionFormSet = formset_factory(AddAQuestionForm, extra = quiz.numOfQue )
+@@ -192,7 +196,7 @@
+ 
+     if formset.is_valid():
+          for form in formset:
+-             if form.is_valid(): 
++             if form.is_valid():
+                  if quiz:
+                      question = form.save(commit=False)
+                      question.quiz = quiz
+@@ -212,8 +216,8 @@
+  
+  
+ def show_quiz1(request, quiz_name_slug):
+-    if request.session.test_cookie_worked(): 
+-        print("TEST COOKIE WORKED!") 
++    if request.session.test_cookie_worked():
++        print("TEST COOKIE WORKED!")
+         request.session.delete_test_cookie()
+         
+         
+@@ -280,7 +284,7 @@
+             
+  
+ # This view handles both allowing the user to answer and displaying the results
+-# The above results view could be removed 
++# The above results view could be removed
+ def answerQuiz(request, quiz_name_slug):
+     quiz = Quiz.objects.get(slug=quiz_name_slug)
+     #quiz.process_likes()
+@@ -290,7 +294,7 @@
+         questions = Question.objects.filter(quiz=quiz)
+         score=0
+         total=0
+-        
++
+         for question in questions:
+             total+=question.questionMarks
+             print(request.POST.get(str(question.questionText)))
+@@ -299,7 +303,7 @@
+             if question.correctAnswer ==  request.POST.get(question.questionText):
+                 score+=question.questionMarks
+                 
+-        if total!=0:    
++        if total!=0:
+             percent = score/(total) *100
+         else:
+             percent=0
+Index: inquizitive/urls.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>from django.urls import path\r\nfrom inquizitive import views\r\nfrom . import views\r\n#from .views import user_account\r\nfrom .views import user_account\r\n\r\n#app_name = 'inquizitive'\r\n\r\nurlpatterns = [\r\n    path('', views.home, name='home'),\r\n    path('login/', views.login_user, name ='login'),\r\n    path('logout/', views.logout_user, name='logout'),\r\n    path('register/', views.register_user, name='register'),\r\n    path('account/', user_account, name='user_account'),\r\n    path('edit_profile/', views.edit_profile, name='edit_profile'),\r\n    path('change_password/', views.change_password, name='change_password'),\r\n    path('inquizitive/creating_quiz/', views.creating_quiz, name='creating_quiz'),\r\n    path('inquizitive/adding_questions/', views.adding_questions, name='adding_questions'),\r\n #   path('inquizitive/quiz/<slug:quiz_name_slug>/', views.show_quiz1,name='show_quiz1'),\r\n    path('inquizitive/quiz/<slug:quiz_name_slug>/', views.show_quiz1, name='show_quiz1'),\r\n    path('inquizitive/quiz/<slug:quiz_name_slug>/adding_questions/',views.adding_questions, name='adding_questions'),\r\n    path('inquizitive/<slug:quiz_name_slug>/quizResults/', views.quizResults, name='quizResults'),\r\n    path('inquizitive/<slug:quiz_name_slug>/answerQuiz/', views.answerQuiz, name='answerQuiz'),\r\n \r\n]\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/inquizitive/urls.py b/inquizitive/urls.py
+--- a/inquizitive/urls.py	(revision 1856352aefd1290d38c4a30706fa1302372d9ebd)
++++ b/inquizitive/urls.py	(date 1648067592048)
+@@ -3,6 +3,8 @@
+ from . import views
+ #from .views import user_account
+ from .views import user_account
++from django.conf import settings
++from django.conf.urls.static import static
+ 
+ #app_name = 'inquizitive'
+ 
+@@ -22,4 +24,4 @@
+     path('inquizitive/<slug:quiz_name_slug>/quizResults/', views.quizResults, name='quizResults'),
+     path('inquizitive/<slug:quiz_name_slug>/answerQuiz/', views.answerQuiz, name='answerQuiz'),
+  
+-]
++] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+Index: inquizitive/templates/inquizitive/base.html
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><!doctype html>\r\n<html lang=\"en\">\r\n  <head>\r\n    <!-- Required meta tags -->\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1, shrink-to-fit=no\">\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n    <!-- Bootstrap CSS -->\r\n    <link rel=\"stylesheet\" href=\"https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css\" integrity=\"sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T\" crossorigin=\"anonymous\">\r\n\r\n    <title>Inquizitive</title>\r\n\r\n    <title>inQuisitive</title>\r\n\r\n    <style>\t\r\n        .question{color:white; font-weight: bold;}\r\n\r\n        body\t{\t\r\n\t\t\t\tbackground-color:\t#141313e5;\t\r\n\t\t\t\tcolor\t:\trgb(219, 209, 209)\t\r\n        }\t\r\n    </style>\r\n  </head>\r\n  <body>\r\n\r\n    <nav class=\"navbar navbar-expand-lg navbar-dark bg-dark\">\r\n  <a class=\"navbar-brand\" href=\"{% url 'home'  %}\">Home</a>\r\n  <button class=\"navbar-toggler\" type=\"button\" data-toggle=\"collapse\" data-target=\"#navbarSupportedContent\" aria-controls=\"navbarSupportedContent\" aria-expanded=\"false\" aria-label=\"Toggle navigation\">\r\n    <span class=\"navbar-toggler-icon\"></span>\r\n  </button>\r\n\r\n  <div class=\"collapse navbar-collapse\" id=\"navbarSupportedContent\">\r\n    <ul class=\"navbar-nav ml-auto\">\r\n      \r\n      {# Will know if user is logged in or not#}\r\n      {% if user.is_authenticated %}\r\n\r\n      <li class=\"nav-item active\">\r\n        <a class=\"nav-link\" href=\"{% url 'logout' %}\">Logout</a>\r\n      </li>\r\n      <li class=\"nav-item active\">\r\n        <a class=\"nav-link\" href=\"{% url 'user_account' %}\">My Account</a>\r\n \r\n      </li>\r\n\r\n      \r\n      \r\n      {% else %}\r\n      <li class=\"nav-item active\">\r\n        <a class=\"nav-link\" href=\"{% url 'login' %}\">Login</a>\r\n \r\n      </li>\r\n\r\n        <li class=\"nav-item active\">\r\n        <a class=\"nav-link\" href=\"{% url 'register' %}\">Register</a>\r\n      </li>\r\n\r\n      {% endif%}\r\n     \r\n    </ul>\r\n    \r\n  </div>\r\n</nav>\r\n      <br/>\r\n      <div class =\"container\">\r\n        {% if messages %}\r\n          {% for message in messages %}\r\n            <div class=\"alert alert-danger alart-dismissable\" role =\"alert\">\r\n                <button class=\"close\" data-dismiss=\"alert\">\r\n                    <small><sup>x</sup></small>\r\n                  </button>\r\n                {{ message }}\r\n              </div>\r\n            {% endfor%}\r\n          {% endif %}\r\n\r\n\r\n    {% block content %}\r\n    {% endblock %}\r\n      </div>\r\n\r\n    <!-- Optional JavaScript -->\r\n    <!-- jQuery first, then Popper.js, then Bootstrap JS -->\r\n    <script src=\"https://code.jquery.com/jquery-3.3.1.slim.min.js\" integrity=\"sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo\" crossorigin=\"anonymous\"></script>\r\n    <script src=\"https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js\" integrity=\"sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1\" crossorigin=\"anonymous\"></script>\r\n    <script src=\"https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js\" integrity=\"sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM\" crossorigin=\"anonymous\"></script>\r\n  </body>\r\n</html>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/inquizitive/templates/inquizitive/base.html b/inquizitive/templates/inquizitive/base.html
+--- a/inquizitive/templates/inquizitive/base.html	(revision 1856352aefd1290d38c4a30706fa1302372d9ebd)
++++ b/inquizitive/templates/inquizitive/base.html	(date 1648064658506)
+@@ -51,7 +51,6 @@
+       </li>
+       <li class="nav-item active">
+         <a class="nav-link" href="{% url 'user_account' %}">My Account</a>
+- 
+       </li>
+ 
+       
+Index: inquizitive/templates/inquizitive/user_quizzes_taken.html
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/inquizitive/templates/inquizitive/user_quizzes_taken.html b/inquizitive/templates/inquizitive/user_quizzes_taken.html
+new file mode 100644
+--- /dev/null	(date 1648064658492)
++++ b/inquizitive/templates/inquizitive/user_quizzes_taken.html	(date 1648064658492)
+@@ -0,0 +1,6 @@
++{% extends 'inquizitive/user_base.html' %}
++
++{% block content %}
++{{super.block}}
++
++{%endblock}
+\ No newline at end of file
+Index: inquizitive/templates/inquizitive/user_account.html
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>{% extends 'inquizitive/base.html' %}\r\n\r\n{% block content %}\r\n    <div class=\"row my-3 p-3\">\r\n        <h1>{{ user.username }}'s Account</h1>\r\n    </div>\r\n\r\n    <style>\r\n\r\n    </style>\r\n\r\n\r\n    <div id=\"mySidenav\" class=\"sidenav\">\r\n<!--      <a href=\"javascript:void(0)\" class=\"closebtn\" onclick=\"closeNav()\">&times;</a>-->\r\n      <img src=\"default.jpg\" alt=\"Avatar\" class=\"avatar\"><br>\r\n        <style>\r\n            .avatar {\r\n            vertical-align: middle;\r\n            width: 50px;\r\n            height: 50px;\r\n            border-radius: 50%;\r\n            }\r\n        </style>\r\n      <a href=\"#\">My Quizzes</a><br>\r\n      <a href=\"#\">Create A Quiz</a><br>\r\n      <a href=\"#\">My Completed Quizzes</a><br>\r\n      <a href=\"#\">Manage Account</a><br>\r\n    </div>\r\n\r\n    <div id=\"main\">\r\n      ...\r\n    </div>\r\n\r\n{% endblock %}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/inquizitive/templates/inquizitive/user_account.html b/inquizitive/templates/inquizitive/user_account.html
+--- a/inquizitive/templates/inquizitive/user_account.html	(revision 1856352aefd1290d38c4a30706fa1302372d9ebd)
++++ b/inquizitive/templates/inquizitive/user_account.html	(date 1648062356478)
+@@ -1,34 +1,25 @@
+-{% extends 'inquizitive/base.html' %}
++{% extends 'inquizitive/user_base.html' %}
+ 
+ {% block content %}
+-    <div class="row my-3 p-3">
+-        <h1>{{ user.username }}'s Account</h1>
+-    </div>
+-
+-    <style>
+-
+-    </style>
+-
+-
+-    <div id="mySidenav" class="sidenav">
+-<!--      <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>-->
+-      <img src="default.jpg" alt="Avatar" class="avatar"><br>
+-        <style>
+-            .avatar {
+-            vertical-align: middle;
+-            width: 50px;
+-            height: 50px;
+-            border-radius: 50%;
+-            }
+-        </style>
+-      <a href="#">My Quizzes</a><br>
+-      <a href="#">Create A Quiz</a><br>
+-      <a href="#">My Completed Quizzes</a><br>
+-      <a href="#">Manage Account</a><br>
+-    </div>
++{{block.super}}
+ 
+     <div id="main">
+-      ...
++
++        {% if quizzes %}
++        <br> <h2>Quizzes</h2>
++        <ul>
++        {% for quiz in quizzes %}
++        <li>
++            <a href="/inquizitive/quiz/{{ quiz.slug }}/">{{ quiz.quizName }}</a> </li>
++
++        {% endfor %}
++        </li>
++        </ul>
++        {% else %}
++        <strong>You haven't created any quizzes yet!</strong> <br>
++
++        {% endif %}
++
+     </div>
+ 
+ {% endblock %}
+\ No newline at end of file
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"ChangeListManager\">\r\n    <list default=\"true\" id=\"e2a9738e-7f47-459d-95c1-91514387495d\" name=\"Default Changelist\" comment=\"Hopefully fixed the overwrite issue.\">\r\n      <change afterPath=\"$PROJECT_DIR$/inquizitive/templates/inquizitive/user_account.html\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/inquizitive/admin.py\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/inquizitive/admin.py\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/inquizitive/forms.py\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/inquizitive/forms.py\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/inquizitive/models.py\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/inquizitive/models.py\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/inquizitive/templates/inquizitive/base.html\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/inquizitive/templates/inquizitive/base.html\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/inquizitive/templates/inquizitive/home.html\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/inquizitive/templates/inquizitive/home.html\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/inquizitive/templates/inquizitive/my_profile.html\" beforeDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/inquizitive/urls.py\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/inquizitive/urls.py\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/inquizitive/views.py\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/inquizitive/views.py\" afterDir=\"false\" />\r\n    </list>\r\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\r\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\r\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\r\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\r\n  </component>\r\n  <component name=\"FileTemplateManagerImpl\">\r\n    <option name=\"RECENT_TEMPLATES\">\r\n      <list>\r\n        <option value=\"Python Script\" />\r\n      </list>\r\n    </option>\r\n  </component>\r\n  <component name=\"Git.Settings\">\r\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\r\n    <option name=\"RESET_MODE\" value=\"HARD\" />\r\n  </component>\r\n  <component name=\"ProjectId\" id=\"25jlUQRtSuOulNUZmpHVMlJZ1za\" />\r\n  <component name=\"ProjectViewState\">\r\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\r\n    <option name=\"showLibraryContents\" value=\"true\" />\r\n  </component>\r\n  <component name=\"PropertiesComponent\">\r\n    <property name=\"RunOnceActivity.OpenProjectViewOnStart\" value=\"true\" />\r\n    <property name=\"RunOnceActivity.ShowReadmeOnStart\" value=\"true\" />\r\n    <property name=\"last_opened_file_path\" value=\"$PROJECT_DIR$/../tango_with_django_project\" />\r\n    <property name=\"settings.editor.selected.configurable\" value=\"com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable\" />\r\n  </component>\r\n  <component name=\"RecentsManager\">\r\n    <key name=\"MoveFile.RECENT_KEYS\">\r\n      <recent name=\"C:\\Users\\eesse\\inquizitive_wad2_project\\media\\profile_images\" />\r\n      <recent name=\"C:\\Users\\eesse\\inquizitive_wad2_project\\inquizitive\\templates\\inquizitive\" />\r\n      <recent name=\"C:\\Users\\eesse\\inquizitive_wad2_project\\inquizitive\\templates\" />\r\n      <recent name=\"C:\\Users\\eesse\\inquizitive_wad2_project\\inquizitive\" />\r\n      <recent name=\"C:\\Users\\eesse\\inquizitive_wad2_project\" />\r\n    </key>\r\n  </component>\r\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\r\n  <component name=\"TaskManager\">\r\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\r\n      <changelist id=\"e2a9738e-7f47-459d-95c1-91514387495d\" name=\"Default Changelist\" comment=\"\" />\r\n      <created>1646048393953</created>\r\n      <option name=\"number\" value=\"Default\" />\r\n      <option name=\"presentableId\" value=\"Default\" />\r\n      <updated>1646048393953</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00001\" summary=\"Score, user and ratings models\">\r\n      <created>1646321117347</created>\r\n      <option name=\"number\" value=\"00001\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00001\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1646321117347</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00002\" summary=\"Added pop script and a couple of minor edits.\">\r\n      <created>1647266419416</created>\r\n      <option name=\"number\" value=\"00002\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00002\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1647266419416</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00003\" summary=\"Added pop script and a couple of minor edits.\">\r\n      <created>1647266463957</created>\r\n      <option name=\"number\" value=\"00003\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00003\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1647266463957</updated>\r\n    </task>\r\n    <option name=\"localTasksCounter\" value=\"4\" />\r\n    <servers />\r\n  </component>\r\n  <component name=\"Vcs.Log.Tabs.Properties\">\r\n    <option name=\"TAB_STATES\">\r\n      <map>\r\n        <entry key=\"MAIN\">\r\n          <value>\r\n            <State />\r\n          </value>\r\n        </entry>\r\n      </map>\r\n    </option>\r\n    <option name=\"oldMeFiltersMigrated\" value=\"true\" />\r\n  </component>\r\n  <component name=\"VcsManagerConfiguration\">\r\n    <MESSAGE value=\"Score, user and ratings models\" />\r\n    <MESSAGE value=\"Added pop script and a couple of minor edits.\" />\r\n    <MESSAGE value=\"Hopefully fixed the overwrite issue.\" />\r\n    <option name=\"LAST_COMMIT_MESSAGE\" value=\"Hopefully fixed the overwrite issue.\" />\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	(revision 1856352aefd1290d38c4a30706fa1302372d9ebd)
++++ b/.idea/workspace.xml	(date 1648067592093)
+@@ -2,13 +2,16 @@
+ <project version="4">
+   <component name="ChangeListManager">
+     <list default="true" id="e2a9738e-7f47-459d-95c1-91514387495d" name="Default Changelist" comment="Hopefully fixed the overwrite issue.">
+-      <change afterPath="$PROJECT_DIR$/inquizitive/templates/inquizitive/user_account.html" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/inquizitive/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/inquizitive/admin.py" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/inquizitive/signals.py" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/inquizitive/templates/inquizitive/user_base.html" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/inquizitive/templates/inquizitive/user_quizzes_taken.html" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/inquizitive/apps.py" beforeDir="false" afterPath="$PROJECT_DIR$/inquizitive/apps.py" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/inquizitive/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/inquizitive/forms.py" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/inquizitive/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/inquizitive/models.py" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/inquizitive/templates/inquizitive/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/inquizitive/templates/inquizitive/base.html" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/inquizitive/templates/inquizitive/home.html" beforeDir="false" afterPath="$PROJECT_DIR$/inquizitive/templates/inquizitive/home.html" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/inquizitive/templates/inquizitive/my_profile.html" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/inquizitive/templates/inquizitive/edit_profile.html" beforeDir="false" afterPath="$PROJECT_DIR$/inquizitive/templates/inquizitive/edit_profile.html" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/inquizitive/templates/inquizitive/user_account.html" beforeDir="false" afterPath="$PROJECT_DIR$/inquizitive/templates/inquizitive/user_account.html" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/inquizitive/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/inquizitive/urls.py" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/inquizitive/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/inquizitive/views.py" afterDir="false" />
+     </list>
+@@ -20,6 +23,7 @@
+   <component name="FileTemplateManagerImpl">
+     <option name="RECENT_TEMPLATES">
+       <list>
++        <option value="HTML File" />
+         <option value="Python Script" />
+       </list>
+     </option>
+@@ -34,9 +38,10 @@
+     <option name="showLibraryContents" value="true" />
+   </component>
+   <component name="PropertiesComponent">
++    <property name="DefaultHtmlFileTemplate" value="HTML File" />
+     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../tango_with_django_project" />
++    <property name="last_opened_file_path" value="$PROJECT_DIR$/inquizitive/templates/inquizitive/user_base.html" />
+     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+   </component>
+   <component name="RecentsManager">
+Index: inquizitive/templates/inquizitive/user_base.html
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/inquizitive/templates/inquizitive/user_base.html b/inquizitive/templates/inquizitive/user_base.html
+new file mode 100644
+--- /dev/null	(date 1648067592033)
++++ b/inquizitive/templates/inquizitive/user_base.html	(date 1648067592033)
+@@ -0,0 +1,44 @@
++{% extends 'inquizitive/base.html' %}
++{% load static %}
++
++{% block content %}
++
++    <div class="row my-3 p-3">
++        <h1>{{ user.username }}'s Account</h1>
++    </div>
++
++    <style>
++
++    </style>
++
++
++    <div id="mySidenav" class="sidenav">
++<!--      <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>-->
++      <img class="rounded-circle account-img" src={{ user.profile.image.url }}><br>
++<!--        <style>-->
++<!--            .avatar {-->
++<!--            vertical-align: middle;-->
++<!--            width: 50px;-->
++<!--            height: 50px;-->
++<!--            border-radius: 50%;-->
++<!--            }-->
++<!--        </style>-->
++      <a href="#">My Quizzes</a><br>
++        <a class="nav-link" href="{% url 'creating_quiz' %}">Create A Quiz</a>
++      <a href="#">My Completed Quizzes</a><br>
++        <a class="nav-link" href="{% url 'edit_profile' %}">Edit Account</a>
++    </div>
++
++    <form method="POST" enctype="multipart/form-data">
++        {% csrf_token %}
++        <fieldset class="form-group">
++            <legend class="border-bottom mb-4">Profile Info</legend>
++            {{ form|crispy }}
++            {{ p_form|crispy }}
++        </fieldset>
++        <div class="form-group">
++            <button class="btn btn-outline-info" type="submit">Update</button>
++        </div>
++    </form>
++
++{% endblock %}
+Index: inquizitive/signals.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/inquizitive/signals.py b/inquizitive/signals.py
+new file mode 100644
+--- /dev/null	(date 1648067592027)
++++ b/inquizitive/signals.py	(date 1648067592027)
+@@ -0,0 +1,15 @@
++from django.db.models.signals import post_save
++from django.contrib.auth.models import User
++from django.dispatch import receiver
++from .models import UserProfile
++
++
++@receiver(post_save, sender=User)
++def create_profile(sender, instance, created, **kwargs):
++    if created:
++        UserProfile.objects.create(user=instance)
++
++
++@receiver(post_save, sender=User)
++def save_profile(sender, instance, **kwargs):
++    instance.profile.save()
+\ No newline at end of file
+Index: inquizitive/templates/inquizitive/edit_profile.html
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>{% extends 'inquizitive/base.html' %}\r\n\r\n{% block content %}\r\n\r\n\r\n\r\n\r\n<h2 class =\"text-center\"> Edit Profile </h2>\r\n\r\n\r\n<form method=\"POST\" action=\"{% url 'edit_profile' %}\">\r\n\t\t{% csrf_token %}\r\n\r\n\t\t{% if form.errors %}\r\n\r\n\t\t      <div class=\"alert alert-danger alart-dismissable\" role =\"alert\">\r\n                <button class=\"close\" data-dismiss=\"alert\">\r\n                    <small><sup>x</sup></small>\r\n                  </button>\r\n               \r\n\r\n               {% for field in form %}\r\n               \t{% if field.errors %}\r\n               \t\t{{ field.errors }}\r\n               \t{% endif%}\r\n\r\n               \t{% endfor %}\r\n\r\n\r\n              </div>\r\n\r\n  {% endif %}\r\n\r\n\r\n\t\t{{ form.as_p }}\r\n\r\n\r\n\t\t<input type=\"submit\" value=\"Edit Profile\" class=\" btn btn-secondary\">\r\n    <p><small><a href=\"{% url 'change_password'%}\">Click here</a> to change your password</small></p> \r\n\t</form>\r\n\r\n{% endblock %}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/inquizitive/templates/inquizitive/edit_profile.html b/inquizitive/templates/inquizitive/edit_profile.html
+--- a/inquizitive/templates/inquizitive/edit_profile.html	(revision 1856352aefd1290d38c4a30706fa1302372d9ebd)
++++ b/inquizitive/templates/inquizitive/edit_profile.html	(date 1648064658518)
+@@ -2,12 +2,8 @@
+ 
+ {% block content %}
+ 
+-
+-
+-
+ <h2 class ="text-center"> Edit Profile </h2>
+ 
+-
+ <form method="POST" action="{% url 'edit_profile' %}">
+ 		{% csrf_token %}
+ 
+@@ -17,7 +13,6 @@
+                 <button class="close" data-dismiss="alert">
+                     <small><sup>x</sup></small>
+                   </button>
+-               
+ 
+                {% for field in form %}
+                	{% if field.errors %}
+@@ -26,15 +21,12 @@
+ 
+                	{% endfor %}
+ 
+-
+               </div>
+ 
+   {% endif %}
+ 
+-
+ 		{{ form.as_p }}
+ 
+-
+ 		<input type="submit" value="Edit Profile" class=" btn btn-secondary">
+     <p><small><a href="{% url 'change_password'%}">Click here</a> to change your password</small></p> 
+ 	</form>

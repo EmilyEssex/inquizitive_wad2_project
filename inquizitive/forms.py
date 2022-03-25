@@ -20,6 +20,12 @@ class EditProfileForm(UserChangeForm):
 		fields = ('username', 'first_name', 'last_name', 'email','password',)
 
 
+class UpdateImageForm(forms.ModelForm):
+    class Meta:
+        model = UserProfile
+        fields = ('profile_pic',)
+
+
 class SignUpForm(UserCreationForm):
 	email = forms.EmailField(label="", widget=forms.TextInput(attrs={'class':'form-control', 'placeholder':'Email Address'}), )
 	first_name = forms.CharField(label="", max_length=100, widget=forms.TextInput(attrs={'class':'form-control', 'placeholder':'First Name'}))

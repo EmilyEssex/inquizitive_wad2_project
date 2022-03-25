@@ -1,10 +1,17 @@
-{% extends 'inquizitive/base.html' %}
+{% extends 'inquizitive/user_base.html' %}
 
 {% block content %}
+{{ block.super }}
 
 <h2 class ="text-center"> Edit Profile </h2>
 
-<form method="POST" action="{% url 'edit_profile' %}">
+<style>
+	form.edit {
+		margin-left: 250px;
+		}
+</style>
+
+<form class="edit" method="POST" action="{% url 'edit_profile' %}">
 		{% csrf_token %}
 
 		{% if form.errors %}

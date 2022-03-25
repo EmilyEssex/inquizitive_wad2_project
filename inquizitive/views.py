@@ -4,10 +4,10 @@ from django.shortcuts import render, redirect , get_object_or_404
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash 
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm, PasswordChangeForm
 from django.contrib import messages 
-from .forms import SignUpForm, EditProfileForm 
+from .forms import SignUpForm, EditProfileForm, UpdateImageForm
 from inquizitive.forms import CreateAQuizForm,  AddAQuestionForm , TakeQuizForm
 from django.shortcuts import redirect
-from .models import Quiz, Question
+from .models import Quiz, Question, UserProfile
 from django.urls import reverse
 from datetime import datetime
 from django.forms import formset_factory 
@@ -107,6 +107,25 @@ def user_account(request):
     context_dict={}
     context_dict['quizzes'] = quizzes_list
     return render(request, 'inquizitive/user_account.html',context_dict)
+
+@login_required
+def update_image(request):
+
+    user_profile = UserProfile.objects.get(user=request.user)
+
+    if request.method == "POST":
+        image_form = UpdateImageForm(data=request.POST, instance=user_profile)
+
+        if image_form.is_valid():
+            profile = image_form.save(commit=False)
+
+            if 'profile_pic' in request.FILES:
+                profile.profile_pic = request.FILES['profile_pic']
+            profile.save()
+    else:
+        image_form = UpdateImageForm(instance=user_profile)
+    return render(request, 'inquizitive/update_image.html', {'update_image_form': image_form})
+
 
 def edit_profile(request):
 	if request.method =='POST':

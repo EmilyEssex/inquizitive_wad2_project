@@ -1,0 +1,232 @@
+Index: inquizitive/models.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>from django.db import models\r\n \r\nfrom django.db import models\r\nfrom django.contrib import admin\r\nfrom django.template.defaultfilters import slugify\r\nfrom django.contrib.auth.models import User\r\nfrom django.contrib.postgres.fields.jsonb import JSONField\r\n#from inquizitive.models import Quiz\r\n \r\n\r\n# Create your models here.\r\nclass UserProfile(models.Model):\r\n    # links UserProfile to a user model instance.\r\n    user = models.OneToOneField(User, on_delete=models.CASCADE)\r\n\r\n    # scores = models.ManyToManyField(Scores) #changed this from userscores to scores\r\n    # ratings = models.ManyToManyField(Ratings) #changed this from user ratings to ratings\r\n    \r\n    profile = models.ImageField(default='default.jpg', upload_to='profile_images')\r\n\r\n    class Meta:\r\n        verbose_name_plural = \"User\"\r\n\r\n    def __str__(self):\r\n        return self.user.username\r\n    # quiz = models.ManyToManyField('quizzes')\r\n\r\n    \r\nDIFFICULTY_CHOICES=[\r\n    ('easy', 'Easy'),\r\n    ('moderate', 'Moderate'),\r\n    ('hard', 'Hard'),\r\n    ]\r\n\r\nclass Quiz(models.Model):\r\n    #user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)\r\n    user=models.ForeignKey(User, on_delete=models.PROTECT, related_name='quizzes', null=True, default=\"\")\r\n    \r\n   # creator = models.ForeignKey(UserProfile, on_delete=models.CASCADE, default=\"default value\")\r\n    quizName= models.CharField(max_length=128, null=True, unique=True)\r\n    quizSubject= models.CharField(max_length=128,null=True)\r\n    \r\n    #privateStatus =models.BooleanField(default=False,help_text=\"Should this quiz only be accessible by a certain group of people?\")\r\n  \r\n    # uniquePasscode=models.CharField(max_length=128, unique=True,blank=True, null=True)\r\n   \r\n    quizDifficulty = models.CharField(max_length=10, choices=(DIFFICULTY_CHOICES), default= DIFFICULTY_CHOICES[0])\r\n    scoreToPass=models.IntegerField(default=0)\r\n    numOfQue=models.IntegerField(default=1)\r\n    #quizQuestions=models.ManyToManyField(Question)\r\n    likes = models.ManyToManyField(User, related_name=(\"quiz_likes\"))\r\n    slug = models.SlugField(unique=True)\r\n    def save(self, *args, **kwargs):\r\n        self.slug = slugify(self.quizName) \r\n        super(Quiz, self).save(*args, **kwargs)\r\n        \r\n    def process_likes(self):\r\n        print(self.likes)\r\n        self.likes += 1\r\n        \r\n \r\n    class Meta:\r\n        verbose_name_plural = 'quizzes'\r\n    def __str__(self):\r\n        return self.quizName\r\n    def get_quiz_questions(self):\r\n        return self.question_set.all()\r\n    \r\n #New for likes    \r\n#class Like(models.Model): \r\n   # user = models.ForeignKey(User, on_delete=models.CASCADE)\r\n   # quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE)   \r\n    \r\n    \r\n    \r\nclass Question(models.Model):\r\n    quiz=models.ForeignKey(Quiz, on_delete=models.CASCADE, related_name=\"question\", null=True)\r\n    questionText= models.CharField(max_length=500, unique=True)\r\n    questionMarks=models.IntegerField(default=1)\r\n   \r\n    #{ \"choices\" : [option 1, option 2, option 3, option 4], \"correct_index\" : 2 }\r\n    #answers = models.JSONField(default = dict)\r\n    optiona=models.CharField(max_length=500,null=True)\r\n    optionb=models.CharField(max_length=500,null=True)\r\n    optionc=models.CharField(max_length=500,null=True)\r\n    optiond=models.CharField(max_length=500,null=True)\r\n    optionsList=[optiona,optionb,optionc,optiond]\r\n    correctAnswer=models.CharField(max_length=500)\r\n    class Meta:\r\n        verbose_name_plural = 'questions'\r\n    def __str__(self):\r\n        return self.questionText\r\n \r\n \r\n \r\n \r\nclass Comment(models.Model):\r\n     commentText= models.CharField(max_length=500, null=True)\r\n    # quiz=models.ForeignKey(Quiz, on_delete=models.CASCADE) \r\n     user=models.ForeignKey(User, on_delete=models.CASCADE) \r\n     #finalScore=models.FloatField(defualt=0)\r\n     class Meta:\r\n        verbose_name_plural = 'comments'\r\n     def __str__(self):\r\n        return self.comment_text\r\n    \r\n \r\n \r\n\r\n#class Scores(models.Model):\r\n   # user = models.ForeignKey(User, on_delete=models.CASCADE)\r\n    #quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE)\r\n\r\n    # default score? If unattempted\r\n    #score = models.FloatField(default=0)\r\n\r\n   # class Meta:\r\n    #    verbose_name_plural = \"Scores\"\r\n\r\n   # def __str__(self):\r\n      #  return self.score\r\n    \r\n    \r\n# i think well remove this as we said the create will choose the difficulty level instead\r\n#class Ratings(models.Model): \r\n    #user = models.ForeignKey(User, on_delete=models.CASCADE)\r\n    #quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE)\r\n    # default rating should just be unrated??\r\n    #rating = models.IntegerField()\r\n\r\n    #class Meta:\r\n    #    verbose_name_plural = \"Ratings\"\r\n\r\n    #def __str__(self):\r\n    #    return self.rating\r\n\r\n\r\n 
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/inquizitive/models.py b/inquizitive/models.py
+--- a/inquizitive/models.py	(revision 6e0c9288b5241fd5ad8b3d4322994f7587cac572)
++++ b/inquizitive/models.py	(date 1648136310689)
+@@ -1,23 +1,26 @@
+ from django.db import models
+- 
++import json
+ from django.db import models
+ from django.contrib import admin
+ from django.template.defaultfilters import slugify
+ from django.contrib.auth.models import User
+-from django.contrib.postgres.fields.jsonb import JSONField
+-#from inquizitive.models import Quiz
+- 
++
++
++# from django.contrib.postgres.fields.jsonb import JSONField
++# from inquizitive.models import Quiz
++
+ 
+ # Create your models here.
+ class UserProfile(models.Model):
+     # links UserProfile to a user model instance.
+     user = models.OneToOneField(User, on_delete=models.CASCADE)
+ 
+-    # scores = models.ManyToManyField(Scores) #changed this from userscores to scores
++    #scores = models.ManyToManyField(Scores) #changed this from userscores to scores
+     # ratings = models.ManyToManyField(Ratings) #changed this from user ratings to ratings
+-    
+-    profile = models.ImageField(default='default.jpg', upload_to='profile_images')
++
++    profile_pic = models.ImageField(default='default.jpg', upload_to='media/profile_images/')
+ 
++
+     class Meta:
+         verbose_name_plural = "User"
+ 
+@@ -25,114 +28,107 @@
+         return self.user.username
+     # quiz = models.ManyToManyField('quizzes')
+ 
+-    
+-DIFFICULTY_CHOICES=[
++
++DIFFICULTY_CHOICES = [
+     ('easy', 'Easy'),
+     ('moderate', 'Moderate'),
+     ('hard', 'Hard'),
+-    ]
++]
+ 
++
+ class Quiz(models.Model):
+-    #user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
+-    user=models.ForeignKey(User, on_delete=models.PROTECT, related_name='quizzes', null=True, default="")
+-    
+-   # creator = models.ForeignKey(UserProfile, on_delete=models.CASCADE, default="default value")
+-    quizName= models.CharField(max_length=128, null=True, unique=True)
+-    quizSubject= models.CharField(max_length=128,null=True)
+-    
+-    #privateStatus =models.BooleanField(default=False,help_text="Should this quiz only be accessible by a certain group of people?")
+-  
++    # user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
++    user = models.ForeignKey(User, on_delete=models.PROTECT, related_name='quizzes', null=True, default="")
++
++    # creator = models.ForeignKey(UserProfile, on_delete=models.CASCADE, default="default value")
++    quizName = models.CharField(max_length=128, null=True, unique=True)
++    quizSubject = models.CharField(max_length=128, null=True)
++
++    # privateStatus =models.BooleanField(default=False,help_text="Should this quiz only be accessible by a certain group of people?")
++
+     # uniquePasscode=models.CharField(max_length=128, unique=True,blank=True, null=True)
+-   
+-    quizDifficulty = models.CharField(max_length=10, choices=(DIFFICULTY_CHOICES), default= DIFFICULTY_CHOICES[0])
+-    scoreToPass=models.IntegerField(default=0)
+-    numOfQue=models.IntegerField(default=1)
+-    #quizQuestions=models.ManyToManyField(Question)
+-    likes = models.ManyToManyField(User, related_name=("quiz_likes"))
++
++    quizDifficulty = models.CharField(max_length=10, choices=(DIFFICULTY_CHOICES), default=DIFFICULTY_CHOICES[0])
++    scoreToPass = models.IntegerField(default=0)
++    numOfQue = models.IntegerField(default=1)
++    # quizQuestions=models.ManyToManyField(Question)
++    # likes = models.IntegerField(default=0)
+     slug = models.SlugField(unique=True)
++
+     def save(self, *args, **kwargs):
+-        self.slug = slugify(self.quizName) 
++        self.slug = slugify(self.quizName)
+         super(Quiz, self).save(*args, **kwargs)
+-        
+-    def process_likes(self):
+-        print(self.likes)
+-        self.likes += 1
+-        
+- 
++
++    # def process_likes(self):
++    # print(self.likes)
++    # self.likes += 1
+     class Meta:
+         verbose_name_plural = 'quizzes'
++
+     def __str__(self):
+         return self.quizName
++
+     def get_quiz_questions(self):
+         return self.question_set.all()
+-    
+- #New for likes    
+-#class Like(models.Model): 
+-   # user = models.ForeignKey(User, on_delete=models.CASCADE)
+-   # quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE)   
+-    
+-    
+-    
++
++
+ class Question(models.Model):
+-    quiz=models.ForeignKey(Quiz, on_delete=models.CASCADE, related_name="question", null=True)
+-    questionText= models.CharField(max_length=500, unique=True)
+-    questionMarks=models.IntegerField(default=1)
+-   
+-    #{ "choices" : [option 1, option 2, option 3, option 4], "correct_index" : 2 }
+-    #answers = models.JSONField(default = dict)
+-    optiona=models.CharField(max_length=500,null=True)
+-    optionb=models.CharField(max_length=500,null=True)
+-    optionc=models.CharField(max_length=500,null=True)
+-    optiond=models.CharField(max_length=500,null=True)
+-    optionsList=[optiona,optionb,optionc,optiond]
+-    correctAnswer=models.CharField(max_length=500)
++    quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, related_name="question", null=True)
++    questionText = models.CharField(max_length=500, unique=True)
++    questionMarks = models.IntegerField(default=1)
++
++    # { "choices" : [option 1, option 2, option 3, option 4], "correct_index" : 2 }
++    # answers = models.JSONField(default = dict)
++    optiona = models.CharField(max_length=500, null=True)
++    optionb = models.CharField(max_length=500, null=True)
++    optionc = models.CharField(max_length=500, null=True)
++    optiond = models.CharField(max_length=500, null=True)
++    optionsList = [optiona, optionb, optionc, optiond]
++    correctAnswer = models.CharField(max_length=500)
++
+     class Meta:
+         verbose_name_plural = 'questions'
++
+     def __str__(self):
+         return self.questionText
+- 
+- 
+- 
+- 
++
++
+ class Comment(models.Model):
+-     commentText= models.CharField(max_length=500, null=True)
++    commentText = models.CharField(max_length=500, null=True)
+     # quiz=models.ForeignKey(Quiz, on_delete=models.CASCADE) 
+-     user=models.ForeignKey(User, on_delete=models.CASCADE) 
+-     #finalScore=models.FloatField(defualt=0)
+-     class Meta:
++    user = models.ForeignKey(User, on_delete=models.CASCADE)
++
++    # finalScore=models.FloatField(defualt=0)
++    class Meta:
+         verbose_name_plural = 'comments'
+-     def __str__(self):
++
++    def __str__(self):
+         return self.comment_text
+-    
+- 
+- 
++
+ 
+-#class Scores(models.Model):
+-   # user = models.ForeignKey(User, on_delete=models.CASCADE)
+-    #quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE)
++class Scores(models.Model):
++    user = models.ForeignKey(User, on_delete=models.CASCADE)
++    quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE)
+ 
+     # default score? If unattempted
+-    #score = models.FloatField(default=0)
++    score = models.FloatField(default=0)
+ 
+-   # class Meta:
+-    #    verbose_name_plural = "Scores"
++    class Meta:
++       verbose_name_plural = "scores"
+ 
+-   # def __str__(self):
+-      #  return self.score
+-    
+-    
++    def __str__(self):
++     return self.score
++
++
+ # i think well remove this as we said the create will choose the difficulty level instead
+-#class Ratings(models.Model): 
+-    #user = models.ForeignKey(User, on_delete=models.CASCADE)
+-    #quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE)
+-    # default rating should just be unrated??
+-    #rating = models.IntegerField()
++# class Ratings(models.Model):
++# user = models.ForeignKey(User, on_delete=models.CASCADE)
++# quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE)
++# default rating should just be unrated??
++# rating = models.IntegerField()
+ 
+-    #class Meta:
+-    #    verbose_name_plural = "Ratings"
++# class Meta:
++#    verbose_name_plural = "Ratings"
+ 
+-    #def __str__(self):
+-    #    return self.rating
+-
+-
+- 
+\ No newline at end of file
++# def __str__(self):
++#    return self.rating

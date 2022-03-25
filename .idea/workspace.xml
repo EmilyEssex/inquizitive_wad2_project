@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="e2a9738e-7f47-459d-95c1-91514387495d" name="Default Changelist" comment="Home page footer.">
-      <change afterPath="$PROJECT_DIR$/inquizitive/templates/inquizitive/meet_the_team.html" afterDir="false" />
+    <list default="true" id="e2a9738e-7f47-459d-95c1-91514387495d" name="Default Changelist" comment="Removed passcode and fixed meet team template.">
+      <change afterPath="$PROJECT_DIR$/inquizitive/templates/inquizitive/update_image.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/inquizitive/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/inquizitive/forms.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inquizitive/templates/inquizitive/home.html" beforeDir="false" afterPath="$PROJECT_DIR$/inquizitive/templates/inquizitive/home.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inquizitive/templates/inquizitive/edit_profile.html" beforeDir="false" afterPath="$PROJECT_DIR$/inquizitive/templates/inquizitive/edit_profile.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inquizitive/templates/inquizitive/user_base.html" beforeDir="false" afterPath="$PROJECT_DIR$/inquizitive/templates/inquizitive/user_base.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/inquizitive/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/inquizitive/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/inquizitive/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/inquizitive/views.py" afterDir="false" />
     </list>
@@ -98,7 +99,14 @@
       <option name="project" value="LOCAL" />
       <updated>1648165462003</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Removed passcode and fixed meet team template.">
+      <created>1648201969247</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1648201969247</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -119,6 +127,7 @@
     <MESSAGE value="Hopefully fixed the overwrite issue." />
     <MESSAGE value="User account page updated." />
     <MESSAGE value="Home page footer." />
-    <option name="LAST_COMMIT_MESSAGE" value="Home page footer." />
+    <MESSAGE value="Removed passcode and fixed meet team template." />
+    <option name="LAST_COMMIT_MESSAGE" value="Removed passcode and fixed meet team template." />
   </component>
 </project>

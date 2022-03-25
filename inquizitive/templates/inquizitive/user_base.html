@@ -42,9 +42,16 @@
             height: 150px;
             border-radius: 50%;
             }
+            a.image {
+                font-size: 10px;
+                margin-left: 18px;
+                }
+
 
         </style>
-        <a class="nav-link" href="#">My Quizzes</a>
+
+        <a class="image" href="{% url 'update_image' %}">Update Image</a>
+        <a class="nav-link" href="{% url 'user_account' %}">My Quizzes</a>
         <a class="nav-link" href="{% url 'creating_quiz' %}">Create A Quiz</a>
         <a class="nav-link" href="{% url 'edit_profile' %}">Edit Account</a>
     </nav>
