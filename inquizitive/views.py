@@ -53,6 +53,14 @@ def visitor_cookie_handler(request ):
     request.session['visits'] = visits
 
 
+def meet_the_team(request):
+    print("meet_the_team")
+    # quizzes_list=Quiz.objects.all()
+    context_dict={}
+    # context_dict['quizzes'] = quizzes_list
+    return render(request, 'inquizitive/meet_the_team.html',context_dict)
+
+
 def login_user (request):
 	if request.method == 'POST':  
 		username = request.POST['username']
@@ -128,6 +136,9 @@ def change_password(request):
 
 	context = {'form': form}
 	return render(request, 'inquizitive/change_password.html', context)
+
+
+
 
 
  
@@ -253,9 +264,9 @@ def answerQuiz(request, quiz_name_slug):
             
             context_dict = {}
             quiz = Quiz.objects.get(slug=quiz_name_slug)
-            print("passcode" )
-            print( quiz.passcode)
-            print(request.POST.get('password'))
+            # print("passcode" )
+            # print( quiz.passcode)
+            # print(request.POST.get('password'))
             context_dict['quizName'] = quiz.quizName
             #context_dict['likes'] = likes
             questions = Question.objects.filter(quiz=quiz)

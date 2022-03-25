@@ -24,6 +24,7 @@ urlpatterns = [
     path('inquizitive/quiz/<slug:quiz_name_slug>/adding_questions/',views.adding_questions, name='adding_questions'),
    # path('inquizitive/<slug:quiz_name_slug>/quizResults/', views.quizResults, name='quizResults'),
     path('inquizitive/<slug:quiz_name_slug>/answerQuiz/', views.answerQuiz, name='answerQuiz'),
+
     
  
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

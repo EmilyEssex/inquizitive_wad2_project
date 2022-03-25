@@ -44,95 +44,87 @@ function myFunction() {
 }
 </script>
 
+<div class="home">
+
+    <div class="user">
+        {% if user.is_authenticated %}
+
+        <p>Name: {{user.first_name}} {{ user.last_name}}</p>
+        <p>Username: {{user.username}}</p>
+        <p>Email: {{user.email}}</p>
+
+        <br> <input type="button"  onclick = "location.href='/inquizitive/creating_quiz/';" value="Create a new quiz"/> <br>
+        {% endif %}
+    </div>
 
 
+    <div class="quiz">
+
+        <style>
+        img {
+          border-radius: 50%;
+        }
+
+        div.user {
+            text-align: right;
+            }
+
+        div.quiz {
+            text-align: left;
+            vertical-align: top;
 
 
-{% if user.is_authenticated %}
-	<p>Name: {{user.first_name}} {{ user.last_name}}</p>
-	<p>Username: {{user.username}}</p>
-	
-	<p>Email: {{user.email}}</p>
+        </style>
 
-<br> <input type="button"  onclick = "location.href='/inquizitive/creating_quiz/';" value="Create a new quiz"/> <br>
- 
+    {% if quizzes %}
+    <br> <h2>Quizzes</h2>
 
-{% endif %}
-<div>
+            <!-- Search box -->
 
-    <style>
-    img {
-      border-radius: 50%;
-    }
-    </style>
+                <div class="row">
+                    <div class="col-md-4 offset-0">
 
-{% if quizzes %}
-
-<br> <h2>Quizzes</h2>
-
-
-
-
-        <!-- Search box -->
- 
-            <div class="row">
-                <div class="col-md-4 offset-0">
-
-                    <form>
-                        <div class="input-group">
-                            <input name="search" type="text" placeholder="Search" class="form-control form-control-lg" />
-                            <div class="input-group-append">
-                                <button class="btn btn-dark btn-lg">Search</button>
+                        <form>
+                            <div class="input-group">
+                                <input name="search" type="text" placeholder="Search" class="form-control form-control-lg" />
+                                <div class="input-group-append">
+                                    <button class="btn btn-dark btn-lg">Search</button>
+                                </div>
                             </div>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
                 </div>
-            </div>
-        </div>
-     
 
 
 
+    <ul>
 
- 
+    {% for quiz in quizzes %}
 
-<ul>
+     <br>
+    <li>
 
-{% for quiz in quizzes %}  
-
- <br> 
-<li> 
-
-<h1 style="font-size:20px;">{{ quiz.quizName }} </h1>
-  </li>
+    <h1 style="font-size:20px;">{{ quiz.quizName }} </h1>
+      </li>
 
 
-<input type="button"  onclick = "location.href='/inquizitive/{{ quiz.slug }}/answerQuiz/';" value="Solve quiz" />
- 
-
-{% if quiz.user == request_user %}
+    <input type="button"  onclick = "location.href='/inquizitive/{{ quiz.slug }}/answerQuiz/';" value="Solve quiz" />
 
 
-<input type="button"  onclick = "location.href='/inquizitive/quiz/{{ quiz.slug }}/';" value="Edit quiz" />
-{% endif %}
+    {% if quiz.user == request_user %}
 
 
+    <input type="button"  onclick = "location.href='/inquizitive/quiz/{{ quiz.slug }}/';" value="Edit quiz" />
+    {% endif %}
 
- 
+    {% endfor %}
+    </li>
 
+    </ul>
 
-
-
-
-
-
-{% endfor %}
-</li> 
-
-</ul> 
-
-{% else %}
-<strong>There are no quizzes present.</strong> {% endif %}
+    {% else %}
+    <strong>There are no quizzes present.</strong> {% endif %}
+</div>
 </div>
 
 <div class="footer">
