@@ -17,7 +17,7 @@
         left: 40px;
         width: 250px;
         height: 100%;
-        background: brown;
+        background: #740000;
     }
 
     div.header {
@@ -28,6 +28,8 @@
     .profile_pic {
         width: 150px;
         height: 150px;
+    }
+    
 
     </style>
 
@@ -54,6 +56,14 @@
         <a class="nav-link" href="{% url 'user_account' %}">My Quizzes</a>
         <a class="nav-link" href="{% url 'creating_quiz' %}">Create A Quiz</a>
         <a class="nav-link" href="{% url 'edit_profile' %}">Edit Account</a>
+        <style>
+            .nav-link {
+                
+                font-size: larger;
+                color: white
+
+            }
+        </style>
     </nav>
 
 
