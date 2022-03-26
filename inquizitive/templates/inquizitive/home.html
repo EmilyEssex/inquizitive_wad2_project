@@ -1,14 +1,13 @@
 {% extends 'inquizitive/base.html' %}
 {% load static %}
 {% block content %}
-   
+
 <head>
 <style>
-  
 body {
   background-image: url("/static/images/profile.jpg");
   background-repeat: no-repeat;
-  background-attachment: fixed;  
+  background-attachment: fixed;
   background-size: cover;
 }
 
@@ -18,13 +17,12 @@ body {
   width: 300px;
   font-weight: bold;
   font-size: 18px;
-  
 }
 
 .search{
   height: 50px;
   width: 30px;
-  padding-left: 10px; 
+  padding-left: 10px;
   padding-right: 10px;
   position: relative;
 }
@@ -32,7 +30,6 @@ body {
 .reset{
   height: 50px;
   width: 30px;
-  
   padding-right: 10px;
   position: relative;
   color: burlywood
@@ -76,6 +73,7 @@ body {
   background-color: orange;
 }
 
+
 </style>
 
 
@@ -106,7 +104,6 @@ body {
       $(this).css({background: "blueviolet"});
       $(this).css({paddingLeft: '-=30px'});
     });
-  
 });
 
 
@@ -116,10 +113,10 @@ body {
 
 <script>
 function processData(c1) {
-	 
- 
+
+
 	alert(c1);
-	 
+
 }
 </script>
 
@@ -135,7 +132,7 @@ function processData(c1) {
 <h1></h1>
 
 
- 
+
 
 
 <script>
@@ -146,26 +143,37 @@ function myFunction() {
 
 
 
-{% if user.is_authenticated %}
-	<p>Name: {{user.first_name}} {{ user.last_name}}</p>
-	<p>Username: {{user.username}}</p>
-	
-	<p>Email: {{user.email}}</p>
+<div class="home">
 
-<br> <div class = "crt">
-  <input type="button" class = "create" onclick = "location.href='/inquizitive/creating_quiz/';" value="Create a new quiz"/> <br>
-</div>
+  <div class="user">
+      {% if user.is_authenticated %}
 
-{% endif %}
-<div>
+      <p>Name: {{user.first_name}} {{ user.last_name}}</p>
+      <p>Username: {{user.username}}</p>
+      <p>Email: {{user.email}}</p>
 
- 
-    
- <style>
-img {
-  border-radius: 50%;
-}
-</style>
+      <br> <input type="button" class ="create" onclick = "location.href='/inquizitive/creating_quiz/';" value="Create a new quiz"/> <br>
+      {% endif %}
+  </div>
+
+
+<div class="quiz">
+
+        <style>
+        img {
+          border-radius: 50%;
+        }
+
+        div.user {
+            text-align: right;
+            }
+
+        div.quiz {
+            text-align: left;
+            vertical-align: top;
+
+
+        </style>
 
 {% if quizzes %}
 
@@ -176,7 +184,7 @@ img {
 
 
         <!-- Search box -->
- 
+
             <div class="row">
                 <div class="col-md-4 offset-0">
 
@@ -185,50 +193,90 @@ img {
                             <input name="search" type="text" placeholder="Search" class="form-control form-control-lg" />
                             <div class="search">
                                 <button class="searchbtn btn-dark btn-lg">Search</button>
-                            </div> 
-                            
+                            </div>
+
                         </div>
                     </form>
                 </div>
             </div>
-            
+
         </div>
-        
-        
+
+
           <form action = "{% url 'home'  %}" >
             <input type = "submit"  class="resetbtn"; value = "Reset"></button>
           </form>
-        
-     
+
+
 <ul>
 
 
 
 
-{% for quiz in quizzes %}  
+{% for quiz in quizzes %}
 
- <br> 
-<li> 
+ <br>
+<li>
 
-<h1 style="font-size:20px;" class ="name">{{ quiz.quizName }} </h1>
-  </li>
+  <h1 style="font-size:20px;">{{ quiz.quizName }} </h1>
+      </li>
+
 <input type="button" class ="solve" onclick = "location.href='/inquizitive/{{ quiz.slug }}/answerQuiz/';" value="Solve quiz" />
- 
+
 
 {% if quiz.user == request_user %}
 
 
 <input type="button" class ="edit" onclick = "location.href='/inquizitive/quiz/{{ quiz.slug }}/';" value="Edit quiz" />
-{% endif %}
 
-{% endfor %}
-</li> 
+    {% endif %}
 
-</ul> 
+    {% endfor %}
+    </li>
 
-{% else %}
-<strong>There are no quizzes present.</strong> {% endif %}
+    </ul>
+
+    {% else %}
+    <strong>There are no quizzes present.</strong> {% endif %}
+</div>
 </div>
 
-<button onclick="myFunction()">WHO ARE WE!?</button>
+<div class="footer">
+    <input class="btn1" type="button"  onclick = "location.href='/inquizitive/meet_the_team/';" value="Meet the team!" />
+
+    <button class="btn2" onclick="myFunction()">WHO ARE WE!?</button>
+
+    <style>
+        .footer {
+          position: relative;
+          left: 0;
+          bottom: 0;
+          width: 100%;
+          background-color: #740000;
+          color: white;
+          text-align: center;
+        }
+
+        .btn1 {
+            margin-right: 30px;
+            background-color: bisque;
+            }
+
+        .btn2 {
+            margin-left: 30px;
+            background-color: bisque;
+            }
+
+        .btn1:hover {
+            background-color: rgb(13, 155, 89);
+            transition: 0.4s;
+        }
+
+        .btn2:hover {
+            background-color:rgb(13, 155, 89);
+            transition: 0.4s;
+        }
+
+    </style>
+</div>
 {% endblock %}

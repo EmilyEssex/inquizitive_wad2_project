@@ -4,10 +4,9 @@ from django import forms
 import json
 from inquizitive.models import Quiz, Question
 from django.forms import formset_factory
-from django.contrib.postgres.fields.jsonb import JSONField
+from .models import UserProfile
 
-#from splitjson.widgets import SplitJSONWidget
- 
+
 
 # default maximum number of forms in a formset, to prevent memory exhaustion
 DEFAULT_MAX_NUM = 1000
@@ -21,6 +20,10 @@ class EditProfileForm(UserChangeForm):
 		fields = ('username', 'first_name', 'last_name', 'email','password',)
 
 
+class UpdateImageForm(forms.ModelForm):
+    class Meta:
+        model = UserProfile
+        fields = ('profile_pic',)
 
 
 class SignUpForm(UserCreationForm):
@@ -64,14 +67,15 @@ class CreateAQuizForm(forms.ModelForm):
     quizSubject = forms.CharField(max_length=500, help_text="Quiz Subject: ")
     quizDifficulty=forms.CharField(label='Quiz Difficulty: ', widget=forms.Select(choices=DIFFICULTY_CHOICES))
     numOfQue=forms.IntegerField(max_value=100, min_value=0, help_text="Number of questions in quiz ")
+    # passcode = forms.CharField(max_length=500, help_text="Passcode",label='', required=False)
     class Meta:
         model = Quiz
-        fields = ('quizName', 'quizSubject', 'quizDifficulty','numOfQue', "user" )
+        fields = ('quizName', 'quizSubject', 'quizDifficulty','numOfQue', "user",)
 
 #form for question model
 class AddAQuestionForm(forms.ModelForm):
    
-    questionText = forms.CharField(max_length=500, help_text="Question: ",label='')
+    questionText = forms.CharField(max_length=500, help_text="Question: ",label='',required=True)
     questionMarks = forms.IntegerField(max_value=100, min_value=0,label='')
     #answers = JSONField()
     optiona = forms.CharField(max_length=500, help_text="Answer A",label='')
@@ -79,6 +83,7 @@ class AddAQuestionForm(forms.ModelForm):
     optionc = forms.CharField(max_length=500, help_text="Answer C",label='')
     optiond = forms.CharField(max_length=500, help_text="Answer D",label='')
     correctAnswer=forms.CharField(max_length=500, help_text="Enter answer (copy and paste please)",label='')
+    
    # attrs = {'class': 'special', 'size': '40'}
    # data = forms.CharField(widget=SplitJSONWidget(attrs=attrs, debug=True))
     class Meta:

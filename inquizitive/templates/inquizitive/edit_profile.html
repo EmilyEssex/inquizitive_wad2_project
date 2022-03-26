@@ -1,14 +1,17 @@
-{% extends 'inquizitive/base.html' %}
+{% extends 'inquizitive/user_base.html' %}
 
 {% block content %}
-
-
-
+{{ block.super }}
 
 <h2 class ="text-center"> Edit Profile </h2>
 
+<style>
+	form.edit {
+		margin-left: 250px;
+		}
+</style>
 
-<form method="POST" action="{% url 'edit_profile' %}">
+<form class="edit" method="POST" action="{% url 'edit_profile' %}">
 		{% csrf_token %}
 
 		{% if form.errors %}
@@ -17,7 +20,6 @@
                 <button class="close" data-dismiss="alert">
                     <small><sup>x</sup></small>
                   </button>
-               
 
                {% for field in form %}
                	{% if field.errors %}
@@ -26,14 +28,11 @@
 
                	{% endfor %}
 
-
               </div>
 
   {% endif %}
 
-
 		{{ form.as_p }}
-
 
 		<input type="submit" value="Edit Profile" class=" btn btn-secondary">
     <p><small><a href="{% url 'change_password'%}">Click here</a> to change your password</small></p> 

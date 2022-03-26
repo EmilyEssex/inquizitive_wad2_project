@@ -1,0 +1,131 @@
+Index: inquizitive/templates/inquizitive/user_account.html
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>{% extends 'inquizitive/base.html' %}\r\n\r\n{% block content %}\r\n    <div class=\"row my-3 p-3\">\r\n        <h1>{{ user.username }}'s Account</h1>\r\n    </div>\r\n\r\n    <style>\r\n\r\n    </style>\r\n\r\n\r\n    <div id=\"mySidenav\" class=\"sidenav\">\r\n<!--      <a href=\"javascript:void(0)\" class=\"closebtn\" onclick=\"closeNav()\">&times;</a>-->\r\n      <img src=\"default.jpg\" alt=\"Avatar\" class=\"avatar\"><br>\r\n        <style>\r\n            .avatar {\r\n            vertical-align: middle;\r\n            width: 50px;\r\n            height: 50px;\r\n            border-radius: 50%;\r\n            }\r\n        </style>\r\n      <a href=\"#\">My Quizzes</a><br>\r\n      <a href=\"#\">Create A Quiz</a><br>\r\n      <a href=\"#\">My Completed Quizzes</a><br>\r\n      <a href=\"#\">Manage Account</a><br>\r\n    </div>\r\n\r\n    <div id=\"main\">\r\n      ...\r\n    </div>\r\n\r\n{% endblock %}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/inquizitive/templates/inquizitive/user_account.html b/inquizitive/templates/inquizitive/user_account.html
+--- a/inquizitive/templates/inquizitive/user_account.html	(revision 397a4434e6d19f29cd5d84fdd710f03979c9ef5b)
++++ b/inquizitive/templates/inquizitive/user_account.html	(date 1647532613647)
+@@ -1,7 +1,7 @@
+-{% extends 'inquizitive/base.html' %}
++{% extends 'inquizitive/user_base.html' %}
+ 
+ {% block content %}
+-    <div class="row my-3 p-3">
++<div class="row my-3 p-3">
+         <h1>{{ user.username }}'s Account</h1>
+     </div>
+ 
+@@ -28,7 +28,22 @@
+     </div>
+ 
+     <div id="main">
+-      ...
++
++        {% if quizzes %}
++        <br> <h2>Quizzes</h2>
++        <ul>
++        {% for quiz in quizzes %}
++        <li>
++            <a href="/inquizitive/quiz/{{ quiz.slug }}/">{{ quiz.quizName }}</a> </li>
++
++        {% endfor %}
++        </li>
++        </ul>
++        {% else %}
++        <strong>You haven't created any quizzes yet!</strong> <br>
++
++        {% endif %}
++
+     </div>
+ 
+ {% endblock %}
+\ No newline at end of file
+Index: inquizitive/templates/inquizitive/user_base.html
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/inquizitive/templates/inquizitive/user_base.html b/inquizitive/templates/inquizitive/user_base.html
+new file mode 100644
+--- /dev/null	(date 1647532588261)
++++ b/inquizitive/templates/inquizitive/user_base.html	(date 1647532588261)
+@@ -0,0 +1,30 @@
++{% extends 'inquizitive/base.html' %}
++
++    <div class="row my-3 p-3">
++        <h1>{{ user.username }}'s Account</h1>
++    </div>
++
++    <style>
++
++    </style>
++
++
++    <div id="mySidenav" class="sidenav">
++<!--      <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>-->
++      <img src="default.jpg" alt="Avatar" class="avatar"><br>
++        <style>
++            .avatar {
++            vertical-align: middle;
++            width: 50px;
++            height: 50px;
++            border-radius: 50%;
++            }
++        </style>
++      <a href="#">My Quizzes</a><br>
++      <a href="#">Create A Quiz</a><br>
++      <a href="#">My Completed Quizzes</a><br>
++      <a href="#">Manage Account</a><br>
++    </div>
++
++{% block content %}
++{% endblock %}
+\ No newline at end of file
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"ChangeListManager\">\r\n    <list default=\"true\" id=\"e2a9738e-7f47-459d-95c1-91514387495d\" name=\"Default Changelist\" comment=\"Hopefully fixed the overwrite issue.\">\r\n      <change afterPath=\"$PROJECT_DIR$/inquizitive/templates/inquizitive/user_account.html\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/inquizitive/admin.py\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/inquizitive/admin.py\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/inquizitive/forms.py\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/inquizitive/forms.py\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/inquizitive/models.py\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/inquizitive/models.py\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/inquizitive/templates/inquizitive/base.html\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/inquizitive/templates/inquizitive/base.html\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/inquizitive/templates/inquizitive/home.html\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/inquizitive/templates/inquizitive/home.html\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/inquizitive/templates/inquizitive/my_profile.html\" beforeDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/inquizitive/urls.py\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/inquizitive/urls.py\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/inquizitive/views.py\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/inquizitive/views.py\" afterDir=\"false\" />\r\n    </list>\r\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\r\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\r\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\r\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\r\n  </component>\r\n  <component name=\"FileTemplateManagerImpl\">\r\n    <option name=\"RECENT_TEMPLATES\">\r\n      <list>\r\n        <option value=\"Python Script\" />\r\n      </list>\r\n    </option>\r\n  </component>\r\n  <component name=\"Git.Settings\">\r\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\r\n    <option name=\"RESET_MODE\" value=\"HARD\" />\r\n  </component>\r\n  <component name=\"ProjectId\" id=\"25jlUQRtSuOulNUZmpHVMlJZ1za\" />\r\n  <component name=\"ProjectViewState\">\r\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\r\n    <option name=\"showLibraryContents\" value=\"true\" />\r\n  </component>\r\n  <component name=\"PropertiesComponent\">\r\n    <property name=\"RunOnceActivity.OpenProjectViewOnStart\" value=\"true\" />\r\n    <property name=\"RunOnceActivity.ShowReadmeOnStart\" value=\"true\" />\r\n    <property name=\"last_opened_file_path\" value=\"$PROJECT_DIR$/../tango_with_django_project\" />\r\n    <property name=\"settings.editor.selected.configurable\" value=\"com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable\" />\r\n  </component>\r\n  <component name=\"RecentsManager\">\r\n    <key name=\"MoveFile.RECENT_KEYS\">\r\n      <recent name=\"C:\\Users\\eesse\\inquizitive_wad2_project\\media\\profile_images\" />\r\n      <recent name=\"C:\\Users\\eesse\\inquizitive_wad2_project\\inquizitive\\templates\\inquizitive\" />\r\n      <recent name=\"C:\\Users\\eesse\\inquizitive_wad2_project\\inquizitive\\templates\" />\r\n      <recent name=\"C:\\Users\\eesse\\inquizitive_wad2_project\\inquizitive\" />\r\n      <recent name=\"C:\\Users\\eesse\\inquizitive_wad2_project\" />\r\n    </key>\r\n  </component>\r\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\r\n  <component name=\"TaskManager\">\r\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\r\n      <changelist id=\"e2a9738e-7f47-459d-95c1-91514387495d\" name=\"Default Changelist\" comment=\"\" />\r\n      <created>1646048393953</created>\r\n      <option name=\"number\" value=\"Default\" />\r\n      <option name=\"presentableId\" value=\"Default\" />\r\n      <updated>1646048393953</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00001\" summary=\"Score, user and ratings models\">\r\n      <created>1646321117347</created>\r\n      <option name=\"number\" value=\"00001\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00001\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1646321117347</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00002\" summary=\"Added pop script and a couple of minor edits.\">\r\n      <created>1647266419416</created>\r\n      <option name=\"number\" value=\"00002\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00002\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1647266419416</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00003\" summary=\"Added pop script and a couple of minor edits.\">\r\n      <created>1647266463957</created>\r\n      <option name=\"number\" value=\"00003\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00003\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1647266463957</updated>\r\n    </task>\r\n    <option name=\"localTasksCounter\" value=\"4\" />\r\n    <servers />\r\n  </component>\r\n  <component name=\"Vcs.Log.Tabs.Properties\">\r\n    <option name=\"TAB_STATES\">\r\n      <map>\r\n        <entry key=\"MAIN\">\r\n          <value>\r\n            <State />\r\n          </value>\r\n        </entry>\r\n      </map>\r\n    </option>\r\n    <option name=\"oldMeFiltersMigrated\" value=\"true\" />\r\n  </component>\r\n  <component name=\"VcsManagerConfiguration\">\r\n    <MESSAGE value=\"Score, user and ratings models\" />\r\n    <MESSAGE value=\"Added pop script and a couple of minor edits.\" />\r\n    <MESSAGE value=\"Hopefully fixed the overwrite issue.\" />\r\n    <option name=\"LAST_COMMIT_MESSAGE\" value=\"Hopefully fixed the overwrite issue.\" />\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	(revision 397a4434e6d19f29cd5d84fdd710f03979c9ef5b)
++++ b/.idea/workspace.xml	(date 1647532363145)
+@@ -2,15 +2,9 @@
+ <project version="4">
+   <component name="ChangeListManager">
+     <list default="true" id="e2a9738e-7f47-459d-95c1-91514387495d" name="Default Changelist" comment="Hopefully fixed the overwrite issue.">
+-      <change afterPath="$PROJECT_DIR$/inquizitive/templates/inquizitive/user_account.html" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/inquizitive/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/inquizitive/admin.py" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/inquizitive/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/inquizitive/forms.py" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/inquizitive/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/inquizitive/models.py" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/inquizitive/templates/inquizitive/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/inquizitive/templates/inquizitive/base.html" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/inquizitive/templates/inquizitive/home.html" beforeDir="false" afterPath="$PROJECT_DIR$/inquizitive/templates/inquizitive/home.html" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/inquizitive/templates/inquizitive/my_profile.html" beforeDir="false" />
+-      <change beforePath="$PROJECT_DIR$/inquizitive/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/inquizitive/urls.py" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/inquizitive/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/inquizitive/views.py" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/inquizitive/templates/inquizitive/user_base.html" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/inquizitive/templates/inquizitive/user_account.html" beforeDir="false" afterPath="$PROJECT_DIR$/inquizitive/templates/inquizitive/user_account.html" afterDir="false" />
+     </list>
+     <option name="SHOW_DIALOG" value="false" />
+     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+@@ -21,6 +15,7 @@
+     <option name="RECENT_TEMPLATES">
+       <list>
+         <option value="Python Script" />
++        <option value="HTML File" />
+       </list>
+     </option>
+   </component>
+@@ -34,6 +29,7 @@
+     <option name="showLibraryContents" value="true" />
+   </component>
+   <component name="PropertiesComponent">
++    <property name="DefaultHtmlFileTemplate" value="HTML File" />
+     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+     <property name="last_opened_file_path" value="$PROJECT_DIR$/../tango_with_django_project" />

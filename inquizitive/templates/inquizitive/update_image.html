@@ -1,0 +1,23 @@
+{% extends 'inquizitive/user_base.html' %}
+
+{% block content %}
+{{ block.super }}
+
+  <div>
+
+  <form id="UpdateImageForm" method="POST" action="{% url 'update_image' %}" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ update_image_form.as_p }}
+    <img src="{{ update_image_form.instance.profile_pic.url }}"/> </br>
+    <input type="SUBMIT" name="submit" value="Update"/>
+  </form>
+
+  </div>
+
+  <style>
+    div {
+      margin-left: 200px;
+      }
+  </style>
+
+{% endblock %}

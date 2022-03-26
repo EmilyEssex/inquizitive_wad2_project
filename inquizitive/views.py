@@ -1,15 +1,13 @@
-
-   
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse , HttpResponseRedirect
 from django.shortcuts import render, redirect , get_object_or_404
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash 
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm, PasswordChangeForm
 from django.contrib import messages 
-from .forms import SignUpForm, EditProfileForm 
+from .forms import SignUpForm, EditProfileForm, UpdateImageForm
 from inquizitive.forms import CreateAQuizForm,  AddAQuestionForm , TakeQuizForm
 from django.shortcuts import redirect
-from .models import Quiz, Question
+from .models import Quiz, Question, UserProfile
 from django.urls import reverse
 from datetime import datetime
 from django.forms import formset_factory 
@@ -20,82 +18,61 @@ from django.views import View
 
 
 def home(request): 
-    #everything before render is new -Hana
     if 'search' in request.GET:
         q=request.GET['search']
         quizzes_list=Quiz.objects.filter(quizName__icontains=q)
     else:
         quizzes_list=Quiz.objects.all()
-    #quizzes_list = Quiz.objects.all()
     context_dict = {}
     context_dict['boldmessage'] = 'Crunchy, creamy, cookie, candy, cupcake!'
     context_dict['quizzes'] = quizzes_list
     request.session.set_test_cookie()
     request_user = request.user
-    
-    
-  
-    
-    
-    print("Request")
-    print(request_user)
-    print("creator")
-   # quiz = Quiz.objects.all()
-   # for quiz1 in quiz:
-       # print(quiz)
-    
-   # quiz = Quiz.objects.all()
-   # context_dict["user"]=quiz.user
     context_dict["request_user"]= request_user
-      # Obtain our Response object early so we can add cookie information.
     response = render(request, 'inquizitive/home.html', context_dict)
-      # Call the helper function to handle the cookies
     visitor_cookie_handler(request)
     context_dict['visits'] = request.session['visits']
-    # Return response back to the user, updating any cookies that need changed.
     return response
-    #return render(request, 'inquizitive/home.html', context_dict)
 
- 
-
-
-
-# A helper method
 def get_server_side_cookie(request, cookie, default_val=None): 
     val = request.session.get(cookie)
     if not val:
         val = default_val 
     return val
-# Updated the function definition
+
+
 def visitor_cookie_handler(request ):
     visits = int(get_server_side_cookie(request, 'visits', '1')) 
     last_visit_cookie = get_server_side_cookie(request, 'last_visit',  str(datetime.now()))
     last_visit_time = datetime.strptime(last_visit_cookie[:-7],'%Y-%m-%d %H:%M:%S')
-    # If it's been more than a day since the last visit...
-     
     if (datetime.now() - last_visit_time).seconds > 3600:
         visits = visits + 1
-        # Update the last visit cookie now that we have updated the count 
         request.session['last_visit'] = str(datetime.now())
     else:
-        # Set the last visit cookie 
         request.session['last_visit'] = last_visit_cookie
-    # Update/set the visits cookie
     request.session['visits'] = visits
 
 
+def meet_the_team(request):
+    print("meet_the_team")
+    # quizzes_list=Quiz.objects.all()
+    context_dict={}
+    # context_dict['quizzes'] = quizzes_list
+    return render(request, 'inquizitive/meet_the_team.html',context_dict)
+
+
 def login_user (request):
-	if request.method == 'POST': #if someone fills out form , Post it 
+	if request.method == 'POST':  
 		username = request.POST['username']
 		password = request.POST['password']
 		user = authenticate(request, username=username, password=password)
-		if user is not None:# if user exist
+		if user is not None: 
 			login(request, user)
 			messages.success(request,('Login Successful'))
-			return redirect('home') #routes to 'home' on successful login  
+			return redirect('home') 
 		else:
 			messages.success(request,('Error logging in'))
-			return redirect('login') #re routes to login page upon unsucessful login
+			return redirect('login')  
 	else:
 		return render(request, 'inquizitive/login.html', {})
 
@@ -125,7 +102,30 @@ def register_user(request):
 
 @login_required
 def user_account(request):
-    return render(request, 'inquizitive/user_account.html')
+    print("user account")
+    quizzes_list=Quiz.objects.all()
+    context_dict={}
+    context_dict['quizzes'] = quizzes_list
+    return render(request, 'inquizitive/user_account.html',context_dict)
+
+@login_required
+def update_image(request):
+
+    user_profile = UserProfile.objects.get(user=request.user)
+
+    if request.method == "POST":
+        image_form = UpdateImageForm(data=request.POST, instance=user_profile)
+
+        if image_form.is_valid():
+            profile = image_form.save(commit=False)
+
+            if 'profile_pic' in request.FILES:
+                profile.profile_pic = request.FILES['profile_pic']
+            profile.save()
+    else:
+        image_form = UpdateImageForm(instance=user_profile)
+    return render(request, 'inquizitive/update_image.html', {'update_image_form': image_form})
+
 
 def edit_profile(request):
 	if request.method =='POST':
@@ -134,12 +134,13 @@ def edit_profile(request):
 			form.save()
 			messages.success(request, ('You have edited your profile'))
 			return redirect('home')
-	else: 		#passes in user information 
+	else: 		 
 		form = EditProfileForm(instance= request.user) 
 
 	context = {'form': form}
 	return render(request, 'inquizitive/edit_profile.html', context)
 	
+
 
 def change_password(request):
 	if request.method =='POST':
@@ -149,11 +150,14 @@ def change_password(request):
 			update_session_auth_hash(request, form.user)
 			messages.success(request, ('You have edited your password'))
 			return redirect('home')
-	else: 		#passes in user information 
+	else: 		 
 		form = PasswordChangeForm(user= request.user) 
 
 	context = {'form': form}
 	return render(request, 'inquizitive/change_password.html', context)
+
+
+
 
 
  
@@ -171,10 +175,12 @@ def creating_quiz(request):
     visitor_cookie_handler(request)
    
     context = {'form': form,'visits':request.session['visits']}
-   # context['visits'] = request.session['visits']
+   
     return render(request, 'inquizitive/creating_quiz.html', context)
 
- 
+def meet_the_team(request): 
+    return render(request, 'inquizitive/meet_the_team.html')
+
 def adding_questions(request, quiz_name_slug): 
     try:
         quiz = Quiz.objects.get(slug=quiz_name_slug) 
@@ -211,7 +217,7 @@ def adding_questions(request, quiz_name_slug):
  
 
  
- 
+# View for editing the quiz - only creators could do that
 def show_quiz1(request, quiz_name_slug):
     if request.session.test_cookie_worked(): 
         print("TEST COOKIE WORKED!") 
@@ -244,6 +250,7 @@ def show_quiz1(request, quiz_name_slug):
 # The above results view could be removed 
 def answerQuiz(request, quiz_name_slug):
     quiz = Quiz.objects.get(slug=quiz_name_slug)
+    #print("mmmm",quiz.quizSubject)
     #quiz.process_likes()
    # quiz.save()
     #likes=quiz.likes
@@ -266,21 +273,26 @@ def answerQuiz(request, quiz_name_slug):
             percent = score/(total) *100
         else:
             percent=0
+        
         context = {
            # 'time': request.POST.get('timer'),
-            'percent':percent
+            'percent':percent, 'subject':quiz.quizSubject, 'difficulty':quiz.quizDifficulty
         }
         return render(request,'inquizitive/quizResults.html',context)
     else:
             
             context_dict = {}
             quiz = Quiz.objects.get(slug=quiz_name_slug)
+            # print("passcode" )
+            # print( quiz.passcode)
+            # print(request.POST.get('password'))
             context_dict['quizName'] = quiz.quizName
             #context_dict['likes'] = likes
             questions = Question.objects.filter(quiz=quiz)
             context_dict['questions'] = questions
             context_dict['quiz'] = quiz
             context_dict['numOfQue']= quiz.numOfQue
+           
             context_dict['optionsList']=Question.optionsList
             #[Question.optiona,Question.optionb,Question.optionc,Question.optiond]
             if request.POST.get("quiz_id"):
