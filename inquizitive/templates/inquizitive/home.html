@@ -1,27 +1,125 @@
 {% extends 'inquizitive/base.html' %}
 {% load static %}
 {% block content %}
-   
+
 <head>
 <style>
- 
-  
+
 body {
   background-image: url("/static/images/profile.jpg");
   background-repeat: no-repeat;
-  background-attachment: fixed;  
+  background-attachment: fixed;
   background-size: cover;
 }
+
+.create {
+  background-color: bisque;
+  height: 50px;
+  width: 300px;
+  font-weight: bold;
+  font-size: 18px;
+
+}
+
+.search{
+  height: 50px;
+  width: 30px;
+  padding-left: 10px;
+  padding-right: 10px;
+  position: relative;
+}
+
+.reset{
+  height: 50px;
+  width: 30px;
+
+  padding-right: 10px;
+  position: relative;
+  color: burlywood
+}
+
+.input-group input{
+  height: 50px;
+}
+
+.resetbtn {
+  width: 80px;
+  height: 50px;
+  background-color:rgb(111, 227, 227);
+  color: black;
+  font-size: 18px;
+}
+
+.searchbtn {
+  width: 90px;
+  height: 50px;
+  background-color:rgb(111, 227, 227);
+  color: black;
+  font-size: 18px;
+}
+
+.resetbtn:hover {
+  background-color:#bf9e1a;
+  transition: 0.4s;
+}
+
+.searchbtn:hover {
+  background-color:#30bf1a;
+  transition: 0.4s;
+}
+
+.solve {
+  background-color: blueviolet;
+}
+
+.edit {
+  background-color: orange;
+}
+
 </style>
+
+
+<script type = "text/javascript">
+
+  $(document).ready(function(){
+
+    $(".create").hover(function(){
+      $(this).css({color: "green"}, {left: "+=30px"});
+      $(".crt").css({paddingLeft: '+=30px'});
+    }, function() {
+      $(this).css({color: "black"});
+      $(".crt").css({paddingLeft: '-=30px'});
+    });
+
+    $(".edit").hover(function(){
+      $(this).css({background: "yellow"}, {left: "+=30px"});
+      $(this).css({paddingLeft: '+=30px'});
+    }, function() {
+      $(this).css({background: "orange"});
+      $(this).css({paddingLeft: '-=30px'});
+    });
+
+    $(".solve").hover(function(){
+      $(this).css({background: "green"}, {left: "+=30px"});
+      $(this).css({paddingLeft: '+=30px'});
+    }, function() {
+      $(this).css({background: "blueviolet"});
+      $(this).css({paddingLeft: '-=30px'});
+    });
+
+});
+
+
+</script>
 
 
 
 <script>
 function processData(c1) {
-	 
- 
+
+
 	alert(c1);
-	 
+
 }
 </script>
 
@@ -37,28 +135,32 @@ function processData(c1) {
 <h1></h1>
 
 
- 
+
+
+
 <script>
 function myFunction() {
   alert("We are the inQuiztive developers! We created this app to promote learning and knowledge!");
 }
 </script>
 
+
+
 <div class="home">
 
-    <div class="user">
-        {% if user.is_authenticated %}
+  <div class="user">
+      {% if user.is_authenticated %}
 
-        <p>Name: {{user.first_name}} {{ user.last_name}}</p>
-        <p>Username: {{user.username}}</p>
-        <p>Email: {{user.email}}</p>
+      <p>Name: {{user.first_name}} {{ user.last_name}}</p>
+      <p>Username: {{user.username}}</p>
+      <p>Email: {{user.email}}</p>
 
-        <br> <input type="button"  onclick = "location.href='/inquizitive/creating_quiz/';" value="Create a new quiz"/> <br>
-        {% endif %}
-    </div>
+      <br> <input type="button" class ="create" onclick = "location.href='/inquizitive/creating_quiz/';" value="Create a new quiz"/> <br>
+      {% endif %}
+  </div>
 
 
-    <div class="quiz">
+<div class="quiz">
 
         <style>
         img {
@@ -76,45 +178,59 @@ function myFunction() {
 
         </style>
 
-    {% if quizzes %}
-    <br> <h2>Quizzes</h2>
+{% if quizzes %}
 
-            <!-- Search box -->
+<br> <h2>Quizzes</h2>
 
-                <div class="row">
-                    <div class="col-md-4 offset-0">
 
-                        <form>
-                            <div class="input-group">
-                                <input name="search" type="text" placeholder="Search" class="form-control form-control-lg" />
-                                <div class="input-group-append">
-                                    <button class="btn btn-dark btn-lg">Search</button>
-                                </div>
+
+
+
+        <!-- Search box -->
+
+            <div class="row">
+                <div class="col-md-4 offset-0">
+
+                    <form>
+                        <div class="input-group">
+                            <input name="search" type="text" placeholder="Search" class="form-control form-control-lg" />
+                            <div class="search">
+                                <button class="searchbtn btn-dark btn-lg">Search</button>
                             </div>
-                        </form>
-                    </div>
+
+                        </div>
+                    </form>
                 </div>
+            </div>
+
+        </div>
+
+
+          <form action = "{% url 'home'  %}" >
+            <input type = "submit"  class="resetbtn"; value = "Reset"></button>
+          </form>
+
+
+<ul>
 
 
 
-    <ul>
 
-    {% for quiz in quizzes %}
+{% for quiz in quizzes %}
 
-     <br>
-    <li>
+ <br>
+<li>
 
-    <h1 style="font-size:20px;">{{ quiz.quizName }} </h1>
+  <h1 style="font-size:20px;">{{ quiz.quizName }} </h1>
       </li>
 
-
-    <input type="button"  onclick = "location.href='/inquizitive/{{ quiz.slug }}/answerQuiz/';" value="Solve quiz" />
-
-
-    {% if quiz.user == request_user %}
+<input type="button" class ="solve" onclick = "location.href='/inquizitive/{{ quiz.slug }}/answerQuiz/';" value="Solve quiz" />
 
 
-    <input type="button"  onclick = "location.href='/inquizitive/quiz/{{ quiz.slug }}/';" value="Edit quiz" />
+{% if quiz.user == request_user %}
+
+
+<input type="button" class ="edit" onclick = "location.href='/inquizitive/quiz/{{ quiz.slug }}/';" value="Edit quiz" />
     {% endif %}
 
     {% endfor %}
@@ -145,13 +261,24 @@ function myFunction() {
 
         .btn1 {
             margin-right: 30px;
+            background-color: bisque;
             }
 
         .btn2 {
             margin-left: 30px;
+            background-color: bisque;
             }
+
+        .btn1:hover {
+            background-color: rgb(13, 155, 89);
+            transition: 0.4s;
+        }
+
+        .btn2:hover {
+            background-color:rgb(13, 155, 89);
+            transition: 0.4s;
+        }
 
     </style>
 </div>
 {% endblock %}
-
