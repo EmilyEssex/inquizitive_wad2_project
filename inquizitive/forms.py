@@ -64,10 +64,10 @@ class CreateAQuizForm(forms.ModelForm):
     quizSubject = forms.CharField(max_length=500, help_text="Quiz Subject: ")
     quizDifficulty=forms.CharField(label='Quiz Difficulty: ', widget=forms.Select(choices=DIFFICULTY_CHOICES))
     numOfQue=forms.IntegerField(max_value=100, min_value=0, help_text="Number of questions in quiz ")
-    passcode = forms.CharField(max_length=500, help_text="Passcode",label='', required=False)
+    
     class Meta:
         model = Quiz
-        fields = ('quizName', 'quizSubject', 'quizDifficulty','numOfQue', "user", 'passcode' )
+        fields = ('quizName', 'quizSubject', 'quizDifficulty','numOfQue', "user")
 
 #form for question model
 class AddAQuestionForm(forms.ModelForm):
