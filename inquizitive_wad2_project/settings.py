@@ -36,7 +36,11 @@ DEBUG = True
 
 
 
+ 
 ALLOWED_HOSTS = ['hanaelsherbeny02.pythonanywhere.com', '127.0.0.1' ]
+ 
+ 
+ 
 # Application definition
 
 INSTALLED_APPS = [
@@ -46,7 +50,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'crispy_forms',
     'inquizitive',
+    
 ]
 
 MIDDLEWARE = [
@@ -131,15 +137,15 @@ STATIC_URL = '/static/'
 
 # new 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
  
-TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')
- 
-STATIC_DIR = os.path.join(BASE_DIR, 'static') 
-MEDIA_DIR = os.path.join(BASE_DIR, 'media')
-
-MEDIA_ROOT = MEDIA_DIR
-MEDIA_URL = '/media/'
+# TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')
+#
+# STATIC_DIR = os.path.join(BASE_DIR, 'static')
+# MEDIA_DIR = os.path.join(BASE_DIR, 'media')
+#
+# MEDIA_ROOT = MEDIA_DIR
+# MEDIA_URL = '/media/'
 
 
 STATICFILES_DIRS = [STATIC_DIR, ] 

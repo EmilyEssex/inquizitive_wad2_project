@@ -1,0 +1,70 @@
+{% extends 'inquizitive/base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block content %}
+
+
+
+    <div class="header">
+        <h1>{{ user.username }}'s Account</h1>
+    </div>
+
+    <style>
+    nav.sidebar {
+        position: fixed;
+        top: 56px;
+        left: 40px;
+        width: 250px;
+        height: 100%;
+        background: #740000;
+    }
+
+    div.header {
+        font-family: Times;
+        margin-left: 200px;
+        }
+
+    .profile_pic {
+        width: 150px;
+        height: 150px;
+    }
+    
+
+    </style>
+
+
+    <nav class="sidebar">
+      <img class="profile-pic" src="{{ user.userprofile.profile_pic.url }}"><br>
+        <style>
+            .profile-pic {
+            border: solid 4px #FEDE00;
+            vertical-align: middle;
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            }
+            a.image {
+                font-size: 10px;
+                margin-left: 18px;
+                }
+
+
+        </style>
+
+        <a class="image" href="{% url 'update_image' %}">Update Image</a>
+        <a class="nav-link" href="{% url 'user_account' %}">My Quizzes</a>
+        <a class="nav-link" href="{% url 'creating_quiz' %}">Create A Quiz</a>
+        <a class="nav-link" href="{% url 'edit_profile' %}">Edit Account</a>
+        <style>
+            .nav-link {
+                
+                font-size: larger;
+                color: white
+
+            }
+        </style>
+    </nav>
+
+
+{% endblock %}

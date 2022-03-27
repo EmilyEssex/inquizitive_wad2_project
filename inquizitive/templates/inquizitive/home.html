@@ -1,27 +1,122 @@
 {% extends 'inquizitive/base.html' %}
 {% load static %}
 {% block content %}
-   
+
 <head>
 <style>
- 
-  
 body {
   background-image: url("/static/images/profile.jpg");
   background-repeat: no-repeat;
-  background-attachment: fixed;  
+  background-attachment: fixed;
   background-size: cover;
 }
+
+.create {
+  background-color: bisque;
+  height: 50px;
+  width: 300px;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.search{
+  height: 50px;
+  width: 30px;
+  padding-left: 10px;
+  padding-right: 10px;
+  position: relative;
+}
+
+.reset{
+  height: 50px;
+  width: 30px;
+  padding-right: 10px;
+  position: relative;
+  color: burlywood
+}
+
+.input-group input{
+  height: 50px;
+}
+
+.resetbtn {
+  width: 80px;
+  height: 50px;
+  background-color:rgb(111, 227, 227);
+  color: black;
+  font-size: 18px;
+}
+
+.searchbtn {
+  width: 90px;
+  height: 50px;
+  background-color:rgb(111, 227, 227);
+  color: black;
+  font-size: 18px;
+}
+
+.resetbtn:hover {
+  background-color:#bf9e1a;
+  transition: 0.4s;
+}
+
+.searchbtn:hover {
+  background-color:#30bf1a;
+  transition: 0.4s;
+}
+
+.solve {
+  background-color: blueviolet;
+}
+
+.edit {
+  background-color: orange;
+}
+
+
 </style>
+
+
+<script type = "text/javascript">
+
+  $(document).ready(function(){
+
+    $(".create").hover(function(){
+      $(this).css({color: "green"}, {left: "+=30px"});
+      $(".crt").css({paddingLeft: '+=30px'});
+    }, function() {
+      $(this).css({color: "black"});
+      $(".crt").css({paddingLeft: '-=30px'});
+    });
+
+    $(".edit").hover(function(){
+      $(this).css({background: "yellow"}, {left: "+=30px"});
+      $(this).css({paddingLeft: '+=30px'});
+    }, function() {
+      $(this).css({background: "orange"});
+      $(this).css({paddingLeft: '-=30px'});
+    });
+
+    $(".solve").hover(function(){
+      $(this).css({background: "green"}, {left: "+=30px"});
+      $(this).css({paddingLeft: '+=30px'});
+    }, function() {
+      $(this).css({background: "blueviolet"});
+      $(this).css({paddingLeft: '-=30px'});
+    });
+});
+
+
+</script>
 
 
 
 <script>
 function processData(c1) {
-	 
- 
+
+
 	alert(c1);
-	 
+
 }
 </script>
 
@@ -37,7 +132,7 @@ function processData(c1) {
 <h1></h1>
 
 
- 
+
 
 
 <script>
@@ -48,25 +143,37 @@ function myFunction() {
 
 
 
-{% if user.is_authenticated %}
-	<p>Name: {{user.first_name}} {{ user.last_name}}</p>
-	<p>Username: {{user.username}}</p>
-	
-	<p>Email: {{user.email}}</p>
+<div class="home">
 
-<br> <input type="button"  onclick = "location.href='/inquizitive/creating_quiz/';" value="Create a new quiz"/> <br>
- 
+  <div class="user">
+      {% if user.is_authenticated %}
 
-{% endif %}
-<div>
+      <p>Name: {{user.first_name}} {{ user.last_name}}</p>
+      <p>Username: {{user.username}}</p>
+      <p>Email: {{user.email}}</p>
 
- 
-    
- <style>
-img {
-  border-radius: 50%;
-}
-</style>
+      <br> <input type="button" class ="create" onclick = "location.href='/inquizitive/creating_quiz/';" value="Create a new quiz"/> <br>
+      {% endif %}
+  </div>
+
+
+<div class="quiz">
+
+        <style>
+        img {
+          border-radius: 50%;
+        }
+
+        div.user {
+            text-align: right;
+            }
+
+        div.quiz {
+            text-align: left;
+            vertical-align: top;
+
+
+        </style>
 
 {% if quizzes %}
 
@@ -75,58 +182,117 @@ img {
 
 
 
+
         <!-- Search box -->
- 
+
             <div class="row">
                 <div class="col-md-4 offset-0">
 
                     <form>
                         <div class="input-group">
                             <input name="search" type="text" placeholder="Search" class="form-control form-control-lg" />
-                            <div class="input-group-append">
-                                <button class="btn btn-dark btn-lg">Search</button>
+                            <div class="search">
+                                <button class="searchbtn btn-dark btn-lg">Search</button>
                             </div>
+
                         </div>
                     </form>
                 </div>
             </div>
+
         </div>
-     
 
 
+ 
+          <form action = "{% url 'home'  %}" >
+            <input type = "submit"  class="resetbtn"; value = "Reset"></button>
+          </form>
 
+
+ 
 <ul>
 
-{% for quiz in quizzes %}  
-
- <br> 
-<li> 
-
-<h1 style="font-size:20px;">{{ quiz.quizName }} </h1>
-  </li>
 
 
-<input type="button"  onclick = "location.href='/inquizitive/{{ quiz.slug }}/answerQuiz/';" value="Solve quiz" />
+<div class = "quizzes">
+{% for quiz in quizzes %}
+
+ <br>
+<li>
+
+  <h1 style="font-size:20px;">{{ quiz.quizName }} </h1>
+      </li>
+
+<input type="button" class ="solve" onclick = "location.href='/inquizitive/{{ quiz.slug }}/answerQuiz/';" value="Solve quiz" />
+
  
 
 {% if quiz.user == request_user %}
 
 
-<input type="button"  onclick = "location.href='/inquizitive/quiz/{{ quiz.slug }}/';" value="Edit quiz" />
-{% endif %}
+<input type="button" class ="edit" onclick = "location.href='/inquizitive/quiz/{{ quiz.slug }}/';" value="Edit quiz" />
 
+    {% endif %}
 
+    {% endfor %}
+    </li>
 
+    </ul>
 
+    {% else %}
+    <strong>There are no quizzes present.</strong> {% endif %}
+</div>
 
-{% endfor %}
-</li> 
+</div>
 
-</ul> 
+<div class="footer">
+    <input class="btn1" type="button"  onclick = "location.href='/inquizitive/meet_the_team/';" value="Meet the team!" />
 
-{% else %}
-<strong>There are no quizzes present.</strong> {% endif %}
+    <button class="btn2" onclick="myFunction()">WHO ARE WE!?</button>
+
+    <style>
+
+        
+
+        .quizzes{
+          padding-bottom: 2.5rem;
+        }
+
+        .footer {
+          position: fixed;
+          left: 0;
+          bottom: 0;
+          width: 100%;
+          background-color: #740000;
+          color: white;
+          text-align: center;
+        }
+
+        .btn1 {
+            margin-right: 30px;
+            background-color: bisque;
+            }
+ 
+
+        .btn2 {
+            margin-left: 30px;
+            background-color: bisque;
+            }
+
+        .btn1:hover {
+            background-color: rgb(13, 155, 89);
+            transition: 0.4s;
+        }
+
+        .btn2:hover {
+            background-color:rgb(13, 155, 89);
+            transition: 0.4s;
+        }
+
+    </style>
 </div>
  
+ 
 <button onclick="myFunction()">WHO ARE WE!?</button>
+ 
 {% endblock %}

@@ -2,13 +2,34 @@
 
 {% block content %}
 {% load static %}
+
+<head>
+    <style>
+        .form-group{color: rgb(224, 224, 200); font-size: large;}
+        .question{color: rgb(224, 224, 200); font-size: large;}
+    </style>
+
+<script type = "text/javascript">
+
+    $(document).ready(function(){
+        $(".form_check_label").hover(function(){
+            $(this).css({color: "rgb(32, 206, 245)"});
+            $(this).css({paddingLeft: '+=15px'});
+        }, function() {
+            $(this).css({color: "white"});
+            $(this).css({paddingLeft: '-=15px'});
+    });
+    });
+
+
+</script>
+</head>
+
+
 <div class="container ">
-<h1>{{ quiz.quizName }}</h1>
- 
+<h2> <em> {{ quiz.quizName }} </em> </h2>
+
  <p>Date/Time: <span id="datetime"></span></p>
-
- 
-
 
  <form method='post' action='' >
     {% csrf_token %}
@@ -17,49 +38,50 @@
 
     <div class="form-group">
 
-      <label for="question">{{ question.questionText }}</label>
+      <label for="question"> <div class = "question"> {{ question.questionText }} </div> </label>
     </div>
+
     <div class="form_check">
 
-        <div class="form_check">
-            <input class="form_check_input" type="radio" name="{{question.questionText}}" id="radio1" value="{{question.optiona}}" checked>
+    <div class="form-check">
+
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="{{question.questionText}}" id="gridRadios1" value="{{question.optiona}}" checked>
             <label class="form_check_label" for="gridRadios1">
                 {{question.optiona}}
             </label>
         </div>
-        <div class="form_check">
-            <input class="form_check_input" type="radio" name="{{question.questionText}}" id="radio2" value="{{question.optionb}}">
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="{{question.questionText}}" id="gridRadios2" value="{{question.optionb}}">
 
             <label class="form_check_label" for="gridRadios2">
                 {{ question.optionb }}
             </label>
         </div>
-        <div class="form_check">
-            <input class="form_check_input" type="radio" name="{{question.questionText}}"id="radio1" value="{{question.optionc}}">
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="{{question.questionText}}"id="gridRadios1" value="{{question.optionc}}">
             <label class="form_check_label" for="gridRadios1">
                 {{ question.optionc }}
             </label>
         </div>
-        <div class="form_check">
-            <input class="form_check_input" type="radio" name="{{question.questionText}}" id="radio2" value="{{question.optiond}}">
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="{{question.questionText}}" id="gridRadios2" value="{{question.optiond}}">
             <label class="form_check_label" for="gridRadios2">
                 {{ question.optiond }}
             </label>
         </div>
         <br>
-    </div>    
+    </div>
     {% endfor %}
-     
     <br>
    <button type="submit" class="btn btn-primary">Submit</button>
-
   </form>
- 
- 
+
+
 </div>
- 
- 
- 
+
+
+
 
 
 

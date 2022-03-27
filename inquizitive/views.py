@@ -1,15 +1,13 @@
-
-   
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse , HttpResponseRedirect
 from django.shortcuts import render, redirect , get_object_or_404
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash 
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm, PasswordChangeForm
 from django.contrib import messages 
-from .forms import SignUpForm, EditProfileForm 
+from .forms import SignUpForm, EditProfileForm, UpdateImageForm
 from inquizitive.forms import CreateAQuizForm,  AddAQuestionForm , TakeQuizForm
 from django.shortcuts import redirect
-from .models import Quiz, Question
+from .models import Quiz, Question, UserProfile
 from django.urls import reverse
 from datetime import datetime
 from django.forms import formset_factory 
@@ -53,6 +51,14 @@ def visitor_cookie_handler(request ):
     else:
         request.session['last_visit'] = last_visit_cookie
     request.session['visits'] = visits
+
+
+def meet_the_team(request):
+    print("meet_the_team")
+    # quizzes_list=Quiz.objects.all()
+    context_dict={}
+    # context_dict['quizzes'] = quizzes_list
+    return render(request, 'inquizitive/meet_the_team.html',context_dict)
 
 
 def login_user (request):
@@ -102,6 +108,25 @@ def user_account(request):
     context_dict['quizzes'] = quizzes_list
     return render(request, 'inquizitive/user_account.html',context_dict)
 
+@login_required
+def update_image(request):
+
+    user_profile, _  = UserProfile.objects.get_or_create(user=request.user)
+
+    if request.method == "POST":
+        image_form= UpdateImageForm(data=request.POST, instance=user_profile)
+
+        if image_form.is_valid():
+            profile = image_form.save(commit=False)
+
+            if 'profile_pic' in request.FILES:
+                profile.profile_pic = request.FILES['profile_pic']
+            profile.save()
+    else:
+        image_form = UpdateImageForm(instance=user_profile)
+    return render(request, 'inquizitive/update_image.html', {'update_image_form': image_form})
+
+
 def edit_profile(request):
 	if request.method =='POST':
 		form = EditProfileForm(request.POST, instance= request.user)
@@ -116,6 +141,7 @@ def edit_profile(request):
 	return render(request, 'inquizitive/edit_profile.html', context)
 	
 
+
 def change_password(request):
 	if request.method =='POST':
 		form = PasswordChangeForm(data=request.POST, user= request.user)
@@ -129,6 +155,9 @@ def change_password(request):
 
 	context = {'form': form}
 	return render(request, 'inquizitive/change_password.html', context)
+
+
+
 
 
  
@@ -254,9 +283,9 @@ def answerQuiz(request, quiz_name_slug):
             
             context_dict = {}
             quiz = Quiz.objects.get(slug=quiz_name_slug)
-            print("passcode" )
-            print( quiz.passcode)
-            print(request.POST.get('password'))
+            # print("passcode" )
+            # print( quiz.passcode)
+            # print(request.POST.get('password'))
             context_dict['quizName'] = quiz.quizName
             #context_dict['likes'] = likes
             questions = Question.objects.filter(quiz=quiz)
