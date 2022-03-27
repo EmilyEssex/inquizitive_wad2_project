@@ -212,7 +212,7 @@ function myFunction() {
 
 
 
-
+<div class = "quizzes">
 {% for quiz in quizzes %}
 
  <br>
@@ -239,6 +239,7 @@ function myFunction() {
     {% else %}
     <strong>There are no quizzes present.</strong> {% endif %}
 </div>
+
 </div>
 
 <div class="footer">
@@ -247,8 +248,15 @@ function myFunction() {
     <button class="btn2" onclick="myFunction()">WHO ARE WE!?</button>
 
     <style>
+
+        
+
+        .quizzes{
+          padding-bottom: 2.5rem;
+        }
+
         .footer {
-          position: relative;
+          position: fixed;
           left: 0;
           bottom: 0;
           width: 100%;
